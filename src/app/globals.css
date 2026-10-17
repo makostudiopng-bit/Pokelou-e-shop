@@ -1,26 +1,46 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/pokelou.css";
 
+/* Písma jsou hostovaná u nás (fontsource), Manrope jako variabilní řez. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-sans: "Manrope Variable", "Manrope", system-ui, sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-paper: var(--surface-000);
+  --color-panel: var(--surface-100);
+  --color-well: var(--surface-200);
+  --color-yellow: var(--brand-yellow);
+  --color-red: var(--brand-red);
+  --color-line: var(--line);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--surface-000);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

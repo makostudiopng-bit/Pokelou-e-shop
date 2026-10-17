@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PokeLou – e-shop a výkup Pokémon karet
 
-## Getting Started
+Next.js 16 (App Router) · TypeScript · Tailwind 4 · Drizzle ORM · PostgreSQL (Neon) · Vercel
 
-First, run the development server:
+## Spuštění
 
 ```bash
+npm install
+cp .env.example .env.local   # doplnit DATABASE_URL a CRON_SECRET
+npx drizzle-kit migrate      # vytvoří tabulky
+npx tsx scripts/import-set.ts sv03.5 sv01   # import edic z TCGdex
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Bez databáze běží úvodní stránka z ukázkových dat (`src/data/demo.ts`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Struktura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Cesta | Co obsahuje |
+| --- | --- |
+| `src/db/schema.ts` | databázové schéma (katalog, sklad, objednávky, výkup, kredit, cenová pravidla) |
+| `drizzle/` | SQL migrace generované ze `schema.ts` (`npx drizzle-kit generate`) |
+| `src/lib/pricing.ts` | prodejní ceny a výkupní odhady (čisté funkce) |
+| `src/lib/tcgdex.ts` | klient TCGdex a mapování na řádky DB |
+| `src/lib/cnb.ts` | denní kurz EUR/CZK z ČNB |
+| `src/lib/sync.ts` | import edic, denní ceny, přecenění skladu |
+| `src/app/api/cron/daily` | denní úloha (Vercel Cron, 04:30 UTC) |
+| `src/styles/` | tokeny a styly z design systému PokeLou (třídy `pl-*`) |
+| `src/components/ui.tsx` | Button, ConditionBadge, CardTile |
 
-## Learn More
+## Pravidla
 
-To learn more about Next.js, take a look at the following resources:
+- Částky v Kč se ukládají v haléřích (integer), sloupce `*_hal`.
+- Prodejní cena = trend Cardmarketu × kurz ČNB × stav × jazyk × (1 + přirážka), zaokrouhleno na …90 Kč.
+- Pravidla se skládají od obecného ke konkrétnímu: výchozí → globální → edice → karta.
+- Ceny se denně stahují jen pro karty skladem a ve výkupu za posledních 30 dní.
+- Kus se zamčenou cenou (`price_locked`) se nepřeceňuje.
+- Písma jsou hostovaná u nás (fontsource), ne z Google Fonts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx vitest run
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Databázové testy běží proti skutečnému Postgresu v PGlite, není potřeba žádná služba.

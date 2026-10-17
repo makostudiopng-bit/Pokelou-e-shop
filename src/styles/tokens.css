@@ -1,0 +1,68 @@
+/* PokeLou — generated from tokens.json */
+:root, [data-theme="light"] {
+  --surface-000: #faf6ef;
+  --surface-100: #ffffff;
+  --surface-200: #f1ebe1;
+  --surface-inverse: #141414;
+  --ink: #141414;
+  --ink-muted: #5c564e;
+  --ink-inverse: #f4eee6;
+  --line: #e2dacc;
+  --line-strong: #8a7f70;
+  --brand-yellow: #f2a400;
+  --brand-yellow-hover: #d98f00;
+  --on-yellow: #141414;
+  --brand-red: #c42a14;
+  --on-red: #ffffff;
+  --success: #1f7a4d;
+  --focus: #141414;
+  --cond-mint: #1f7a4d;
+  --cond-good: #9a6a00;
+  --cond-played: #c42a14;
+  --shadow-sticker: 3px 3px 0 #141414;
+}
+[data-theme="dark"] {
+  --surface-000: #111111;
+  --surface-100: #1c1c1c;
+  --surface-200: #262626;
+  --surface-inverse: #f4eee6;
+  --ink: #f4eee6;
+  --ink-muted: #a9a39a;
+  --ink-inverse: #141414;
+  --line: #333333;
+  --line-strong: #7a7a7a;
+  --brand-yellow: #f2a400;
+  --brand-yellow-hover: #ffb82e;
+  --on-yellow: #141414;
+  --brand-red: #ff6a4d;
+  --on-red: #141414;
+  --success: #4cc38a;
+  --focus: #f2a400;
+  --cond-mint: #4cc38a;
+  --cond-good: #f2a400;
+  --cond-played: #ff6a4d;
+  --shadow-sticker: 3px 3px 0 #f2a400;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-10: 40px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-card: 4.5%;
+  --radius-pill: 999px;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+.display-xl { font-family: var(--font-display); font-size: 64px; line-height: 60px; font-weight: 800; letter-spacing: -0.5px; }
+.display-l { font-family: var(--font-display); font-size: 40px; line-height: 40px; font-weight: 800; }
+.heading { font-family: var(--font-display); font-size: 24px; line-height: 28px; font-weight: 700; }
+.title { font-family: var(--font-sans); font-size: 16px; line-height: 22px; font-weight: 700; }
+.body { font-family: var(--font-sans); font-size: 15px; line-height: 22px; font-weight: 400; }
+.small { font-family: var(--font-sans); font-size: 13px; line-height: 18px; font-weight: 500; }
+.price { font-family: var(--font-sans); font-size: 20px; line-height: 24px; font-weight: 800; }
+.mono { font-family: var(--font-mono); font-size: 13px; line-height: 18px; font-weight: 500; }
