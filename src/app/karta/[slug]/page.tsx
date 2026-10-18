@@ -12,10 +12,10 @@ const FALLBACK_EUR_CZK = 24.3;
 
 export async function generateMetadata({ params }: PageProps<"/karta/[slug]">): Promise<Metadata> {
   const card = await getCard(decodeURIComponent((await params).slug));
-  if (!card) return { title: "Karta nenalezena – PokeLou" };
+  if (!card) return { title: "Karta nenalezena" };
   const v = card.variants[0];
   return {
-    title: `${v.name} ${v.number} (${v.set}) – PokeLou`,
+    title: `${v.name} ${v.number} (${v.set})`,
     description: `${v.name}, ${v.set} ${v.number}, ${v.rarity}. Od ${formatCzk(Math.min(...card.variants.map((x) => x.priceHal)))}.`,
   };
 }

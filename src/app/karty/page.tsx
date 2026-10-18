@@ -8,7 +8,7 @@ import { getOffers } from "@/lib/catalog";
 import { applyQuery, facets, parseQuery, SORTS, toSearch, type CatalogQuery } from "@/lib/catalog-query";
 
 export const metadata: Metadata = {
-  title: "Karty – PokeLou",
+  title: "Karty",
   description: "Pokémon single karty skladem: filtruj podle edice, stavu, jazyka a ceny.",
 };
 

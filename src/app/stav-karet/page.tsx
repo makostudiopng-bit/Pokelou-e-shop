@@ -4,7 +4,7 @@ import { ConditionBadge } from "@/components/ui";
 import type { Condition } from "@/db/schema";
 
 export const metadata: Metadata = {
-  title: "Jak hodnotíme stav karet – PokeLou",
+  title: "Jak hodnotíme stav karet",
   description: "Stupnice stavu karet od Mint po Poor: co znamená a jak se promítne do ceny.",
 };
 
