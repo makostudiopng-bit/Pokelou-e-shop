@@ -1,0 +1,54 @@
+/* Styly obchodu nad design systémem (katalog, detail). Barvy jen z tokenů. */
+
+/* Panel filtrů: na mobilu sbalitelný, na desktopu vždy otevřený */
+.pl-filters { background: var(--surface-100); border: 1px solid var(--line); border-radius: 10px; }
+.pl-filters > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; font-weight: 800; font-size: 16px;
+}
+.pl-filters > summary::-webkit-details-marker { display: none; }
+.pl-filters > summary::after { content: "+"; font-size: 22px; line-height: 1; }
+.pl-filters[open] > summary::after { content: "–"; }
+.pl-filters__body { padding: 4px 20px 20px; display: flex; flex-direction: column; gap: 20px; }
+@supports selector(::details-content) {
+  @media (min-width: 768px) {
+    .pl-filters > summary { display: none; }
+    .pl-filters::details-content { content-visibility: visible; block-size: auto; }
+    .pl-filters__body { padding-top: 20px; }
+  }
+}
+
+.pl-fs { border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.pl-fs > legend { font-weight: 700; font-size: 15px; padding: 0; margin-bottom: 10px; }
+.pl-check { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 20px; cursor: pointer; }
+.pl-check input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; flex: none; }
+.pl-check__n { margin-left: auto; font-size: 12px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+/* Přepínací štítky (jazyk) – zaškrtávátko schované, stav ukazuje barva */
+.pl-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pl-pill { position: relative; font: 700 13px/18px var(--font-sans); background: var(--surface-100); color: var(--ink); border: 1.5px solid var(--line-strong); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.pl-pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.pl-pill:has(input:checked) { background: var(--brand-yellow); color: var(--on-yellow); border-color: var(--ink); }
+.pl-pill:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.pl-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; background: var(--surface-200); border-radius: 999px; padding: 6px 8px 6px 12px; text-decoration: none; color: var(--ink); }
+.pl-chip__x { font-size: 16px; line-height: 1; padding: 0 4px; }
+.pl-chip:hover .pl-chip__x { color: var(--brand-red); }
+
+.pl-select { font: 500 14px/20px var(--font-sans); color: var(--ink); background: var(--surface-100); border: 1.5px solid var(--line-strong); border-radius: 6px; padding: 8px 10px; }
+
+.pl-pager { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+.pl-pager a, .pl-pager span { text-decoration: none; min-width: 44px; height: 44px; padding: 0 12px; display: grid; place-items: center; border-radius: 10px; border: 1.5px solid var(--line-strong); font-weight: 700; color: var(--ink); }
+.pl-pager [aria-current="page"] { background: var(--surface-inverse); color: var(--ink-inverse); border-color: var(--surface-inverse); }
+
+/* Detail: výběr kusu */
+.pl-variant { display: flex; flex-wrap: nowrap; align-items: center; gap: 10px 16px; background: var(--surface-100); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 16px; text-decoration: none; color: var(--ink); }
+.pl-variant:hover { border-color: var(--ink); }
+.pl-variant[aria-current="true"] { border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--brand-yellow); }
+.pl-variant--out { opacity: .6; }
+.pl-variant__radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; flex: none; }
+.pl-variant[aria-current="true"] .pl-variant__radio::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+.pl-lang { font: 500 12px/16px var(--font-mono); border: 1px solid var(--line-strong); border-radius: 6px; padding: 2px 6px; }
+
+.pl-empty { border: 2px dashed var(--line-strong); border-radius: 10px; padding: 40px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pl-note { font-size: 13px; line-height: 18px; color: var(--ink-muted); }

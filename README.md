@@ -7,12 +7,14 @@ Next.js 16 (App Router) · TypeScript · Tailwind 4 · Drizzle ORM · PostgreSQL
 ```bash
 npm install
 cp .env.example .env.local   # doplnit DATABASE_URL a CRON_SECRET
-npx drizzle-kit migrate      # vytvoří tabulky
-npx tsx scripts/import-set.ts sv03.5 sv01   # import edic z TCGdex
+npx tsx scripts/migrate.mts  # vytvoří tabulky (na Vercelu běží samo při každém buildu)
+npx tsx scripts/import-set.mts sv03.5 sv01   # import edic z TCGdex
 npm run dev
 ```
 
-Bez databáze běží úvodní stránka z ukázkových dat (`src/data/demo.ts`).
+Bez databáze (nebo dokud je sklad prázdný) běží web z ukázkových dat (`src/data/demo.ts`).
+
+Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRON_SECRET`, jestli existují tabulky a kolik je v nich karet. Hodnoty proměnných nevrací.
 
 ## Struktura
 
@@ -27,6 +29,9 @@ Bez databáze běží úvodní stránka z ukázkových dat (`src/data/demo.ts`).
 | `src/app/api/cron/daily` | denní úloha (Vercel Cron, 04:30 UTC) |
 | `src/styles/` | tokeny a styly z design systému PokeLou (třídy `pl-*`) |
 | `src/components/ui.tsx` | Button, ConditionBadge, CardTile |
+| `src/lib/catalog-query.ts` | filtry, hledání a řazení katalogu (čisté funkce, parametry z URL) |
+| `src/lib/catalog.ts` | nabídky ze skladu v DB, záložně ukázková data |
+| `src/app/karty`, `src/app/karta/[slug]` | výpis karet s filtry, detail karty s výběrem kusu |
 
 ## Pravidla
 
