@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CardTile } from "@/components/ui";
+import { OfferTile } from "@/components/offer-tile";
+import { getOffers } from "@/lib/catalog";
 import { demoCards, demoSets } from "@/data/demo";
 
 const linkBtn =
@@ -56,10 +57,17 @@ function HeroFan() {
   );
 }
 
-export default function Home() {
-  const fresh = demoCards.slice(0, 5);
+export default async function Home() {
+  const { offers } = await getOffers();
+  const seen = new Set<string>();
+  // nejnovější kusy skladem, každá karta jen jednou
+  const fresh = [...offers]
+    .filter((o) => o.stock > 0)
+    .sort((a, b) => b.addedAt - a.addedAt)
+    .filter((o) => !seen.has(o.cardSlug) && seen.add(o.cardSlug))
+    .slice(0, 5);
   return (
-    <>
+    <main>
       <section className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-10 px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
         <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-5">
           <span
@@ -114,21 +122,8 @@ export default function Home() {
           </Link>
         </div>
         <div className="pl-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(208px,1fr))] sm:gap-6">
-          {fresh.map((c) => (
-            <CardTile
-              key={c.slug}
-              href={`/karta/${c.slug}`}
-              name={c.name}
-              set={c.set}
-              number={c.number}
-              condition={c.condition}
-              lang={c.lang}
-              finish={c.finish}
-              priceHal={c.priceHal}
-              wasPriceHal={c.wasPriceHal}
-              stock={c.stock}
-              image={c.image}
-            />
+          {fresh.map((o) => (
+            <OfferTile key={o.id} o={o} />
           ))}
         </div>
       </section>
@@ -205,6 +200,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-    </>
+    </main>
   );
 }

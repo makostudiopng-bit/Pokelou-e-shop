@@ -32,6 +32,7 @@ Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRO
 | `src/lib/catalog-query.ts` | filtry, hledání a řazení katalogu (čisté funkce, parametry z URL) |
 | `src/lib/catalog.ts` | nabídky ze skladu v DB, záložně ukázková data |
 | `src/app/karty`, `src/app/karta/[slug]` | výpis karet s filtry, detail karty s výběrem kusu |
+| `src/lib/cart.ts`, `src/app/kosik` | košík v cookie (jen ID kusu a počet), ceny a dostupnost vždy ze skladu |
 
 ## Pravidla
 
@@ -41,6 +42,7 @@ Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRO
 - Ceny se denně stahují jen pro karty skladem a ve výkupu za posledních 30 dní.
 - Kus se zamčenou cenou (`price_locked`) se nepřeceňuje.
 - Písma jsou hostovaná u nás (fontsource), ne z Google Fonts.
+- Košík nikdy nevěří ceně z prohlížeče: v cookie je jen ID kusu a počet, zbytek se dopočítá ze skladu.
 
 ## Testy
 

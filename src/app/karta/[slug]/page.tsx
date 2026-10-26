@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToCart } from "@/components/add-to-cart";
 import { OfferTile } from "@/components/offer-tile";
 import { Button, ConditionBadge } from "@/components/ui";
 import { getCard } from "@/lib/catalog";
@@ -148,16 +149,9 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
               </>
             ) : (
               <>
-                <label className="pl-field w-[110px]">
-                  <span className="pl-field__label">Počet</span>
-                  <span className="pl-field__wrap">
-                    <input className="pl-field__input w-full pr-9" type="number" min={1} max={selected.stock} defaultValue={1} name="pocet" />
-                    <span className="pl-field__suffix">ks</span>
-                  </span>
-                </label>
-                <Button variant="primary" className="flex-[1_1_220px]" block>
-                  Do košíku · {formatCzk(selected.priceHal)}
-                </Button>
+                <div className="min-w-0 flex-[1_1_320px]">
+                  <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`Do košíku · ${formatCzk(selected.priceHal)}`} />
+                </div>
                 <Button variant="secondary">Hlídat cenu</Button>
               </>
             )}

@@ -62,6 +62,8 @@ export type CardTileProps = {
   stock: number;
   image?: string;
   priority?: boolean;
+  /** Akce místo výchozího tlačítka (např. formulář „Do košíku“). */
+  cta?: ReactNode;
 };
 
 export function CardTile(p: CardTileProps) {
@@ -108,15 +110,16 @@ export function CardTile(p: CardTileProps) {
             {out ? "Vyprodáno" : `Skladem ${p.stock} ks`}
           </div>
         </div>
-        {out ? (
-          <Button variant="secondary" size="sm">
-            Hlídat
-          </Button>
-        ) : (
-          <Button variant="primary" size="sm">
-            Do košíku
-          </Button>
-        )}
+        {p.cta ??
+          (out ? (
+            <Button variant="secondary" size="sm">
+              Hlídat
+            </Button>
+          ) : (
+            <Button variant="primary" size="sm">
+              Do košíku
+            </Button>
+          ))}
       </div>
     </article>
   );

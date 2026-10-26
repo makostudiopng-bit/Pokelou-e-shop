@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cartCount as cartCount_ } from "@/lib/cart-server";
 
 const STRIP = [
   "Karty posíláme v obalu a toploaderu",
@@ -31,8 +32,8 @@ function CartIcon() {
   );
 }
 
-export function SiteHeader() {
-  const cartCount = 0; // napojí se na košík
+export async function SiteHeader() {
+  const cartCount = await cartCount_();
   return (
     <>
       <div
@@ -87,7 +88,7 @@ export function SiteHeader() {
               href="/kosik"
               className="pl-lift flex items-center gap-2 rounded-full border-2 px-4 py-2 no-underline"
               style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "var(--ink)" }}
-              aria-label={`Košík, ${cartCount} položek`}
+              aria-label={cartCount > 0 ? `Košík, ${cartCount} ${cartCount === 1 ? "kus" : cartCount < 5 ? "kusy" : "kusů"}` : "Košík je prázdný"}
             >
               <CartIcon />
               Košík
