@@ -7,6 +7,8 @@ export const SHOP = {
   instagram: "@pokelou.cz",
   /** DOČASNÉ: adresa pro osobní odběr */
   pickupAddress: process.env.SHOP_PICKUP_ADDRESS ?? "[ADRESA PRO OSOBNÍ ODBĚR]",
+  /** DOČASNÉ: kam posílat karty k výkupu */
+  buybackAddress: process.env.SHOP_BUYBACK_ADDRESS ?? "[ADRESA PRO ZASLÁNÍ KARET K VÝKUPU]",
   /** Číslo účtu pro převody: "123456789/0800" nebo rovnou IBAN v BANK_IBAN */
   bankAccount: process.env.BANK_ACCOUNT ?? null,
   bankIban: process.env.BANK_IBAN ?? null,

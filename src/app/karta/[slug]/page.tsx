@@ -194,7 +194,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                 )}
               </span>
               <Link
-                href="/vykup"
+                href={`/vykup?karta=${encodeURIComponent(slug)}`}
                 className="pl-lift rounded-[10px] px-4 py-2.5 text-sm font-bold no-underline"
                 style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)" }}
               >

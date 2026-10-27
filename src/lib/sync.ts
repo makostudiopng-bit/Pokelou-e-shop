@@ -99,7 +99,7 @@ export async function syncRate(db: Db, getRate: () => Promise<CnbRate> = fetchCn
 
 const toNum = (v: string | null | undefined) => (v == null ? undefined : Number(v));
 
-function ruleFromRow(r: typeof s.pricingRules.$inferSelect | undefined): PartialRule | null {
+export function ruleFromRow(r: typeof s.pricingRules.$inferSelect | undefined): PartialRule | null {
   if (!r) return null;
   return {
     markupPct: toNum(r.markupPct),

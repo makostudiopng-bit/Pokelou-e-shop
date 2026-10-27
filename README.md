@@ -39,6 +39,7 @@ Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRO
 | `src/config/shop.ts` | doprava, platby, kontakty – dočasné hodnoty k potvrzení klientem |
 | `src/lib/checkout.ts`, `src/lib/orders.ts`, `src/app/pokladna` | pokladna, kontrola formuláře, vytvoření objednávky s odečtem skladu |
 | `src/lib/spayd.ts`, `src/app/objednavka/[id]` | QR platba (SPAYD), potvrzení objednávky |
+| `src/lib/buyback*.ts`, `src/app/vykup` | výkup: hledání v katalogu, živý odhad, uložení žádosti (odhad přepočítá server) |
 
 ## Pravidla
 
