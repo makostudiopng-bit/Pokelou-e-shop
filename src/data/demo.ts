@@ -38,3 +38,40 @@ export const demoSets = [
   { name: "Brilliant Stars", series: "Sword & Shield" },
   { name: "Astral Radiance", series: "Sword & Shield" },
 ];
+
+// ---------- Pro naplnění databáze ukázkovým skladem (src/db/seed-demo.ts) ----------
+
+/** Edice ukázkových karet: TCGdex id a údaje. Trainer Gallery má v TCGdex vlastní „edici“. */
+export const demoSetInfo: Record<string, { id: string; name: string; series: string; cardCount: number | null; releaseDate: string }> = {
+  MEW: { id: "sv03.5", name: "151", series: "Scarlet & Violet", cardCount: 165, releaseDate: "2023-09-22" },
+  SVI: { id: "sv01", name: "Scarlet & Violet", series: "Scarlet & Violet", cardCount: 198, releaseDate: "2023-03-31" },
+  JTG: { id: "sv09", name: "Journey Together", series: "Scarlet & Violet", cardCount: 159, releaseDate: "2025-03-28" },
+  BRS: { id: "swsh9tg", name: "Brilliant Stars", series: "Sword & Shield", cardCount: null, releaseDate: "2022-02-25" },
+  ASR: { id: "swsh10tg", name: "Astral Radiance", series: "Sword & Shield", cardCount: null, releaseDate: "2022-05-27" },
+};
+
+/** Číslo karty v edici podle TCGdex (bez „/165“). */
+export const demoLocalId = (c: DemoCard) => c.number.split("/")[0];
+
+/** Ukázkový trend Cardmarketu v EUR. */
+export const demoTrend: Record<string, number> = {
+  "venusaur-ex-mew-198": 88,
+  "clefairy-ex-jtg-184": 67,
+  "umbreon-vmax-brs-tg23": 66,
+  "gardevoir-ex-svi-245": 53,
+  "squirtle-mew-170": 28,
+  "starmie-v-asr-tg13": 37,
+  "mimikyu-v-brs-tg16": 24,
+  "poliwhirl-mew-176": 10,
+  "kirlia-svi-212": 9,
+  "ralts-svi-211": 8,
+};
+
+/** Další kusy v jiném stavu/jazyce, ať jde vyzkoušet výběr kusu. */
+export const demoExtra: { slug: string; condition: Condition; lang?: string; priceHal: number; stock: number }[] = [
+  { slug: "venusaur-ex-mew-198", condition: "EX", priceHal: 2090_00, stock: 1 },
+  { slug: "venusaur-ex-mew-198", condition: "LP", priceHal: 1690_00, stock: 0 },
+  { slug: "squirtle-mew-170", condition: "LP", priceHal: 540_00, stock: 2 },
+  { slug: "umbreon-vmax-brs-tg23", condition: "NM", priceHal: 1890_00, stock: 0 },
+  { slug: "gardevoir-ex-svi-245", condition: "NM", lang: "JP", priceHal: 1190_00, stock: 1 },
+];

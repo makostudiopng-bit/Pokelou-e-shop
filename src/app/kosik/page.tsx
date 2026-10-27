@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Steps } from "@/components/steps";
 import { ConditionBadge } from "@/components/ui";
 import { getCartView } from "@/lib/cart-server";
 import { formatCzk } from "@/lib/pricing";
@@ -10,8 +11,6 @@ export const metadata: Metadata = {
   title: "Košík",
   robots: { index: false },
 };
-
-const STEPS = ["Košík", "Doprava a platba", "Hotovo"];
 
 function pcs(n: number) {
   return `${n} ${n === 1 ? "kus" : n < 5 ? "kusy" : "kusů"}`;
@@ -23,18 +22,7 @@ export default async function KosikPage() {
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 pb-16 sm:px-6">
-      <ol aria-label="Kroky nákupu" className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">
-        {STEPS.map((s, i) => (
-          <li
-            key={s}
-            aria-current={i === 0 ? "step" : undefined}
-            className="rounded-full px-4 py-[7px]"
-            style={i === 0 ? { background: "var(--surface-inverse)", color: "var(--ink-inverse)" } : { background: "var(--surface-200)", color: "var(--ink-muted)" }}
-          >
-            {i + 1} · {s}
-          </li>
-        ))}
-      </ol>
+      <Steps current={0} />
 
       <h1 className="m-0 text-[40px] leading-[40px] font-extrabold sm:text-[48px] sm:leading-[48px]" style={{ fontFamily: "var(--font-display)" }}>
         Tvůj košík
@@ -176,12 +164,9 @@ export default async function KosikPage() {
                 {formatCzk(cart.subtotalHal)}
               </strong>
             </div>
-            <button type="button" disabled className="pl-btn pl-btn--primary pl-btn--block" aria-describedby="pokladna-pozn">
+            <Link href="/pokladna" className="pl-btn pl-btn--primary pl-btn--block no-underline">
               Pokračovat k dopravě a platbě
-            </button>
-            <p id="pokladna-pozn" className="pl-note m-0">
-              Pokladnu teď dokončujeme. Platba a doprava přibudou v dalším kroku.
-            </p>
+            </Link>
             <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[13px] leading-[18px]" style={{ color: "var(--ink-muted)" }}>
               <li>Každou kartu balíme do obalu a toploaderu.</li>
               <li>Platba kartou, převodem s QR kódem nebo dobírkou.</li>

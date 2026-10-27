@@ -7,12 +7,15 @@ Next.js 16 (App Router) · TypeScript · Tailwind 4 · Drizzle ORM · PostgreSQL
 ```bash
 npm install
 cp .env.example .env.local   # doplnit DATABASE_URL a CRON_SECRET
-npx tsx scripts/migrate.mts  # vytvoří tabulky (na Vercelu běží samo při každém buildu)
+# bez Neonu jde lokálně použít Postgres v souboru: DATABASE_URL="pglite:./.data/pglite"
+npx tsx scripts/migrate.mts  # vytvoří tabulky a prázdnou DB naplní ukázkovým skladem (na Vercelu běží při každém buildu)
 npx tsx scripts/import-set.mts sv03.5 sv01   # import edic z TCGdex
 npm run dev
 ```
 
-Bez databáze (nebo dokud je sklad prázdný) běží web z ukázkových dat (`src/data/demo.ts`).
+Bez databáze běží web z ukázkových dat (`src/data/demo.ts`), objednávky se ale neukládají.
+Prázdnou databázi build naplní ukázkovým skladem (kusy s poznámkou `demo`, vypnout `SEED_DEMO=0`).
+Před ostrým spuštěním je smaže `npx tsx scripts/remove-demo.mts`.
 
 Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRON_SECRET`, jestli existují tabulky a kolik je v nich karet. Hodnoty proměnných nevrací.
 
@@ -33,6 +36,9 @@ Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRO
 | `src/lib/catalog.ts` | nabídky ze skladu v DB, záložně ukázková data |
 | `src/app/karty`, `src/app/karta/[slug]` | výpis karet s filtry, detail karty s výběrem kusu |
 | `src/lib/cart.ts`, `src/app/kosik` | košík v cookie (jen ID kusu a počet), ceny a dostupnost vždy ze skladu |
+| `src/config/shop.ts` | doprava, platby, kontakty – dočasné hodnoty k potvrzení klientem |
+| `src/lib/checkout.ts`, `src/lib/orders.ts`, `src/app/pokladna` | pokladna, kontrola formuláře, vytvoření objednávky s odečtem skladu |
+| `src/lib/spayd.ts`, `src/app/objednavka/[id]` | QR platba (SPAYD), potvrzení objednávky |
 
 ## Pravidla
 

@@ -1,6 +1,6 @@
 // Denní úloha (Vercel Cron): kurz ČNB → ceny z TCGdex → přecenění skladu.
 import { getDb } from "@/db";
-import { cardsToPrice, repriceStock, syncPrices, syncRate, type Db } from "@/lib/sync";
+import { cardsToPrice, repriceStock, syncPrices, syncRate } from "@/lib/sync";
 
 export const maxDuration = 300;
 
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const d = getDb() as unknown as Db;
+  const d = await getDb();
   const rate = await syncRate(d);
   const ids = await cardsToPrice(d);
   const prices = await syncPrices(d, ids, { day: rate.day });

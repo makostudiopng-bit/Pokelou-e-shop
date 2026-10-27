@@ -1,14 +1,13 @@
 // Synchronizace katalogu, cen a kurzu + přecenění skladu.
 // Funkce dostávají databázi i stahovací funkce jako parametry, aby šly testovat.
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
-import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import * as s from "@/db/schema";
 import { fetchCnbRate, type CnbRate } from "./cnb";
 import { eurToHal, resolveRules, sellPrice, type PartialRule } from "./pricing";
 import { fetchCard, fetchSet, mapCard, mapPrices, mapSet, type TcgdexCard, type TcgdexSet } from "./tcgdex";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Db = PgDatabase<PgQueryResultHKT, typeof s, any>;
+export type { Db } from "@/db";
+import type { Db } from "@/db";
 
 /** Spustí úlohy s omezeným souběhem (TCGdex nechceme zahltit). */
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
