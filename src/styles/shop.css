@@ -52,3 +52,17 @@
 
 .pl-empty { border: 2px dashed var(--line-strong); border-radius: 10px; padding: 40px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .pl-note { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+
+/* Právní a informační texty */
+.pl-prose { font-size: 16px; line-height: 1.6; max-width: 72ch; }
+.pl-prose h2 { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 32px; margin: 36px 0 10px; text-wrap: balance; }
+.pl-prose h3 { font-size: 17px; line-height: 24px; margin: 22px 0 6px; }
+.pl-prose p, .pl-prose ul, .pl-prose ol { margin: 0 0 12px; text-wrap: pretty; }
+.pl-prose ul, .pl-prose ol { padding-left: 22px; }
+.pl-prose ul { list-style: disc; }
+.pl-prose ol { list-style: decimal; }
+.pl-prose li { margin-bottom: 6px; }
+.pl-prose table { border-collapse: collapse; width: 100%; margin: 8px 0 16px; font-size: 15px; }
+.pl-prose th, .pl-prose td { border-bottom: 1px solid var(--line-strong); padding: 8px 10px 8px 0; text-align: left; vertical-align: top; }
+.pl-prose td.num, .pl-prose th.num { text-align: right; padding-right: 0; }
+.ph { background: var(--surface-200); border-radius: 4px; padding: 0 4px; font-weight: 600; }

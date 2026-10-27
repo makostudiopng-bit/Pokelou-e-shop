@@ -280,7 +280,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           <label className="pl-check items-start text-[13px] leading-[18px]">
             <input type="checkbox" name="adult" checked={adult} onChange={(ev) => setAdult(ev.target.checked)} className="mt-0.5" aria-invalid={e.adult ? true : undefined} />
             <span>
-              Je mi 18 let a karty jsou moje. Souhlasím s <Link href="/obchodni-podminky#vykup">podmínkami výkupu</Link>.
+              Je mi 18 let a karty jsou moje. Souhlasím s <Link href="/vykup-podminky">podmínkami výkupu</Link>.
             </span>
           </label>
           {e.adult && <span className="pl-field__error">{e.adult}</span>}

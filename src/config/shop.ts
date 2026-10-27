@@ -3,6 +3,14 @@
 
 export const SHOP = {
   name: "PokeLou",
+  /** DOČASNÉ: údaje provozovatele do patičky a obchodních podmínek */
+  operator: process.env.SHOP_OPERATOR ?? "[JMÉNO A PŘÍJMENÍ / NÁZEV FIRMY]",
+  ico: process.env.SHOP_ICO ?? "[IČO]",
+  /** DOČASNÉ: plátce DPH? "1" ano, "0" ne, nenastaveno = čeká na klienta */
+  vatPayer: process.env.SHOP_VAT_PAYER === "1" ? true : process.env.SHOP_VAT_PAYER === "0" ? false : null,
+  address: process.env.SHOP_ADDRESS ?? "[SÍDLO / MÍSTO PODNIKÁNÍ]",
+  phone: process.env.SHOP_PHONE ?? "[TELEFON]",
+  web: "pokelou.cz",
   email: process.env.SHOP_EMAIL ?? "info@pokelou.cz",
   instagram: "@pokelou.cz",
   /** DOČASNÉ: adresa pro osobní odběr */
