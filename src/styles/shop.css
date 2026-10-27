@@ -66,3 +66,27 @@
 .pl-prose th, .pl-prose td { border-bottom: 1px solid var(--line-strong); padding: 8px 10px 8px 0; text-align: left; vertical-align: top; }
 .pl-prose td.num, .pl-prose th.num { text-align: right; padding-right: 0; }
 .ph { background: var(--surface-200); border-radius: 4px; padding: 0 4px; font-weight: 600; }
+
+/* Administrace */
+.pl-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.pl-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); font-weight: 700; padding: 10px 12px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+.pl-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.pl-table tr:hover td { background: var(--surface-200); }
+.pl-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-table a { font-weight: 700; }
+.pl-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 3px 10px; white-space: nowrap; background: var(--surface-200); color: var(--ink); }
+.pl-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
+.pl-status--todo::before { background: var(--brand-yellow); }
+.pl-status--ok::before { background: var(--success); }
+.pl-status--bad::before { background: var(--brand-red); }
+.pl-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.pl-tabs a { text-decoration: none; font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--line-strong); color: var(--ink); background: var(--surface-100); }
+.pl-tabs a[aria-current="page"] { background: var(--surface-inverse); color: var(--ink-inverse); border-color: var(--surface-inverse); }
+.pl-panel { background: var(--surface-100); border: 2px solid var(--line); border-radius: 14px; padding: 20px; }
+.pl-admin-nav a { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; color: var(--ink-inverse); }
+.pl-admin-nav a:hover { background: rgba(255,255,255,.08); }
+.pl-admin-nav a[aria-current="page"] { background: var(--brand-yellow); color: var(--on-yellow); }
+.pl-count { min-width: 22px; height: 22px; display: inline-grid; place-items: center; border-radius: 999px; background: var(--brand-red); color: #fff; font-size: 12px; font-weight: 800; padding: 0 6px; }
+/* pole s jednotkou (Kč, ks): místo pro příponu, ať se nepřekrývá s číslem */
+.pl-field__wrap .pl-field__input:has(+ .pl-field__suffix) { padding-right: 38px; }
+.pl-table a { white-space: nowrap; }

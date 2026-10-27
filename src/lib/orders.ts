@@ -37,7 +37,7 @@ async function takeStock(db: Db, lines: OrderLine[]) {
   return { taken, missing: lines.filter((l) => !taken.has(l.stockItemId)).map((l) => l.stockItemId) };
 }
 
-async function giveBack(db: Db, lines: OrderLine[]) {
+export async function giveBack(db: Db, lines: Pick<OrderLine, "stockItemId" | "qty">[]) {
   if (lines.length === 0) return;
   const back = sql.join(
     lines.map((l) => sql`(${l.stockItemId}::text, ${l.qty}::int)`),

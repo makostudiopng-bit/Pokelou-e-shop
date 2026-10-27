@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
 export default function NotFound() {
   return (
+    <>
+    <SiteHeader />
     <main className="mx-auto flex max-w-[640px] flex-col items-center gap-5 px-4 py-20 text-center">
       <span className="pl-sticker-num" aria-hidden="true">
         ?
@@ -16,5 +20,7 @@ export default function NotFound() {
         Prohlédnout karty
       </Link>
     </main>
+    <SiteFooter />
+    </>
   );
 }

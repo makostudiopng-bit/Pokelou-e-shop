@@ -19,6 +19,18 @@ Před ostrým spuštěním je smaže `npx tsx scripts/remove-demo.mts`.
 
 Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRON_SECRET`, jestli existují tabulky a kolik je v nich karet. Hodnoty proměnných nevrací.
 
+## Administrace (`/admin`)
+
+Objednávky, výkupy, sklad, naskladnění a import edic z TCGdex. Přihlášení heslem:
+
+```bash
+npx tsx scripts/admin-password.mts "silné heslo aspoň 12 znaků"
+```
+
+Obě vypsané hodnoty (`ADMIN_PASSWORD_HASH`, `ADMIN_SESSION_SECRET`) vlož do Vercelu jako proměnné prostředí a dej Redeploy.
+Heslo se nikde neukládá v čitelné podobě, přihlášení platí 12 hodin. Každá stránka i akce administrace ověřuje přihlášení sama,
+`src/proxy.ts` je jen první síto.
+
 ## Struktura
 
 | Cesta | Co obsahuje |
@@ -34,12 +46,13 @@ Kontrola nasazení: `/api/health` ukáže, jestli je nastavená databáze a `CRO
 | `src/components/ui.tsx` | Button, ConditionBadge, CardTile |
 | `src/lib/catalog-query.ts` | filtry, hledání a řazení katalogu (čisté funkce, parametry z URL) |
 | `src/lib/catalog.ts` | nabídky ze skladu v DB, záložně ukázková data |
-| `src/app/karty`, `src/app/karta/[slug]` | výpis karet s filtry, detail karty s výběrem kusu |
+| `src/app/(shop)/…` | výpis karet s filtry, detail karty s výběrem kusu |
 | `src/lib/cart.ts`, `src/app/kosik` | košík v cookie (jen ID kusu a počet), ceny a dostupnost vždy ze skladu |
 | `src/config/shop.ts` | doprava, platby, kontakty – dočasné hodnoty k potvrzení klientem |
 | `src/lib/checkout.ts`, `src/lib/orders.ts`, `src/app/pokladna` | pokladna, kontrola formuláře, vytvoření objednávky s odečtem skladu |
 | `src/lib/spayd.ts`, `src/app/objednavka/[id]` | QR platba (SPAYD), potvrzení objednávky |
-| `src/lib/buyback*.ts`, `src/app/vykup` | výkup: hledání v katalogu, živý odhad, uložení žádosti (odhad přepočítá server) |
+| `src/lib/admin*.ts`, `src/app/admin` | administrace: přihlášení, stavy objednávek a výkupů, kontrola výkupu, kredit, sklad, naskladnění |
+| `src/lib/buyback*.ts`, `src/app/(shop)/vykup` | výkup: hledání v katalogu, živý odhad, uložení žádosti (odhad přepočítá server) |
 
 ## Pravidla
 

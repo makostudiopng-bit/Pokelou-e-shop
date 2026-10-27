@@ -1,7 +1,7 @@
 "use client";
 // Tlačítko „Do košíku“ s okamžitou odezvou. Funguje i bez JavaScriptu (obyčejný formulář).
 import { useActionState, useEffect, useState } from "react";
-import { addToCartAction, type AddState } from "@/app/kosik/actions";
+import { addToCartAction, type AddState } from "@/app/(shop)/kosik/actions";
 
 const LABEL: Record<AddState["status"], string> = {
   idle: "",
