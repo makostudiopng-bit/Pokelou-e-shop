@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { OfferTile } from "@/components/offer-tile";
 import { getOffers } from "@/lib/catalog";
-import { demoCards, demoSets } from "@/data/demo";
+import { demoSets } from "@/data/demo";
+import { heroCards } from "@/data/hero";
 
 const linkBtn =
   "pl-lift inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3.5 text-[17px] font-extrabold no-underline";
 
 function HeroFan() {
-  const [a, b, c] = [demoCards[1], demoCards[0], demoCards[2]];
+  const [a, c, b] = heroCards;
   return (
     <div className="pl-fan relative h-[300px] min-w-0 flex-[1_1_440px] sm:h-[460px]" aria-hidden="true">
       <div className="absolute inset-y-0 right-0 left-[8%] top-[34px] rotate-2 rounded-3xl" style={{ background: "var(--on-yellow)" }} />
@@ -26,8 +27,8 @@ function HeroFan() {
         { card: c, cls: "pl-float-c", style: { left: "50%", top: "21%", width: "36%", maxWidth: 168 } },
         { card: b, cls: "pl-float-b", style: { left: "31%", top: "12%", width: "42%", maxWidth: 196, zIndex: 2 } },
       ].map(({ card, cls, style }) => (
-        <div key={card.slug} className={`pl-holo-card ${cls}`} style={style}>
-          <Image src={card.image} alt="" width={630} height={880} sizes="200px" priority className="h-full w-full object-cover" />
+        <div key={card.id} className={`pl-holo-card ${cls}`} style={style}>
+          <Image src={card.image} alt="" width={600} height={825} sizes="(max-width: 640px) 40vw, 200px" priority className="h-full w-full object-cover" />
         </div>
       ))}
       <div className="pl-badge absolute -top-4 -right-1 z-[3] h-24 w-24 sm:h-[132px] sm:w-[132px]">
