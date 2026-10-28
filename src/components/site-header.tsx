@@ -9,15 +9,21 @@ const STRIP = [
   "Platba kartou, převodem i dobírkou",
 ];
 
+// Jedna sada se opakuje 3×, aby byla vždy širší než obrazovka (jinak by smyčka na konci
+// ukázala prázdné místo a skočila). Pro čtečky obrazovky je vidět jen první opakování.
+const REPEAT = 3;
+
 function StripItems({ hidden }: { hidden?: boolean }) {
   return (
     <div aria-hidden={hidden || undefined} className="flex gap-10 whitespace-nowrap pr-10">
-      {STRIP.map((t) => (
-        <span key={t} className="flex gap-10">
-          <span>{t}</span>
-          <span style={{ color: "var(--brand-yellow)" }}>✦</span>
-        </span>
-      ))}
+      {Array.from({ length: REPEAT }, (_, r) =>
+        STRIP.map((t) => (
+          <span key={`${r}-${t}`} className="flex gap-10" aria-hidden={r > 0 || undefined}>
+            <span>{t}</span>
+            <span style={{ color: "var(--brand-yellow)" }}>✦</span>
+          </span>
+        )),
+      )}
     </div>
   );
 }
@@ -40,7 +46,7 @@ export async function SiteHeader() {
         className="overflow-hidden py-2 text-sm font-bold"
         style={{ background: "var(--on-yellow)", color: "#f4eee6", borderBottom: "3px solid var(--brand-yellow)" }}
       >
-        <div className="pl-marquee">
+        <div className="pl-marquee pl-marquee--long">
           <StripItems />
           <StripItems hidden />
         </div>

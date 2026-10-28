@@ -111,3 +111,6 @@
 .pl-cta-dark:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .pl-cta-dark__arrow { background: var(--brand-yellow); color: var(--on-yellow); transition: transform var(--dur-base) var(--ease-pop); }
 .pl-cta-dark:hover .pl-cta-dark__arrow { transform: translateX(4px); }
+
+/* Horní lišta: 3× delší sada → 3× delší doba, rychlost posunu zůstává stejná */
+.pl-marquee--long { animation-duration: 84s; }
