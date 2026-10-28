@@ -30,8 +30,8 @@ function HeroFan() {
           <Image src={card.image} alt="" width={630} height={880} sizes="200px" priority className="h-full w-full object-cover" />
         </div>
       ))}
-      <div className="absolute -top-4 -right-1 z-[3] h-24 w-24 sm:h-[132px] sm:w-[132px]">
-        <svg className="pl-spin absolute inset-0 h-full w-full" viewBox="0 0 132 132">
+      <div className="pl-badge absolute -top-4 -right-1 z-[3] h-24 w-24 sm:h-[132px] sm:w-[132px]">
+        <svg className="pl-spin pl-spin--slow absolute inset-0 h-full w-full" viewBox="0 0 132 132">
           <defs>
             <path id="pl-circle" d="M66 66m-48 0a48 48 0 1 1 96 0a48 48 0 1 1 -96 0" />
           </defs>
@@ -40,11 +40,8 @@ function HeroFan() {
             <textPath href="#pl-circle">VÝKUP ✦ ZA KREDIT ✦ I ZA PENÍZE ✦</textPath>
           </text>
         </svg>
-        <div
-          className="absolute inset-[29%] grid place-items-center rounded-full border-[3px] text-base font-extrabold sm:text-[22px]"
-          style={{ background: "#fff", borderColor: "var(--on-yellow)", color: "var(--on-yellow)", fontFamily: "var(--font-display)" }}
-        >
-          PL
+        <div className="absolute inset-[27%] grid place-items-center rounded-full border-[3px]" style={{ background: "#fff", borderColor: "var(--on-yellow)" }}>
+          <Image src="/brand/logo.png" alt="" width={120} height={120} sizes="64px" className="pl-badge__logo h-[94%] w-[94%] object-contain" />
         </div>
       </div>
       <div

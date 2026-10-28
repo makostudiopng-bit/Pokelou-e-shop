@@ -90,3 +90,16 @@
 /* pole s jednotkou (Kč, ks): místo pro příponu, ať se nepřekrývá s číslem */
 .pl-field__wrap .pl-field__input:has(+ .pl-field__suffix) { padding-right: 38px; }
 .pl-table a { white-space: nowrap; }
+
+/* Úvodní stránka: točící se odznak s logem */
+.pl-spin--slow { animation-duration: 32s; }
+@keyframes pl-boing {
+  0% { transform: scale(1) rotate(0); }
+  25% { transform: scale(1.22, 1.08) rotate(-10deg); }
+  45% { transform: scale(.94, 1.06) rotate(7deg); }
+  65% { transform: scale(1.06) rotate(-3deg); }
+  82% { transform: scale(.99) rotate(1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+.pl-badge__logo { transform-origin: 50% 60%; }
+.pl-badge:hover .pl-badge__logo { animation: pl-boing .75s var(--ease-pop, cubic-bezier(.34, 1.56, .64, 1)); }
