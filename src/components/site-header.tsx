@@ -48,7 +48,7 @@ export async function SiteHeader() {
       <header style={{ borderBottom: "1px solid var(--line)", background: "var(--surface-000)" }}>
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-4 py-3 sm:px-6">
           <Link href="/" className="pl-wiggle-hover block flex-none" aria-label="PokeLou – domů">
-            <Image src="/brand/logo.png" alt="PokeLou" width={88} height={88} priority className="h-16 w-16 sm:h-[88px] sm:w-[88px]" />
+            <Image src="/brand/logo.png" alt="PokeLou" width={104} height={104} priority className="h-[72px] w-[72px] sm:h-[104px] sm:w-[104px]" />
           </Link>
           <form role="search" action="/karty" className="order-last flex min-w-0 basis-full sm:order-none sm:flex-1 sm:basis-80">
             <label htmlFor="q" className="sr-only">
