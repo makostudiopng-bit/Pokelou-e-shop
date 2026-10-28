@@ -103,3 +103,11 @@
 }
 .pl-badge__logo { transform-origin: 50% 60%; }
 .pl-badge:hover .pl-badge__logo { animation: pl-boing .75s var(--ease-pop, cubic-bezier(.34, 1.56, .64, 1)); }
+
+/* Úvodní stránka: hlavní tlačítko – černé, šipka ve žlutém čtverečku */
+.pl-cta-dark { background: var(--surface-inverse); color: var(--ink-inverse); border-color: var(--surface-inverse); transition: transform var(--dur-base) var(--ease-pop), box-shadow var(--dur-fast); }
+.pl-cta-dark:hover { color: var(--ink-inverse); transform: translate(-2px, -2px) rotate(-1deg); box-shadow: 4px 4px 0 var(--brand-yellow); }
+.pl-cta-dark:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--brand-yellow); }
+.pl-cta-dark:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.pl-cta-dark__arrow { background: var(--brand-yellow); color: var(--on-yellow); transition: transform var(--dur-base) var(--ease-pop); }
+.pl-cta-dark:hover .pl-cta-dark__arrow { transform: translateX(4px); }
