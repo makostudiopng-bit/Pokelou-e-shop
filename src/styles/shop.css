@@ -149,3 +149,45 @@
   .pl-tag, .pl-sparkles span { animation: none; }
   .pl-word, .pl-tag { transition: none; }
 }
+
+/* Úvodní stránka: výkupní banner – žlutá deska s tečkami, karta a výkupní lístek */
+.pl-sell {
+  background-color: var(--brand-yellow); color: var(--on-yellow); border-color: var(--on-yellow);
+  background-image: radial-gradient(rgba(20,20,20,.16) 2px, transparent 2.4px); background-size: 18px 18px;
+  box-shadow: 8px 8px 0 var(--on-yellow);
+}
+.pl-sell::after { /* velký obrys mince v rohu */
+  content: ""; position: absolute; right: -90px; bottom: -120px; width: 340px; height: 340px; border-radius: 50%;
+  border: 3px dashed rgba(20,20,20,.25); pointer-events: none;
+}
+.pl-sell__kicker { background: var(--on-yellow); color: var(--brand-yellow); font: 800 13px/18px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 5px 12px; }
+
+.pl-sell__card { position: absolute; left: 0; top: 50%; width: 42%; max-width: 180px; transform: translateY(-58%) rotate(-10deg); transition: transform var(--dur-base) var(--ease-pop); }
+.pl-sell:hover .pl-sell__card { transform: translateY(-62%) rotate(-14deg) translateX(-6px); }
+
+.pl-ticket {
+  position: relative; margin-left: 30%; width: 70%; min-width: 240px; background: var(--surface-100); color: var(--ink);
+  border: 2.5px solid var(--on-yellow); border-radius: 14px; padding: 16px 18px 18px; box-shadow: 5px 5px 0 var(--on-yellow);
+  display: flex; flex-direction: column; gap: 2px; transform: rotate(3deg); transition: transform var(--dur-base) var(--ease-pop);
+}
+.pl-sell:hover .pl-ticket { transform: rotate(1deg) translateY(-4px); }
+/* výseky na stranách jako u lístku */
+.pl-ticket::before, .pl-ticket::after { content: ""; position: absolute; top: 58%; width: 18px; height: 18px; border-radius: 50%; background: var(--brand-yellow); border: 2.5px solid var(--on-yellow); }
+.pl-ticket::before { left: -11px; clip-path: inset(0 0 0 50%); }
+.pl-ticket::after { right: -11px; clip-path: inset(0 50% 0 0); }
+.pl-ticket__head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-muted); padding-bottom: 8px; margin-bottom: 6px; border-bottom: 2px dashed var(--line-strong); }
+.pl-ticket__rows { margin: 12px 0 0; display: flex; flex-direction: column; gap: 6px; border-top: 2px dashed var(--line-strong); padding-top: 12px; }
+.pl-ticket__rows div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 15px; }
+.pl-ticket__rows dt { color: var(--ink-muted); font-weight: 600; }
+.pl-ticket__rows dd { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.pl-ticket__best { background: var(--brand-yellow); color: var(--on-yellow); border-radius: 8px; padding: 6px 8px; margin: 0 -8px; }
+.pl-ticket__best dt { color: inherit; font-weight: 800; }
+.pl-ticket__best dd { font-size: 20px; }
+.pl-ticket__bonus { align-self: flex-end; margin-top: 10px; background: var(--brand-red); color: var(--on-red); font-size: 13px; font-weight: 800; border-radius: 8px; padding: 4px 10px; transform: rotate(-3deg); }
+@media (max-width: 640px) {
+  .pl-sell__card { width: 36%; }
+  .pl-ticket { margin-left: 24%; width: 76%; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pl-sell__card, .pl-ticket { transition: none; }
+}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BuybackBanner } from "@/components/buyback-banner";
 import { OfferTile } from "@/components/offer-tile";
 import { getOffers } from "@/lib/catalog";
 import { demoSets } from "@/data/demo";
@@ -196,22 +197,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto mb-16 max-w-[1280px] px-4 sm:px-6">
-        <div
-          className="pl-stripes flex flex-wrap items-center justify-between gap-6 rounded-[20px] border-[3px] px-6 py-10 sm:px-10"
-          style={{ color: "#f4eee6", borderColor: "var(--on-yellow)", boxShadow: "6px 6px 0 var(--brand-yellow)" }}
-        >
-          <div className="flex max-w-[640px] flex-col gap-2">
-            <h2 className="m-0 text-[44px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-              Máš doma karty, které nehraješ?
-            </h2>
-            <p className="m-0 text-base leading-6 opacity-85">Spočítej si odhad výkupu za minutu. Za kredit do e-shopu dostaneš víc.</p>
-          </div>
-          <Link href="/vykup" className={linkBtn} style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "#f4eee6" }}>
-            Spočítat výkup
-          </Link>
-        </div>
-      </section>
+      <BuybackBanner />
     </main>
   );
 }
