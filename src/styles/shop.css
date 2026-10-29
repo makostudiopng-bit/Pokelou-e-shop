@@ -114,3 +114,5 @@
 
 /* Horní lišta: 3× delší sada → 3× delší doba, rychlost posunu zůstává stejná */
 .pl-marquee--long { animation-duration: 84s; }
+/* plynulé zpomalení řídí JS (Marquee), prudké zastavení z design systému vypnout */
+.pl-marquee--smooth:hover { animation-play-state: running; }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cartCount as cartCount_ } from "@/lib/cart-server";
+import { Marquee } from "./marquee";
 
 const STRIP = [
   "Karty posíláme v obalu a toploaderu",
@@ -46,10 +47,10 @@ export async function SiteHeader() {
         className="overflow-hidden py-2 text-sm font-bold"
         style={{ background: "var(--on-yellow)", color: "#f4eee6", borderBottom: "3px solid var(--brand-yellow)" }}
       >
-        <div className="pl-marquee pl-marquee--long">
+        <Marquee>
           <StripItems />
           <StripItems hidden />
-        </div>
+        </Marquee>
       </div>
       <header style={{ borderBottom: "1px solid var(--line)", background: "var(--surface-000)" }}>
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-4 py-3 sm:px-6">
