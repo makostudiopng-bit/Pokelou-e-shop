@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyQuery, facets, matchesSearch, parseQuery, toSearch, type Offer } from "./catalog-query";
+import { applyQuery, facets, matchesSearch, parseQuery, suggest, toSearch, type Offer } from "./catalog-query";
 
 const o = (p: Partial<Offer>): Offer => ({
   id: p.id ?? Math.random().toString(36),
@@ -85,5 +85,25 @@ describe("applyQuery", () => {
     const f = facets(offers);
     expect(f.sets[0]).toEqual(["Scarlet & Violet", 3]);
     expect(f.conditions.map(([c]) => c)).toEqual(["NM", "EX"]);
+  });
+});
+
+describe("našeptávač", () => {
+  const base = { condition: "NM" as const, lang: "EN", finish: "", series: "", rarity: "", setCode: "SVI", set: "Scarlet & Violet", image: null, addedAt: 0 };
+  const offers = [
+    { ...base, id: "a1", cardSlug: "gardevoir", name: "Gardevoir ex", number: "245/198", priceHal: 1490_00, stock: 1 },
+    { ...base, id: "a2", cardSlug: "gardevoir", name: "Gardevoir ex", number: "245/198", priceHal: 990_00, stock: 2, condition: "LP" as const },
+    { ...base, id: "b1", cardSlug: "kirlia", name: "Kirlia", number: "085/198", priceHal: 20_00, stock: 0 },
+    { ...base, id: "c1", cardSlug: "charizard", name: "Charizard ex", number: "199/165", priceHal: 3000_00, stock: 1 },
+  ];
+  it("spojí kusy jedné karty, vezme nejnižší cenu skladem", () => {
+    const r = suggest(offers, "gardev");
+    expect(r.total).toBe(1);
+    expect(r.items[0]).toMatchObject({ slug: "gardevoir", fromHal: 990_00, stock: 3, priceRange: true });
+  });
+  it("vyprodané jdou na konec, krátký dotaz nic nevrátí", () => {
+    expect(suggest(offers, "svi").items.map((s) => s.slug)).toEqual(["charizard", "gardevoir", "kirlia"]);
+    expect(suggest(offers, "svi").items.at(-1)?.fromHal).toBeNull();
+    expect(suggest(offers, "g").items).toEqual([]);
   });
 });

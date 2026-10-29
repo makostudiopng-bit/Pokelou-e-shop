@@ -169,3 +169,45 @@ export function facets(offers: Offer[]) {
     conditions: CONDITIONS.filter((c) => conds.has(c)).map((c) => [c, conds.get(c)!] as const),
   };
 }
+
+/** Návrh do našeptávače: jedna karta (všechny její kusy dohromady). */
+export type Suggestion = {
+  slug: string;
+  name: string;
+  set: string;
+  number: string;
+  image: string | null;
+  /** nejnižší cena kusu skladem; null = vyprodáno */
+  fromHal: number | null;
+  /** víc kusů za různé ceny → zobrazit „od“ */
+  priceRange: boolean;
+  stock: number;
+};
+
+/** Našeptávač: karty skladem první, pak podle shody v názvu a ceny. */
+export function suggest(offers: Offer[], q: string, limit = 6): { items: Suggestion[]; total: number } {
+  const query = norm(q.trim());
+  if (query.length < 2) return { items: [], total: 0 };
+  const byCard = new Map<string, Suggestion & { nameHit: boolean }>();
+  for (const o of offers) {
+    if (!matchesSearch(o, q)) continue;
+    const s = byCard.get(o.cardSlug) ?? {
+      slug: o.cardSlug, name: o.name, set: o.set, number: o.number, image: o.image,
+      fromHal: null, priceRange: false, stock: 0, nameHit: norm(o.name).startsWith(query.split(/\s+/)[0]),
+    };
+    if (o.stock > 0) {
+      s.stock += o.stock;
+      if (s.fromHal != null && s.fromHal !== o.priceHal) s.priceRange = true;
+      s.fromHal = s.fromHal == null ? o.priceHal : Math.min(s.fromHal, o.priceHal);
+    }
+    s.image ??= o.image;
+    byCard.set(o.cardSlug, s);
+  }
+  const all = [...byCard.values()].sort(
+    (a, b) =>
+      Number(b.stock > 0) - Number(a.stock > 0) ||
+      Number(b.nameHit) - Number(a.nameHit) ||
+      (b.fromHal ?? 0) - (a.fromHal ?? 0),
+  );
+  return { items: all.slice(0, limit).map(({ nameHit: _, ...s }) => s), total: all.length };
+}
