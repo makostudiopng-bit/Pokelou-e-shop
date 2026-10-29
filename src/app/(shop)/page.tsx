@@ -78,10 +78,26 @@ export default async function Home() {
             className="m-0 flex flex-col text-[58px] leading-[54px] font-extrabold uppercase sm:text-[88px] sm:leading-[82px]"
             style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.5px" }}
           >
-            <span className="pl-pop pl-d2">Kup</span>
-            <span className="pl-pop pl-d3">Prodej</span>
-            <span className="pl-pop pl-d4">
-              <span className="pl-hl">Sbírej</span>
+            <span className="pl-pop pl-d2 pl-word-row">
+              <span className="pl-word">Kup</span>
+              <span className="pl-tag pl-tag--white" aria-hidden="true">
+                <span className="pl-tag__dot" />
+                poctivý stav
+              </span>
+            </span>
+            <span className="pl-pop pl-d3 pl-word-row">
+              <span className="pl-word">Prodej</span>
+              <span className="pl-tag pl-tag--red" aria-hidden="true">
+                peníze i kredit
+              </span>
+            </span>
+            <span className="pl-pop pl-d4 pl-word-row">
+              <span className="pl-word pl-hl">Sbírej</span>
+              <span className="pl-sparkles" aria-hidden="true">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+              </span>
             </span>
           </h1>
           <p className="pl-pop pl-d4 m-0 max-w-[520px] text-lg leading-7" style={{ color: "var(--ink-muted)" }}>

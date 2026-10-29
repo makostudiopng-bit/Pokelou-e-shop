@@ -116,3 +116,36 @@
 .pl-marquee--long { animation-duration: 84s; }
 /* plynulé zpomalení řídí JS (Marquee), prudké zastavení z design systému vypnout */
 .pl-marquee--smooth:hover { animation-play-state: running; }
+
+/* Úvodní nadpis: slova reagují na myš, nálepky a jiskry dodávají život */
+.pl-word-row { display: flex; align-items: center; gap: 14px; }
+.pl-word { display: inline-block; cursor: default; transition: transform var(--dur-base) var(--ease-pop), text-shadow var(--dur-base) var(--ease-pop); }
+.pl-word:hover { transform: translate(-3px, -3px) rotate(-2deg); text-shadow: 5px 5px 0 var(--brand-yellow); }
+.pl-word.pl-hl:hover { text-shadow: 5px 5px 0 var(--brand-red); }
+.pl-word-row:hover .pl-tag { transform: rotate(0) scale(1.08); }
+
+.pl-tag {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 800 12px/16px var(--font-sans); text-transform: none; letter-spacing: 0;
+  border: 2px solid var(--ink); border-radius: 8px; padding: 4px 9px;
+  box-shadow: 3px 3px 0 var(--ink); transform: rotate(-5deg);
+  transition: transform var(--dur-base) var(--ease-pop);
+  animation: pl-tag-in .5s var(--ease-pop) backwards;
+}
+.pl-d2 .pl-tag { animation-delay: .9s; } .pl-d3 .pl-tag { animation-delay: 1.05s; }
+.pl-tag--white { background: var(--surface-100); color: var(--ink); }
+.pl-tag--red { background: var(--brand-red); color: var(--on-red); transform: rotate(4deg); }
+.pl-tag__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cond-mint); border: 1.5px solid var(--ink); }
+@media (min-width: 640px) { .pl-tag { font-size: 14px; line-height: 18px; padding: 5px 11px; } }
+@keyframes pl-tag-in { from { opacity: 0; transform: scale(.4) rotate(-20deg); } }
+
+.pl-sparkles { position: relative; width: 64px; height: 1em; align-self: stretch; font-family: var(--font-sans); }
+.pl-sparkles span { position: absolute; line-height: 1; color: var(--brand-yellow); -webkit-text-stroke: 1.5px var(--ink); animation: pl-twinkle 2.4s ease-in-out infinite; }
+.pl-sparkles span:nth-child(1) { left: 0; top: 0; font-size: .5em; }
+.pl-sparkles span:nth-child(2) { left: 52%; top: 34%; font-size: .32em; animation-delay: .8s; color: var(--brand-red); }
+.pl-sparkles span:nth-child(3) { left: 12%; top: 64%; font-size: .24em; animation-delay: 1.6s; }
+@keyframes pl-twinkle { 0%, 100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(.55) rotate(45deg); opacity: .6; } }
+@media (prefers-reduced-motion: reduce) {
+  .pl-tag, .pl-sparkles span { animation: none; }
+  .pl-word, .pl-tag { transition: none; }
+}
