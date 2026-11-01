@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { Db } from "@/db";
 import * as s from "@/db/schema";
 import { seedDemo } from "@/db/seed-demo";
-import { AdminError, dashboardCounts, intakeStock, saveBuybackCheck, setBuybackStatus, setOrderStatus, stockFromBuyback, suggestPrice } from "./admin";
+import { AdminError, dashboardCounts, listBuybacks, listOrders, intakeStock, saveBuybackCheck, setBuybackStatus, setOrderStatus, stockFromBuyback, suggestPrice } from "./admin";
 import { nextOrderStatuses } from "./admin-status";
 import { createBuyback } from "./buyback";
 import { createOrder } from "./orders";
@@ -38,6 +38,7 @@ describe("administrace proti skutečnému Postgresu", () => {
       { email: "a@b.cz", phone: "+420 777 123 456", name: "A", shipping: "pickup", payment: "bank_transfer", company: false, terms: true },
     );
     expect(await qtyOf(item.id)).toBe(item.quantity - 2);
+    expect((await listOrders(db))[0].pieces).toBe(2);
     await expect(setOrderStatus(db, order.id, "shipped")).rejects.toBeInstanceOf(AdminError);
     await setOrderStatus(db, order.id, "paid");
     expect((await dashboardCounts(db)).orders.paid).toBe(1);
@@ -51,6 +52,7 @@ describe("administrace proti skutečnému Postgresu", () => {
       payout: "credit",
       items: [{ cardId: "swsh9tg-TG16", condition: "NM", language: "EN", quantity: 2 }],
     });
+    expect((await listBuybacks(db))[0].pieces).toBe(2);
     await setBuybackStatus(db, req.id, "received");
     const [item] = await db.select().from(s.buybackItems).where(eq(s.buybackItems.requestId, req.id));
     await saveBuybackCheck(db, req.id, [{ itemId: item.id, condition: "EX", finalHal: 500_00 }]);

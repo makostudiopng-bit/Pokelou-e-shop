@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cartCount as cartCount_ } from "@/lib/cart-server";
+import { SHOP } from "@/config/shop";
+import { InstagramIcon } from "./instagram-icon";
 import { Marquee } from "./marquee";
 import { SearchBox } from "./search-box";
 
@@ -56,7 +58,7 @@ export async function SiteHeader() {
       <header style={{ borderBottom: "1px solid var(--line)", background: "var(--surface-000)" }}>
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-4 py-3 sm:px-6">
           <Link href="/" className="pl-wiggle-hover block flex-none" aria-label="PokeLou – domů">
-            <Image src="/brand/logo.png" alt="PokeLou" width={104} height={104} priority className="h-[72px] w-[72px] sm:h-[104px] sm:w-[104px]" />
+            <Image src="/brand/logo.png" alt="PokeLou" width={128} height={128} priority className="h-[84px] w-[84px] sm:h-[128px] sm:w-[128px]" />
           </Link>
           <SearchBox />
           <nav aria-label="Hlavní" className="ml-auto flex flex-wrap items-center gap-x-6 gap-y-1 text-[15px] font-extrabold sm:ml-0">
@@ -69,6 +71,9 @@ export async function SiteHeader() {
             <Link href="/vykup" className="py-2.5 no-underline">
               Výkup
             </Link>
+            <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig pl-lift" aria-label={`Instagram ${SHOP.instagram} (otevře se v novém okně)`}>
+              <InstagramIcon />
+            </a>
             <Link
               href="/kosik"
               className="pl-lift flex items-center gap-2 rounded-full border-2 px-4 py-2 no-underline"

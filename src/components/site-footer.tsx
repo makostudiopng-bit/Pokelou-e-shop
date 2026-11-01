@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SHOP } from "@/config/shop";
+import { InstagramIcon } from "./instagram-icon";
 
 export function SiteFooter() {
   return (
@@ -11,8 +12,12 @@ export function SiteFooter() {
             {SHOP.operator} · IČO {SHOP.ico.replace(/^\[IČO\]$/, "[doplnit]")}
           </span>
           <span>
-            <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a> · {SHOP.phone} · Instagram {SHOP.instagram}
+            <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a> · {SHOP.phone}
           </span>
+          <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig-btn pl-lift mt-2 self-start no-underline">
+            <InstagramIcon size={18} />
+            Sleduj nás na Instagramu <span className="font-mono text-[13px] opacity-80">{SHOP.instagram}</span>
+          </a>
         </div>
         <nav aria-label="Informace" className="flex flex-wrap gap-x-6 gap-y-2">
           <Link href="/obchodni-podminky">Obchodní podmínky</Link>

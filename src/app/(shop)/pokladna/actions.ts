@@ -2,7 +2,8 @@
 import { redirect } from "next/navigation";
 import { cardPaymentEnabled } from "@/config/shop";
 import { getDb, hasDb } from "@/db";
-import { readCart, getCartView, writeCart } from "@/lib/cart-server";
+import { readCart, getCartView, getDiscount, writeCart, writeCodeCookie } from "@/lib/cart-server";
+import { DiscountError } from "@/lib/discounts";
 import { setQty } from "@/lib/cart";
 import { getOffers } from "@/lib/catalog";
 import { formToInput, validateCheckout, type FieldErrors } from "@/lib/checkout";
@@ -26,6 +27,13 @@ export async function placeOrderAction(prev: CheckoutState, form: FormData): Pro
   const cart = await getCartView();
   if (cart.lines.length === 0) return fail("Košík je prázdný. Karty se mezitím mohly prodat.");
 
+  // kód, který mezitím přestal platit, nesmí tiše zmizet: zákazník musí vidět novou cenu
+  const discount = await getDiscount(cart.subtotalHal);
+  if (discount.status === "invalid") {
+    await writeCodeCookie("");
+    return fail(`Slevový kód ${discount.code} už neplatí (${discount.reason.replace(/\.$/, "")}). Odebrali jsme ho, zkontroluj prosím novou cenu.`);
+  }
+
   let orderId: string;
   try {
     const order = await createOrder(
@@ -39,6 +47,7 @@ export async function placeOrderAction(prev: CheckoutState, form: FormData): Pro
         language: l.offer.lang,
       })),
       v.data,
+      discount.status === "ok" ? discount.id : undefined,
     );
     orderId = order.id;
   } catch (e) {
@@ -49,10 +58,15 @@ export async function placeOrderAction(prev: CheckoutState, form: FormData): Pro
       await writeCart(lines);
       return fail("Některá karta se ti mezi tím vyprodala. Upravili jsme košík, zkontroluj souhrn a odešli znovu.");
     }
+    if (e instanceof DiscountError) {
+      await writeCodeCookie("");
+      return fail(`${e.message} Slevu jsme z objednávky odebrali, zkontroluj prosím novou cenu.`);
+    }
     console.error("Objednávka se nepovedla", e);
     return fail("Objednávku se nepodařilo uložit. Zkus to prosím znovu za chvíli.");
   }
 
   await writeCart([]);
+  await writeCodeCookie("");
   redirect(`/objednavka/${orderId}`);
 }

@@ -16,6 +16,7 @@ import {
 import { requireAdmin } from "@/lib/admin-session";
 import type { BuybackStatus, OrderStatus } from "@/lib/admin-status";
 import { BUYBACK_LANGUAGES } from "@/lib/buyback-shared";
+import { createCode, DiscountError, normalizeCode, setCodeActive } from "@/lib/discounts";
 import { importSet } from "@/lib/sync";
 
 export type ActionState = { ok?: string; error?: string };
@@ -126,5 +127,60 @@ export async function importSetAction(_p: ActionState, f: FormData) {
     return `Edice ${res.set}: ${res.cards} karet${res.failed.length ? `, nepovedlo se ${res.failed.length}` : ""}`;
   });
   revalidatePath("/admin/edice");
+  return r;
+}
+
+// ---------- Slevové kódy ----------
+
+/** Datum z <input type="date"> → půlnoc v Praze (správně i v letním čase). */
+const pragueDay = (v: string, addDays = 0) => {
+  const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const utc = Date.UTC(+m[1], +m[2] - 1, +m[3] + addDays);
+  // posun Prahy proti UTC v ten den (+1 h v zimě, +2 h v létě)
+  const name = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Prague", timeZoneName: "longOffset" })
+    .formatToParts(new Date(utc + 12 * 3600_000))
+    .find((p) => p.type === "timeZoneName")?.value; // „GMT+01:00“
+  const off = name?.match(/GMT([+-])(\d{2}):(\d{2})/);
+  const minutes = off ? (off[1] === "-" ? -1 : 1) * (+off[2] * 60 + +off[3]) : 60;
+  return new Date(utc - minutes * 60_000);
+};
+
+export async function createCodeAction(_p: ActionState, f: FormData) {
+  const r = await run(async () => {
+    const kind = str(f, "kind") === "fixed" ? "fixed" : "percent";
+    const num = (k: string) => (str(f, k) === "" ? null : Number(str(f, k).replace(/\s/g, "").replace(",", ".")));
+    const value = num("value") ?? 0;
+    const code = normalizeCode(str(f, "code"));
+    const maxUses = num("maxUses");
+    try {
+      await createCode(await getDb(), {
+        code,
+        kind,
+        value: kind === "fixed" ? Math.round(value * 100) : value,
+        minOrderHal: kcToHal(str(f, "minOrder")),
+        validFrom: pragueDay(str(f, "validFrom")),
+        // „platí do“ včetně celého dne
+        validUntil: pragueDay(str(f, "validUntil"), 1),
+        maxUses,
+        note: str(f, "note") || null,
+      });
+    } catch (e) {
+      if (e instanceof DiscountError) throw new AdminError(e.message);
+      throw e;
+    }
+    return `Kód ${code} je vytvořený`;
+  });
+  revalidatePath("/admin/slevy");
+  return r;
+}
+
+export async function toggleCodeAction(_p: ActionState, f: FormData) {
+  const r = await run(async () => {
+    const on = str(f, "active") === "1";
+    await setCodeActive(await getDb(), str(f, "id"), on);
+    return on ? "Kód zapnutý" : "Kód vypnutý";
+  });
+  revalidatePath("/admin/slevy");
   return r;
 }

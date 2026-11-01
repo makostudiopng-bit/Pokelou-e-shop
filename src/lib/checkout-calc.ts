@@ -7,8 +7,10 @@ export function paymentAllowed(pay: PaymentId, ship: ShippingId, cardEnabled: bo
   return true;
 }
 
-export function totals(itemsHal: number, ship: ShippingId, pay: PaymentId) {
+/** discountHal: sleva z ceny karet (doprava se nezlevňuje). */
+export function totals(itemsHal: number, ship: ShippingId, pay: PaymentId, discountHal = 0) {
   const shippingHal = SHIPPING.find((s) => s.id === ship)?.priceHal ?? 0;
   const codFeeHal = PAYMENT.find((p) => p.id === pay)?.feeHal ?? 0;
-  return { itemsHal, shippingHal, codFeeHal, totalHal: itemsHal + shippingHal + codFeeHal };
+  const d = Math.max(0, Math.min(itemsHal, discountHal));
+  return { itemsHal, discountHal: d, shippingHal, codFeeHal, totalHal: itemsHal - d + shippingHal + codFeeHal };
 }

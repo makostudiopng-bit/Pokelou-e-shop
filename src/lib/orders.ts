@@ -5,6 +5,7 @@ import { rowsOf, type Db } from "@/db";
 import * as s from "@/db/schema";
 import type { CheckoutInput } from "./checkout";
 import { newOrderNumber, totals } from "./checkout";
+import { checkCode, claimCode, DiscountError, releaseCode } from "./discounts";
 
 export type OrderLine = {
   stockItemId: string;
@@ -49,7 +50,8 @@ export async function giveBack(db: Db, lines: Pick<OrderLine, "stockItemId" | "q
     from back b where s.id = b.id`);
 }
 
-export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInput) {
+/** discountCodeId: ID uplatněného slevového kódu; výši slevy server spočítá sám. */
+export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInput, discountCodeId?: string) {
   if (lines.length === 0) throw new Error("Prázdný košík");
   const { taken, missing } = await takeStock(db, lines);
   if (missing.length > 0) {
@@ -58,7 +60,21 @@ export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInp
   }
 
   const itemsHal = lines.reduce((a, l) => a + l.qty * l.unitHal, 0);
-  const t = totals(itemsHal, input.shipping, input.payment);
+  let code: string | null = null;
+  let discountHal = 0;
+  if (discountCodeId) {
+    const claimed = await claimCode(db, discountCodeId);
+    // minimální nákup se ověří až proti skutečné ceně karet v objednávce
+    const check = claimed ? checkCode({ ...claimed, usedCount: claimed.usedCount - 1 }, itemsHal) : null;
+    if (!check?.ok) {
+      if (claimed) await releaseCode(db, claimed.code);
+      await giveBack(db, lines);
+      throw new DiscountError(check && !check.ok ? check.reason : "Slevový kód už neplatí.");
+    }
+    code = claimed!.code;
+    discountHal = check.discountHal;
+  }
+  const t = totals(itemsHal, input.shipping, input.payment, discountHal);
   try {
     for (let attempt = 0; ; attempt++) {
       const { number, vs } = newOrderNumber();
@@ -78,6 +94,9 @@ export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInp
             paymentMethod: input.payment,
             codFeeHal: t.codFeeHal,
             itemsHal: t.itemsHal,
+            discountCode: code,
+            discountHal: t.discountHal,
+            note: input.note?.trim() || null,
             totalHal: t.totalHal,
             paymentRef: vs,
           })
@@ -103,6 +122,7 @@ export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInp
     }
   } catch (e) {
     await giveBack(db, lines);
+    if (code) await releaseCode(db, code);
     throw e;
   }
 }

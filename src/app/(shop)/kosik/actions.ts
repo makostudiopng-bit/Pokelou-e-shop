@@ -1,7 +1,9 @@
 "use server";
 // Akce košíku. Volat je jde přímým POSTem, proto každá ověřuje vstup a sklad sama.
 import { addToCart, setQty } from "@/lib/cart";
-import { readCart, writeCart } from "@/lib/cart-server";
+import { getDb, hasDb } from "@/db";
+import { getCartView, readCart, writeCart, writeCodeCookie } from "@/lib/cart-server";
+import { checkCode, findCode, normalizeCode } from "@/lib/discounts";
 import { getOffers } from "@/lib/catalog";
 
 export type AddState = { status: "idle" | "added" | "max" | "unavailable"; count?: number };
@@ -36,4 +38,22 @@ export async function updateQtyAction(form: FormData) {
 export async function removeFromCartAction(form: FormData) {
   const id = str(form.get("kus"));
   await writeCart((await readCart()).filter((l) => l.id !== id));
+}
+
+export type CodeState = { error?: string };
+
+/** Uplatnit slevový kód: ověří se hned, do cookie se uloží jen platný. */
+export async function applyCodeAction(_prev: CodeState, form: FormData): Promise<CodeState> {
+  const code = normalizeCode(str(form.get("kod")));
+  if (!code) return { error: "Zadej slevový kód." };
+  if (!hasDb()) return { error: "Slevové kódy zatím nefungují." };
+  const cart = await getCartView();
+  const r = checkCode(await findCode(await getDb(), code), cart.subtotalHal);
+  if (!r.ok) return { error: r.reason };
+  await writeCodeCookie(code);
+  return {};
+}
+
+export async function removeCodeAction() {
+  await writeCodeCookie("");
 }

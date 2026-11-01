@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Steps } from "@/components/steps";
 import { cardPaymentEnabled, PAYMENT, SHIPPING, SHOP } from "@/config/shop";
-import { getCartView } from "@/lib/cart-server";
+import { getCartView, getDiscount } from "@/lib/cart-server";
 import { CheckoutForm } from "./checkout-form";
 
 export const metadata: Metadata = {
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 export default async function PokladnaPage() {
   const cart = await getCartView();
   if (cart.lines.length === 0) redirect("/kosik");
+  const discount = await getDiscount(cart.subtotalHal);
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 pb-16 sm:px-6">
@@ -29,6 +30,7 @@ export default async function PokladnaPage() {
           image: l.offer.image,
         }))}
         subtotalHal={cart.subtotalHal}
+        discount={discount.status === "ok" ? { code: discount.code, discountHal: discount.discountHal } : undefined}
         shipping={SHIPPING}
         payment={PAYMENT.map((p) => ({ ...p, priceHal: p.feeHal }))}
         cardEnabled={cardPaymentEnabled()}

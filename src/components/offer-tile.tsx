@@ -1,6 +1,6 @@
 import { AddToCart } from "@/components/add-to-cart";
 import { CardTile } from "@/components/ui";
-import type { Offer } from "@/lib/catalog-query";
+import { isNew, type Offer } from "@/lib/catalog-query";
 
 export function OfferTile({ o, priority }: { o: Offer; priority?: boolean }) {
   return (
@@ -17,6 +17,7 @@ export function OfferTile({ o, priority }: { o: Offer; priority?: boolean }) {
       stock={o.stock}
       image={o.image ?? undefined}
       priority={priority}
+      hot={isNew(o)}
       cta={o.stock > 0 ? <AddToCart offerId={o.id} size="sm" compact /> : undefined}
     />
   );

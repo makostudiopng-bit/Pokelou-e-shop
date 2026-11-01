@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/add-to-cart";
+import { CardZoom } from "@/components/card-zoom";
 import { OfferTile } from "@/components/offer-tile";
 import { Button, ConditionBadge } from "@/components/ui";
 import { getCard } from "@/lib/catalog";
@@ -68,15 +69,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
           <div className="flex justify-center rounded-[10px] p-6 sm:p-8" style={{ background: "var(--surface-200)" }}>
             {selected.image ? (
               <div className="pl-holo-card w-full max-w-[360px]" style={{ position: "relative" }}>
-                <Image
-                  src={selected.image}
-                  alt={`${selected.name}, ${selected.set} ${selected.number}`}
-                  width={630}
-                  height={880}
-                  sizes="(max-width: 640px) 80vw, 360px"
-                  priority
-                  className="h-auto w-full"
-                />
+                <CardZoom src={selected.image} alt={`${selected.name}, ${selected.set} ${selected.number}`} />
               </div>
             ) : (
               <div className="pl-tile__ph w-full max-w-[360px]" role="img" aria-label="Obrázek karty chybí" />
@@ -98,14 +91,6 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
               {selected.rarity && ` · ${selected.rarity}`}
             </p>
           </div>
-
-          {trend != null && (
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[10px] px-4 py-3 text-sm" style={{ background: "var(--surface-200)" }}>
-              <span style={{ color: "var(--ink-muted)" }}>Orientační tržní cena</span>
-              <strong>{trend.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</strong>
-              <span style={{ color: "var(--ink-muted)" }}>· trend Cardmarketu, aktualizováno denně</span>
-            </div>
-          )}
 
           <section aria-labelledby="kus-h" className="flex flex-col gap-2">
             <h2 id="kus-h" className="m-0 mb-1 text-base font-bold">

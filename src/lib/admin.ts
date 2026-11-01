@@ -4,6 +4,7 @@ import type { Db } from "@/db";
 import * as s from "@/db/schema";
 import { nextBuybackStatuses, nextOrderStatuses, restocks, type BuybackStatus, type OrderStatus } from "./admin-status";
 import { latestRate, loadBuybackCards } from "./buyback";
+import { releaseCode } from "./discounts";
 import { giveBack } from "./orders";
 import { eurToHal, resolveRules, sellPrice, type RuleValues } from "./pricing";
 import { ruleFromRow } from "./sync";
@@ -45,7 +46,8 @@ export async function listOrders(db: Db, status?: OrderStatus) {
       paymentMethod: s.orders.paymentMethod,
       shippingMethod: s.orders.shippingMethod,
       createdAt: s.orders.createdAt,
-      pieces: sql<number>`(select coalesce(sum(quantity), 0)::int from order_items where order_id = ${s.orders.id})`,
+      hasNote: sql<boolean>`${s.orders.note} is not null`,
+      pieces: sql<number>`(select coalesce(sum(quantity), 0)::int from order_items where order_items.order_id = "orders"."id")`,
     })
     .from(s.orders)
     .where(status ? eq(s.orders.status, status) : undefined)
@@ -75,6 +77,8 @@ export async function setOrderStatus(db: Db, id: string, to: OrderStatus, opts: 
   if (restocks(to)) {
     const items = await db.select().from(s.orderItems).where(eq(s.orderItems.orderId, id));
     await giveBack(db, items.map((i) => ({ stockItemId: i.stockItemId, qty: i.quantity })));
+    // zrušená objednávka slevový kód nespotřebuje
+    if (order.discountCode) await releaseCode(db, order.discountCode);
   }
 }
 
@@ -93,7 +97,7 @@ export async function listBuybacks(db: Db, status?: BuybackStatus) {
       offerHal: s.buybackRequests.offerHal,
       bulkCount: s.buybackRequests.bulkCount,
       createdAt: s.buybackRequests.createdAt,
-      pieces: sql<number>`(select coalesce(sum(quantity), 0)::int from buyback_items where request_id = ${s.buybackRequests.id})`,
+      pieces: sql<number>`(select coalesce(sum(quantity), 0)::int from buyback_items where buyback_items.request_id = "buyback_requests"."id")`,
     })
     .from(s.buybackRequests)
     .where(status ? eq(s.buybackRequests.status, status) : undefined)

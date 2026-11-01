@@ -130,8 +130,8 @@ export default async function Home() {
               NOVÉ
             </span>
           </h2>
-          <Link href="/karty" className="text-[15px] font-extrabold">
-            Všechny karty →
+          <Link href="/karty?novinky=1" className="text-[15px] font-extrabold">
+            Všechny novinky →
           </Link>
         </div>
         <div className="pl-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(208px,1fr))] sm:gap-6">

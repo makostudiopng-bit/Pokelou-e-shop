@@ -62,6 +62,8 @@ export type CardTileProps = {
   stock: number;
   image?: string;
   priority?: boolean;
+  /** Čerstvě naskladněno → štítek HOT novinka */
+  hot?: boolean;
   /** Akce místo výchozího tlačítka (např. formulář „Do košíku“). */
   cta?: ReactNode;
 };
@@ -85,7 +87,7 @@ export function CardTile(p: CardTileProps) {
         ) : (
           <div className="pl-tile__ph" role="img" aria-label="Obrázek karty chybí" />
         )}
-        {drop && <span className="pl-tile__flag">Zlevněno</span>}
+        {drop ? <span className="pl-tile__flag">Zlevněno</span> : p.hot && !out && <span className="pl-tile__flag pl-tile__flag--hot">HOT novinka</span>}
       </Link>
       <div>
         <h3 className="pl-tile__name">

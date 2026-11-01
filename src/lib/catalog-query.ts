@@ -32,6 +32,10 @@ export type Sort = keyof typeof SORTS;
 
 export const PAGE_SIZE = 24;
 
+/** Kolik dní po naskladnění je kus „novinka“ (filtr i štítek HOT novinka). */
+export const NEW_DAYS = 14;
+export const isNew = (o: Pick<Offer, "addedAt">, now = Date.now()) => now - o.addedAt < NEW_DAYS * 86_400_000;
+
 export type CatalogQuery = {
   q: string;
   sets: string[];
@@ -41,6 +45,8 @@ export type CatalogQuery = {
   min?: number; // Kč
   max?: number; // Kč
   soldOut: boolean;
+  /** jen nově naskladněné */
+  fresh: boolean;
   sort: Sort;
   page: number;
 };
@@ -66,6 +72,7 @@ export function parseQuery(p: Params): CatalogQuery {
     min: kc(one(p.od)),
     max: kc(one(p.do)),
     soldOut: one(p.vyprodane) === "1",
+    fresh: one(p.novinky) === "1",
     sort: sort in SORTS ? (sort as Sort) : "nove",
     page: Number.isFinite(page) && page > 0 ? page : 1,
   };
@@ -83,6 +90,7 @@ export function toSearch(q: CatalogQuery, patch: Partial<CatalogQuery> = {}) {
   if (v.min != null) sp.set("od", String(v.min));
   if (v.max != null) sp.set("do", String(v.max));
   if (v.soldOut) sp.set("vyprodane", "1");
+  if (v.fresh) sp.set("novinky", "1");
   if (v.sort !== "nove") sp.set("razeni", v.sort);
   if (v.page > 1) sp.set("strana", String(v.page));
   const s = sp.toString();
@@ -111,11 +119,12 @@ export function matchesSearch(o: Offer, q: string) {
     .every((t) => hay.includes(t));
 }
 
-export function applyQuery(offers: Offer[], q: CatalogQuery) {
+export function applyQuery(offers: Offer[], q: CatalogQuery, now = Date.now()) {
   const setKeys = new Set(q.sets.map(norm));
   const filtered = offers.filter(
     (o) =>
       (q.soldOut || o.stock > 0) &&
+      (!q.fresh || isNew(o, now)) &&
       matchesSearch(o, q.q) &&
       (setKeys.size === 0 || setKeys.has(norm(o.set)) || setKeys.has(norm(o.setCode))) &&
       (q.conditions.length === 0 || q.conditions.includes(o.condition)) &&

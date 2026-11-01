@@ -21,18 +21,13 @@ export function SearchBox() {
   const [res, setRes] = useState<Result | null>(null);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
-  const [loading, setLoading] = useState(false);
 
   // dotaz se pošle až po krátké pauze v psaní; starší odpověď nikdy nepřepíše novější
   useEffect(() => {
     const term = q.trim();
-    if (term.length < 2) {
-      setRes(null);
-      setLoading(false);
-      return;
-    }
+    // krátký dotaz: návrhy se nezobrazí (showList), stav není třeba mazat
+    if (term.length < 2) return;
     const ctrl = new AbortController();
-    setLoading(true);
     const t = setTimeout(async () => {
       try {
         const r = await fetch(`/api/hledat?q=${encodeURIComponent(term)}`, { signal: ctrl.signal });
@@ -41,8 +36,6 @@ export function SearchBox() {
         setActive(-1);
       } catch {
         if (!ctrl.signal.aborted) setRes({ q: term, items: [], total: 0 });
-      } finally {
-        if (!ctrl.signal.aborted) setLoading(false);
       }
     }, 160);
     return () => {
@@ -60,6 +53,8 @@ export function SearchBox() {
     return () => document.removeEventListener("pointerdown", close);
   }, []);
 
+  // načítá se, dokud odpověď nepatří k aktuálnímu textu
+  const loading = q.trim().length >= 2 && res?.q !== q.trim();
   const items = res?.items ?? [];
   const showList = open && q.trim().length >= 2 && res != null;
   // poslední řádek „Zobrazit všechny“ je taky vybratelný šipkami

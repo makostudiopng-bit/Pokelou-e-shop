@@ -53,6 +53,12 @@ export default async function ObjednavkaAdmin({ params }: PageProps<"/admin/obje
           <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[15px]" style={{ borderTop: "1px solid var(--line)", paddingTop: 10 }}>
             <dt>Karty</dt>
             <dd className="m-0 text-right">{formatCzk(o.itemsHal)}</dd>
+            {o.discountHal > 0 && (
+              <>
+                <dt>Sleva · <strong>{o.discountCode}</strong></dt>
+                <dd className="m-0 text-right">−{formatCzk(o.discountHal)}</dd>
+              </>
+            )}
             <dt>Doprava · {SHIPPING.find((x) => x.id === o.shippingMethod)?.title}</dt>
             <dd className="m-0 text-right">{formatCzk(o.shippingHal)}</dd>
             {o.codFeeHal > 0 && (
@@ -67,6 +73,12 @@ export default async function ObjednavkaAdmin({ params }: PageProps<"/admin/obje
         </section>
 
         <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
+          {o.note && (
+            <section className="pl-panel pl-order-note flex flex-col gap-1.5">
+              <h2 className="m-0 text-xl font-extrabold">Poznámka zákazníka</h2>
+              <p className="m-0 text-[15px] leading-[22px] whitespace-pre-line">{o.note}</p>
+            </section>
+          )}
           <section className="pl-panel flex flex-col gap-3">
             <h2 className="m-0 text-xl font-extrabold">Další krok</h2>
             {next.length === 0 ? (

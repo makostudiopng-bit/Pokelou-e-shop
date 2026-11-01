@@ -14,6 +14,7 @@ export const FINISH_LABEL: Record<s.Finish, string> = {
 };
 
 function demoOffers(): Offer[] {
+  const now = Date.now();
   const base = demoCards.map((c, i) => ({
     id: `${c.slug}-${c.condition}-${c.lang}`,
     cardSlug: c.slug,
@@ -31,12 +32,12 @@ function demoOffers(): Offer[] {
     stock: c.stock,
     image: c.image,
     trendEur: demoTrend[c.slug],
-    addedAt: 1000 - i,
+    addedAt: now - i * 2 * 86_400_000, // ukázka: první karty jsou čerstvé novinky
   }));
   const extra = demoExtra.map((e, i) => {
     const b = base.find((o) => o.cardSlug === e.slug)!;
     const lang = e.lang ?? b.lang;
-    return { ...b, id: `${e.slug}-${e.condition}-${lang}`, condition: e.condition, lang, priceHal: e.priceHal, wasPriceHal: undefined, stock: e.stock, addedAt: 500 - i };
+    return { ...b, id: `${e.slug}-${e.condition}-${lang}`, condition: e.condition, lang, priceHal: e.priceHal, wasPriceHal: undefined, stock: e.stock, addedAt: now - (20 + i) * 86_400_000 };
   });
   return [...base, ...extra];
 }

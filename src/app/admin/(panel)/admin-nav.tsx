@@ -10,6 +10,7 @@ export function AdminNav({ orders, buybacks }: { orders: number; buybacks: numbe
     ["/admin/vykupy", "Výkupy", buybacks],
     ["/admin/sklad", "Sklad"],
     ["/admin/naskladnit", "Naskladnit"],
+    ["/admin/slevy", "Slevové kódy"],
     ["/admin/edice", "Edice z TCGdex"],
   ];
   return (

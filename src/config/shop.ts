@@ -13,6 +13,7 @@ export const SHOP = {
   web: "pokelou.cz",
   email: process.env.SHOP_EMAIL ?? "info@pokelou.cz",
   instagram: "@pokelou.cz",
+  instagramUrl: "https://www.instagram.com/pokelou.cz/",
   /** DOČASNÉ: adresa pro osobní odběr */
   pickupAddress: process.env.SHOP_PICKUP_ADDRESS ?? "[ADRESA PRO OSOBNÍ ODBĚR]",
   /** DOČASNÉ: kam posílat karty k výkupu */

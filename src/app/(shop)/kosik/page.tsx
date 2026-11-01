@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Steps } from "@/components/steps";
 import { ConditionBadge } from "@/components/ui";
-import { getCartView } from "@/lib/cart-server";
+import { getCartView, getDiscount } from "@/lib/cart-server";
 import { formatCzk } from "@/lib/pricing";
 import { removeFromCartAction, updateQtyAction } from "./actions";
+import { DiscountForm } from "./discount-form";
 
 export const metadata: Metadata = {
   title: "Košík",
@@ -19,6 +20,8 @@ function pcs(n: number) {
 export default async function KosikPage() {
   const cart = await getCartView();
   const empty = cart.lines.length === 0;
+  const discount = await getDiscount(cart.subtotalHal);
+  const discountHal = discount.status === "ok" ? discount.discountHal : 0;
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 pb-16 sm:px-6">
@@ -150,6 +153,14 @@ export default async function KosikPage() {
             <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2.5 text-[15px] leading-[22px]">
               <dt style={{ color: "var(--ink-muted)" }}>Karty ({pcs(cart.count)})</dt>
               <dd className="m-0 text-right font-bold">{formatCzk(cart.subtotalHal)}</dd>
+              {discountHal > 0 && (
+                <>
+                  <dt style={{ color: "var(--ink-muted)" }}>Sleva {discount.status === "ok" && discount.code}</dt>
+                  <dd className="m-0 text-right font-bold" style={{ color: "var(--success)" }}>
+                    −{formatCzk(discountHal)}
+                  </dd>
+                </>
+              )}
               <dt style={{ color: "var(--ink-muted)" }}>Doprava</dt>
               <dd className="m-0 text-right" style={{ color: "var(--ink-muted)" }}>
                 v dalším kroku
@@ -161,9 +172,13 @@ export default async function KosikPage() {
             >
               <span className="text-[15px] font-extrabold">Celkem</span>
               <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }}>
-                {formatCzk(cart.subtotalHal)}
+                {formatCzk(cart.subtotalHal - discountHal)}
               </strong>
             </div>
+            <DiscountForm
+              applied={discount.status === "ok" ? { code: discount.code, label: discount.label } : undefined}
+              invalid={discount.status === "invalid" ? { code: discount.code, reason: discount.reason } : undefined}
+            />
             <Link href="/pokladna" className="pl-btn pl-btn--primary pl-btn--block no-underline">
               Pokračovat k dopravě a platbě
             </Link>

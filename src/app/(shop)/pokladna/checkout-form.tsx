@@ -129,6 +129,7 @@ function Fields({
   state,
   items,
   subtotalHal,
+  discount,
   shipping,
   payment,
   cardEnabled,
@@ -138,6 +139,7 @@ function Fields({
   state: CheckoutState;
   items: SummaryItem[];
   subtotalHal: number;
+  discount?: { code: string; discountHal: number };
   shipping: Option[];
   payment: Option[];
   cardEnabled: boolean;
@@ -151,7 +153,7 @@ function Fields({
   const [company, setCompany] = useState(Boolean(v?.company));
   // když vybraná platba k dopravě nesedí, přepni na převod
   const pay: PaymentId = paymentAllowed(payPick, ship, cardEnabled) ? payPick : "bank_transfer";
-  const t = totals(subtotalHal, ship, pay);
+  const t = totals(subtotalHal, ship, pay, discount?.discountHal ?? 0);
   const shipTitle = shipping.find((s) => s.id === ship)?.title;
 
   return (
@@ -215,9 +217,9 @@ function Fields({
           {company && <Field name="companyId" label="IČO" inputMode="numeric" placeholder="12345678" defaultValue={v?.companyId} error={e.companyId} className="max-w-[220px]" />}
           <div className="pl-field">
             <label htmlFor="f-note" className="pl-field__label">
-              Poznámka k objednávce (nepovinné)
+              Poznámka nebo požadavek k objednávce (nepovinné)
             </label>
-            <textarea id="f-note" name="note" rows={3} maxLength={1000} defaultValue={v?.note} className="pl-field__input" />
+            <textarea id="f-note" name="note" rows={3} maxLength={1000} defaultValue={v?.note} placeholder="Např. pošlete prosím obě karty v jednom toploaderu" className="pl-field__input" />
           </div>
         </div>
       </div>
@@ -252,6 +254,14 @@ function Fields({
         <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[15px] leading-[22px]" style={{ borderTop: "1px solid var(--line)", paddingTop: 12 }}>
           <dt style={{ color: "var(--ink-muted)" }}>Karty</dt>
           <dd className="m-0 text-right font-bold">{formatCzk(t.itemsHal)}</dd>
+          {t.discountHal > 0 && (
+            <>
+              <dt style={{ color: "var(--ink-muted)" }}>Sleva · {discount?.code}</dt>
+              <dd className="m-0 text-right font-bold" style={{ color: "var(--success)" }}>
+                −{formatCzk(t.discountHal)}
+              </dd>
+            </>
+          )}
           <dt style={{ color: "var(--ink-muted)" }}>Doprava · {shipTitle}</dt>
           <dd className="m-0 text-right font-bold">{priceText(t.shippingHal)}</dd>
           {t.codFeeHal > 0 && (
@@ -292,6 +302,7 @@ function Fields({
 export function CheckoutForm(props: {
   items: SummaryItem[];
   subtotalHal: number;
+  discount?: { code: string; discountHal: number };
   shipping: Option[];
   payment: Option[];
   cardEnabled: boolean;

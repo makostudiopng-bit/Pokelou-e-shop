@@ -16,7 +16,7 @@ describe("doprava a platba", () => {
     expect(paymentAllowed("card", "zasilkovna", false)).toBe(false);
   });
   it("součty", () => {
-    expect(totals(2680_00, "zasilkovna", "cod")).toEqual({ itemsHal: 2680_00, shippingHal: 79_00, codFeeHal: 39_00, totalHal: 2798_00 });
+    expect(totals(2680_00, "zasilkovna", "cod")).toEqual({ itemsHal: 2680_00, discountHal: 0, shippingHal: 79_00, codFeeHal: 39_00, totalHal: 2798_00 });
     expect(totals(500_00, "pickup", "bank_transfer").totalHal).toBe(500_00);
   });
 });

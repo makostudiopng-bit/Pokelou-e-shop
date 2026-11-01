@@ -5,7 +5,8 @@ import { AutoSubmit } from "@/components/auto-submit";
 import { OfferTile } from "@/components/offer-tile";
 import { ConditionBadge } from "@/components/ui";
 import { getOffers } from "@/lib/catalog";
-import { applyQuery, facets, parseQuery, SORTS, toSearch, type CatalogQuery } from "@/lib/catalog-query";
+import { SetFilter } from "@/components/set-filter";
+import { applyQuery, facets, isNew, NEW_DAYS, parseQuery, SORTS, toSearch, type CatalogQuery } from "@/lib/catalog-query";
 
 export const metadata: Metadata = {
   title: "Karty",
@@ -28,6 +29,7 @@ function activeChips(q: CatalogQuery) {
   for (const f of q.finishes) chips.push({ label: f, href: href({ finishes: q.finishes.filter((x) => x !== f) }) });
   if (q.min != null || q.max != null)
     chips.push({ label: `${q.min ?? 0}–${q.max ?? "∞"} Kč`, href: href({ min: undefined, max: undefined }) });
+  if (q.fresh) chips.push({ label: "nově naskladněné", href: href({ fresh: false }) });
   if (q.soldOut) chips.push({ label: "i vyprodané", href: href({ soldOut: false }) });
   return chips;
 }
@@ -38,8 +40,9 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
   const f = facets(offers);
   const res = applyQuery(offers, q);
   const inStock = offers.filter((o) => o.stock > 0).length;
+  const freshCount = offers.filter((o) => o.stock > 0 && isNew(o)).length;
   const chips = activeChips(q);
-  const title = q.sets.length === 1 ? q.sets[0] : q.q ? `Hledáš „${q.q}“` : "Všechny karty";
+  const title = q.sets.length === 1 ? q.sets[0] : q.q ? `Hledáš „${q.q}“` : q.fresh ? "Nově naskladněno" : "Všechny karty";
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-5 px-4 pt-6 pb-14 sm:px-6">
@@ -67,11 +70,21 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
           {q.q && <input type="hidden" name="q" value={q.q} />}
           <details className="pl-filters md:w-[260px] md:flex-none">
             <summary>Filtry{chips.length > 0 && ` (${chips.length})`}</summary>
-            <div className="pl-filters__body">
-              <label className="pl-check font-bold" style={{ fontSize: 15 }}>
-                <input type="checkbox" name="vyprodane" value="1" defaultChecked={q.soldOut} />
-                Zobrazit i vyprodané
-              </label>
+            {/* key: po změně adresy (např. „Zrušit vše“) se pole znovu vytvoří podle URL, jinak by zůstala zaškrtnutá */}
+            <div key={toSearch(q, { page: 1 })} className="pl-filters__body">
+              <div className="flex flex-col gap-2.5">
+                <label className="pl-check pl-check--hot font-bold" style={{ fontSize: 15 }}>
+                  <input type="checkbox" name="novinky" value="1" defaultChecked={q.fresh} />
+                  <span>
+                    Nově naskladněno <span className="pl-hot-dot" aria-hidden="true">HOT</span>
+                  </span>
+                  <span className="pl-check__n" title={`za posledních ${NEW_DAYS} dní`}>{freshCount}</span>
+                </label>
+                <label className="pl-check font-bold" style={{ fontSize: 15 }}>
+                  <input type="checkbox" name="vyprodane" value="1" defaultChecked={q.soldOut} />
+                  Zobrazit i vyprodané
+                </label>
+              </div>
 
               <fieldset className="pl-fs">
                 <legend>Stav</legend>
@@ -99,16 +112,7 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
                 </div>
               </fieldset>
 
-              <fieldset className="pl-fs">
-                <legend>Edice</legend>
-                {f.sets.map(([s, n]) => (
-                  <label key={s} className="pl-check">
-                    <input type="checkbox" name="edice" value={s} defaultChecked={q.sets.some((x) => x.toLowerCase() === s.toLowerCase())} />
-                    {s}
-                    <span className="pl-check__n">{n}</span>
-                  </label>
-                ))}
-              </fieldset>
+              <SetFilter sets={f.sets} selected={q.sets} />
 
               {f.finishes.length > 1 && (
                 <fieldset className="pl-fs">

@@ -9,7 +9,10 @@ export function AutoSubmit({ formId }: { formId: string }) {
     const isPrice = (t: EventTarget | null) => t instanceof HTMLInputElement && t.inputMode === "numeric";
     // ceny se odešlou až po opuštění pole nebo Enteru, ať se stránka nepřenačítá při psaní
     const onChange = (e: Event) => {
-      if (!isPrice(e.target)) form.requestSubmit();
+      const t = e.target as HTMLInputElement | null;
+      // pomocná pole bez jména (hledání edice) filtry neodesílají
+      if (t && !t.name) return;
+      if (!isPrice(t)) form.requestSubmit();
     };
     const onBlur = (e: FocusEvent) => {
       const t = e.target;

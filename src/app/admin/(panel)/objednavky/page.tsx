@@ -51,6 +51,11 @@ export default async function ObjednavkyAdmin({ searchParams }: PageProps<"/admi
                     <Link href={`/admin/objednavky/${o.id}`} style={{ fontFamily: "var(--font-mono)" }}>
                       {o.number}
                     </Link>
+                    {o.hasNote && (
+                      <span className="pl-status pl-status--todo ml-2" title="Zákazník připsal poznámku">
+                        poznámka
+                      </span>
+                    )}
                   </td>
                   <td>
                     {o.name}

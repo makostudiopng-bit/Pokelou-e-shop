@@ -192,6 +192,20 @@ export default async function ObjednavkaPage({ params }: PageProps<"/objednavka/
               <dd className="m-0 text-right">{SHOP.pickupAddress}</dd>
             </>
           )}
+          {o.discountHal > 0 && (
+            <>
+              <dt style={{ color: "var(--ink-muted)" }}>Sleva · {o.discountCode}</dt>
+              <dd className="m-0 text-right font-bold" style={{ color: "var(--success)" }}>
+                −{formatCzk(o.discountHal)}
+              </dd>
+            </>
+          )}
+          {o.note && (
+            <>
+              <dt style={{ color: "var(--ink-muted)" }}>Tvoje poznámka</dt>
+              <dd className="m-0 text-right whitespace-pre-line">{o.note}</dd>
+            </>
+          )}
           <dt style={{ color: "var(--ink-muted)" }}>Platba · {pay?.title}</dt>
           <dd className="m-0 text-right font-bold">{o.codFeeHal ? `+ ${formatCzk(o.codFeeHal)}` : ""}</dd>
           <dt className="font-extrabold">Celkem</dt>

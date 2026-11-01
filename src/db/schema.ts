@@ -62,6 +62,7 @@ export const BUYBACK_STATUSES = [
 ] as const;
 export const buybackStatusEnum = pgEnum("buyback_status", BUYBACK_STATUSES);
 export const payoutMethodEnum = pgEnum("payout_method", ["cash", "credit"]);
+export const discountKindEnum = pgEnum("discount_kind", ["percent", "fixed"]);
 export const creditReasonEnum = pgEnum("credit_reason", ["buyback", "order", "bonus", "adjustment"]);
 export const ruleScopeEnum = pgEnum("rule_scope", ["global", "set", "card"]);
 
@@ -267,6 +268,8 @@ export const orders = pgTable("orders", {
   creditUsedHal: integer("credit_used_hal").notNull().default(0),
   discountCode: text("discount_code"),
   discountHal: integer("discount_hal").notNull().default(0),
+  /** poznámka nebo požadavek zákazníka k objednávce */
+  note: text("note"),
   itemsHal: integer("items_hal").notNull(),
   totalHal: integer("total_hal").notNull(),
   paymentRef: text("payment_ref"),
@@ -367,3 +370,24 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
   stockItem: one(stockItems, { fields: [orderItems.stockItemId], references: [stockItems.id] }),
 }));
+
+// ---------- Slevové kódy ----------
+
+export const discountCodes = pgTable("discount_codes", {
+  id: id(),
+  /** vždy velkými písmeny, bez mezer */
+  code: text("code").notNull().unique(),
+  kind: discountKindEnum("kind").notNull(),
+  /** percent: 1–100 (%), fixed: haléře */
+  value: integer("value").notNull(),
+  /** minimální cena karet v košíku (haléře) */
+  minOrderHal: integer("min_order_hal"),
+  validFrom: timestamp("valid_from", { withTimezone: true }),
+  validUntil: timestamp("valid_until", { withTimezone: true }),
+  /** kolikrát jde kód celkem použít; null = bez omezení */
+  maxUses: integer("max_uses"),
+  usedCount: integer("used_count").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  note: text("note"),
+  createdAt: createdAt(),
+});
