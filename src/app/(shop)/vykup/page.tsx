@@ -9,7 +9,7 @@ import { BuybackForm } from "./buyback-form";
 
 export const metadata: Metadata = {
   title: "Výkup karet",
-  description: "Spočítej si odhad výkupu Pokémon karet. Vykupujeme za peníze i za kredit do e-shopu, konečnou cenu potvrdíme po kontrole.",
+  description: "Spočítej si odhad výkupu Pokémon karet. Vykupujeme za peníze i za kredit do e-shopu, přesnou nabídku pošleme po fyzické kontrole.",
 };
 
 const STEPS = ["Karty", "Odeslání", "Kontrola", "Výplata"];
@@ -40,7 +40,7 @@ export default async function VykupPage({ searchParams }: PageProps<"/vykup">) {
           Výkup karet
         </h1>
         <p className="m-0 max-w-[720px] text-[17px] leading-[26px]" style={{ color: "var(--ink-muted)" }}>
-          Přidej karty, zvol stav a hned uvidíš odhad. Konečnou cenu potvrdíme po kontrole karet u nás. Odhad platí 7 dní.
+          Přidej karty, zvol stav a hned uvidíš nezávazný odhad. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Odhad platí 7 dní.
         </p>
       </div>
       <ol aria-label="Jak výkup probíhá" className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">

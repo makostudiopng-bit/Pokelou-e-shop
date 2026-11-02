@@ -2,7 +2,7 @@
 // vyzkoušet na skutečných tabulkách. Kusy mají poznámku "demo" a smaže je
 // `npx tsx scripts/remove-demo.mts`. Relativní importy kvůli spouštění přes tsx.
 import { count, sql } from "drizzle-orm";
-import { demoCards, demoExtra, demoLocalId, demoSetInfo, demoTrend } from "../data/demo";
+import { demoCards, demoExtra, demoLocalId, demoLow, demoSetInfo, demoTrend } from "../data/demo";
 import type { Db } from "./index";
 import * as s from "./schema";
 
@@ -37,7 +37,7 @@ export async function seedDemo(db: Db, day: string) {
   );
 
   await db.insert(s.priceSnapshots).values(
-    demoCards.map((c) => ({ cardId: cardId(c.slug), finish: "holo" as const, day, trendEur: demoTrend[c.slug].toFixed(2) })),
+    demoCards.map((c) => ({ cardId: cardId(c.slug), finish: "holo" as const, day, trendEur: demoTrend[c.slug].toFixed(2), lowEur: demoLow(c.slug).toFixed(2) })),
   );
 
   await db
@@ -75,4 +75,20 @@ export async function seedDemo(db: Db, day: string) {
   await db.insert(s.stockItems).values([...base, ...extra]);
 
   return { seeded: true as const, sets: codes.length, cards: demoCards.length, stock: base.length + extra.length };
+}
+
+/**
+ * Ukázkové ceny „low“ pro databáze naplněné dřív, než se výkup počítal z Cardmarket low.
+ * Mění jen ukázkové karty, které low nemají; skutečná data z TCGdex nechává být.
+ */
+export async function backfillDemoLow(db: Db) {
+  let n = 0;
+  for (const c of demoCards) {
+    const id = `${demoSetInfo[c.setCode].id}-${demoLocalId(c)}`;
+    const r = await db.execute(
+      sql`update price_snapshots set low_eur = ${demoLow(c.slug).toFixed(2)} where card_id = ${id} and low_eur is null and trend_eur = ${demoTrend[c.slug].toFixed(2)}`,
+    );
+    n += (r as { rowCount?: number; affectedRows?: number }).rowCount ?? (r as { affectedRows?: number }).affectedRows ?? 0;
+  }
+  return n;
 }

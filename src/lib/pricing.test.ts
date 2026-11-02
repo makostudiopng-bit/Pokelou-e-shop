@@ -62,21 +62,21 @@ describe("resolveRules", () => {
 });
 
 describe("buybackLine", () => {
-  const base = { trendHal: 1100_00, condition: "NM" as const, language: "EN", quantity: 1, rules };
+  const base = { baseHal: 1100_00, condition: "NM" as const, language: "EN", quantity: 1, rules };
 
-  it("cash vs credit rate", () => {
-    expect(buybackLine({ ...base, payout: "cash" }).totalHal).toBe(550_00);
-    expect(buybackLine({ ...base, payout: "credit" }).totalHal).toBe(660_00);
+  it("80 % z low za peníze, za kredit o 5 % víc", () => {
+    expect(buybackLine({ ...base, payout: "cash" }).totalHal).toBe(880_00);
+    expect(buybackLine({ ...base, payout: "credit" }).totalHal).toBe(935_00);
   });
 
-  it("matches the buyback mockup (Starmie V EX × 2 at 300 Kč trend)", () => {
-    const l = buybackLine({ ...base, trendHal: 300_00, condition: "EX", quantity: 2, payout: "cash" });
-    expect(l.unitHal).toBe(127_00);
-    expect(l.totalHal).toBe(254_00);
+  it("EX × 2 při low 300 Kč", () => {
+    const l = buybackLine({ ...base, baseHal: 300_00, condition: "EX", quantity: 2, payout: "cash" });
+    expect(l.unitHal).toBe(204_00); // 300 × 0,85 (EX) × 0,8
+    expect(l.totalHal).toBe(408_00);
   });
 
   it("below the minimum goes to bulk", () => {
-    const l = buybackLine({ ...base, trendHal: 60_00, payout: "cash" });
+    const l = buybackLine({ ...base, baseHal: 60_00, payout: "cash" });
     expect(l.bulkOnly).toBe(true);
     expect(l.totalHal).toBe(0);
   });
@@ -85,7 +85,7 @@ describe("buybackLine", () => {
     const limited = resolveRules({ buybackMaxQty: 2 });
     const l = buybackLine({ ...base, quantity: 5, payout: "cash", rules: limited });
     expect(l.acceptedQty).toBe(2);
-    expect(l.totalHal).toBe(1100_00);
+    expect(l.totalHal).toBe(1760_00);
   });
 
   it("disabled cards are rejected", () => {
@@ -96,9 +96,9 @@ describe("buybackLine", () => {
   it("sums lines", () => {
     const lines = [
       buybackLine({ ...base, payout: "cash" }),
-      buybackLine({ ...base, trendHal: 520_00, condition: "LP", payout: "cash" }),
+      buybackLine({ ...base, baseHal: 520_00, condition: "LP", payout: "cash" }),
     ];
-    expect(buybackTotal(lines)).toBe(550_00 + 182_00);
+    expect(buybackTotal(lines)).toBe(880_00 + 291_00);
   });
 });
 

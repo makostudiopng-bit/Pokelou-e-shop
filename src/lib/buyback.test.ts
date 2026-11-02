@@ -6,6 +6,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { Db } from "@/db";
 import * as s from "@/db/schema";
 import { seedDemo } from "@/db/seed-demo";
+import { demoLow } from "@/data/demo";
+import { eurToHal } from "./pricing";
 import { createBuyback, getBuyback, searchBuybackCards } from "./buyback";
 
 let db: Db;
@@ -21,24 +23,28 @@ describe("výkup proti skutečnému Postgresu", () => {
     const [m] = await searchBuybackCards(db, "mimikyu tg16");
     expect(m.name).toBe("Mimikyu V");
     expect(m.trendHal).toBe(583_20); // 24 € × kurz 24,30
+    expect(m.baseHal).toBe(eurToHal(demoLow("mimikyu-v-brs-tg16"), 24.3)); // výkup z low
     expect((await searchBuybackCards(db, "245/198"))[0].name).toBe("Gardevoir ex");
     expect(await searchBuybackCards(db, "%")).toEqual([]);
   });
 
   it("odhad přepočítá server, levné karty jdou do bulku, kartové pravidlo platí", async () => {
-    await db.insert(s.pricingRules).values({ scope: "card", cardId: "swsh9tg-TG16", buybackCashPct: "40" });
+    await db.insert(s.pricingRules).values([
+      { scope: "card", cardId: "swsh9tg-TG16", buybackCashPct: "40" },
+      { scope: "card", cardId: "sv01-211", buybackMinHal: 100_00 },
+    ]);
     const req = await createBuyback(db, {
       email: "Jan@Email.cz",
       payout: "cash",
       bankAccount: "19-2000145399/0800",
       items: [
-        { cardId: "swsh9tg-TG16", condition: "NM", language: "EN", quantity: 1 }, // 583,20 Kč × 40 % = 233 Kč
-        { cardId: "sv01-211", condition: "PL", language: "EN", quantity: 3 }, // 194 Kč × 0,5 × 50 % = 48 Kč → bulk
+        { cardId: "swsh9tg-TG16", condition: "NM", language: "EN", quantity: 1 }, // low 20,40 € = 495,72 Kč × 40 % = 198 Kč
+        { cardId: "sv01-211", condition: "PL", language: "EN", quantity: 3 }, // low 6,80 € = 165,24 Kč × 0,5 (PL) × 80 % = 66 Kč < minimum 100 Kč → bulk
         { cardId: "neexistuje", condition: "NM", language: "EN", quantity: 1 },
       ],
     });
     expect(req.number).toMatch(/^VK-\d{6}-\d{4}$/);
-    expect(req.estimateHal).toBe(233_00);
+    expect(req.estimateHal).toBe(198_00);
     expect(req.bulkCount).toBe(3);
     const loaded = await getBuyback(db, req.id);
     expect(loaded?.items.map((i) => i.name).sort()).toEqual(["Mimikyu V", "Ralts"]);

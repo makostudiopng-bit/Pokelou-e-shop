@@ -239,7 +239,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           <dt style={{ color: "var(--ink-muted)" }}>Karet</dt>
           <dd className="m-0 text-right font-bold">{count} ks</dd>
           <dt style={{ color: "var(--ink-muted)" }}>Výkupní sazba</dt>
-          <dd className="m-0 text-right font-bold">{payout === "cash" ? cashPct : creditPct} % tržní ceny</dd>
+          <dd className="m-0 text-right font-bold">{payout === "cash" ? cashPct : creditPct} % z Cardmarket low</dd>
           {bulk > 0 && (
             <>
               <dt style={{ color: "var(--ink-muted)" }}>Bulk</dt>
@@ -248,7 +248,10 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           )}
         </dl>
         <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--ink)" }}>
-          <span className="text-[15px] font-extrabold">Odhad celkem</span>
+          <span className="flex flex-col">
+            <span className="text-[15px] font-extrabold">Odhad celkem</span>
+            <span className="text-[12px] font-bold opacity-80">nezávazný</span>
+          </span>
           <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }} aria-live="polite">
             {formatCzk(total)}
           </strong>
@@ -288,7 +291,9 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
         <button type="submit" disabled={pending || lines.length === 0} className="pl-btn pl-btn--primary pl-btn--block">
           {pending ? "Odesílám…" : "Odeslat k výkupu"}
         </button>
-        <p className="pl-note m-0">Odhad platí 7 dní. Cena se může po kontrole změnit; pak ti pošleme protinabídku, nebo karty vrátíme.</p>
+        <p className="pl-note m-0">
+          Odhad je nezávazný a platí 7 dní. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Když se stav liší, pošleme ti novou nabídku, nebo karty vrátíme.
+        </p>
       </aside>
     </form>
   );

@@ -4,8 +4,8 @@ import type { Condition } from "@/db/schema";
 
 export type RuleValues = {
   markupPct: number; // přirážka k tržní ceně, např. 10 = +10 %
-  buybackCashPct: number; // výkup za peníze, % z tržní ceny
-  buybackCreditPct: number; // výkup za kredit, % z tržní ceny
+  buybackCashPct: number; // výkup za peníze, % z ceny Cardmarket low
+  buybackCreditPct: number; // výkup za kredit, % z ceny Cardmarket low
   buybackMinHal: number; // kusová hodnota, pod kterou kartu bereme jen jako bulk
   buybackMaxQty: number | null; // kolik kusů jedné karty maximálně vykoupíme
   buybackDisabled: boolean;
@@ -16,8 +16,9 @@ export type RuleValues = {
 /** Výchozí hodnoty, dokud klient nenastaví vlastní (ukázkové, viz specifikace). */
 export const DEFAULT_RULES: RuleValues = {
   markupPct: 10,
-  buybackCashPct: 50,
-  buybackCreditPct: 60,
+  // klient 11/2026: výkup 80 % z Cardmarket low, za kredit na webu vždy o 5 % víc
+  buybackCashPct: 80,
+  buybackCreditPct: 85,
   buybackMinHal: 50_00,
   buybackMaxQty: null,
   buybackDisabled: false,
@@ -87,7 +88,8 @@ export function sellPrice({ trendHal, condition, language, rules }: SellPriceInp
 }
 
 export type BuybackLineInput = {
-  trendHal: number;
+  /** základ výkupu: Cardmarket low převedený na Kč (haléře) */
+  baseHal: number;
   condition: Condition;
   language: string;
   quantity: number;
@@ -110,13 +112,13 @@ export type BuybackLine = {
 
 /** Výkupní odhad jedné položky. */
 export function buybackLine(input: BuybackLineInput): BuybackLine {
-  const { trendHal, condition, language, quantity, payout, rules } = input;
+  const { baseHal, condition, language, quantity, payout, rules } = input;
   if (rules.buybackDisabled || quantity <= 0) {
     return { unitHal: 0, acceptedQty: 0, totalHal: 0, bulkOnly: false, rejected: rules.buybackDisabled };
   }
   const pct = payout === "credit" ? rules.buybackCreditPct : rules.buybackCashPct;
   const unitHal = roundBuybackPrice(
-    trendHal * rules.conditionFactors[condition] * languageFactor(rules, language) * (pct / 100),
+    baseHal * rules.conditionFactors[condition] * languageFactor(rules, language) * (pct / 100),
   );
   if (unitHal < rules.buybackMinHal) {
     return { unitHal, acceptedQty: 0, totalHal: 0, bulkOnly: true, rejected: false };

@@ -1,8 +1,8 @@
 // Výkup na serveru: hledání karet v katalogu, pravidla, přepočet odhadu a uložení žádosti.
 import { and, desc, eq, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
-import type { Db } from "@/db";
+import { getDb, hasDb, type Db } from "@/db";
 import * as s from "@/db/schema";
-import { demoCards, demoTrend } from "@/data/demo";
+import { demoCards, demoLow, demoTrend } from "@/data/demo";
 import { BUYBACK_MAX_ITEMS, ESTIMATE_VALID_DAYS, estimateItem, type BuybackCard, type BuybackItemInput } from "./buyback-shared";
 import { DEFAULT_RULES, eurToHal, resolveRules, type RuleValues } from "./pricing";
 import { ruleFromRow } from "./sync";
@@ -48,7 +48,7 @@ async function enrich(db: Db, rows: { card: typeof s.cards.$inferSelect; set: ty
   const ids = rows.map((r) => r.card.id);
   const [snaps, rate, rules, photos] = await Promise.all([
     db
-      .select({ cardId: s.priceSnapshots.cardId, finish: s.priceSnapshots.finish, trend: s.priceSnapshots.trendEur, day: s.priceSnapshots.day })
+      .select({ cardId: s.priceSnapshots.cardId, finish: s.priceSnapshots.finish, low: s.priceSnapshots.lowEur, trend: s.priceSnapshots.trendEur, day: s.priceSnapshots.day })
       .from(s.priceSnapshots)
       .where(inArray(s.priceSnapshots.cardId, ids))
       .orderBy(desc(s.priceSnapshots.day)),
@@ -58,9 +58,14 @@ async function enrich(db: Db, rows: { card: typeof s.cards.$inferSelect; set: ty
     db.select({ cardId: s.stockItems.cardId, photos: s.stockItems.photos }).from(s.stockItems).where(inArray(s.stockItems.cardId, ids)),
   ]);
   return rows.map(({ card, set }) => {
-    const mine = snaps.filter((p) => p.cardId === card.id && p.trend != null);
-    const day = mine[0]?.day;
-    const snap = FINISH_PREF.map((f) => mine.find((p) => p.day === day && p.finish === f)).find(Boolean);
+    // výkup se počítá z nejnižší nabídky na Cardmarketu (low), prodej z trendu
+    const pick = (key: "low" | "trend") => {
+      const mine = snaps.filter((p) => p.cardId === card.id && p[key] != null);
+      const day = mine[0]?.day;
+      return FINISH_PREF.map((f) => mine.find((p) => p.day === day && p.finish === f)).find(Boolean)?.[key];
+    };
+    const low = pick("low");
+    const trend = pick("trend");
     return {
       id: card.id,
       name: card.name,
@@ -68,7 +73,8 @@ async function enrich(db: Db, rows: { card: typeof s.cards.$inferSelect; set: ty
       setCode: set.code ?? "",
       number: set.cardCount ? `${card.localId}/${set.cardCount}` : card.localId,
       image: card.imageUrl ?? photos.find((p) => p.cardId === card.id && p.photos[0])?.photos[0] ?? null,
-      trendHal: snap ? eurToHal(Number(snap.trend), rate) : null,
+      baseHal: low != null ? eurToHal(Number(low), rate) : null,
+      trendHal: trend != null ? eurToHal(Number(trend), rate) : null,
       rules: rules.get(card.id) ?? DEFAULT_RULES,
     };
   });
@@ -102,6 +108,13 @@ export async function searchBuybackCards(db: Db, q: string, limit = 12): Promise
   return enrich(db, rows);
 }
 
+const demoBuybackCard = (slug: string): BuybackCard | null => {
+  const c = demoCards.find((x) => x.slug === slug);
+  return c
+    ? { id: c.slug, name: c.name, set: c.set, setCode: c.setCode, number: c.number, image: c.image, baseHal: eurToHal(demoLow(c.slug), FALLBACK_EUR_CZK), trendHal: eurToHal(demoTrend[c.slug], FALLBACK_EUR_CZK), rules: DEFAULT_RULES }
+    : null;
+};
+
 /** Bez databáze: hledání v ukázkových kartách (jen pro náhled). */
 export function searchDemoCards(q: string): BuybackCard[] {
   const t = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -115,6 +128,7 @@ export function searchDemoCards(q: string): BuybackCard[] {
       setCode: c.setCode,
       number: c.number,
       image: c.image,
+      baseHal: eurToHal(demoLow(c.slug), FALLBACK_EUR_CZK),
       trendHal: eurToHal(demoTrend[c.slug], FALLBACK_EUR_CZK),
       rules: DEFAULT_RULES,
     }));
@@ -190,4 +204,15 @@ export async function getBuyback(db: Db, id: string) {
     .innerJoin(s.sets, eq(s.cards.setId, s.sets.id))
     .where(eq(s.buybackItems.requestId, id));
   return { req, items };
+}
+
+/** Karta pro odhad výkupu podle ID / slugu z katalogu (s databází i bez ní). */
+export async function buybackCardFor(id: string): Promise<BuybackCard | null> {
+  try {
+    if (hasDb()) return (await loadBuybackCards(await getDb(), [id]))[0] ?? null;
+    return demoBuybackCard(id);
+  } catch (e) {
+    console.error("Výkup: karta pro odhad nejde načíst", e);
+    return null;
+  }
 }

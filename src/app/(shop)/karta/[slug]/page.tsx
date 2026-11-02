@@ -7,10 +7,9 @@ import { CardZoom } from "@/components/card-zoom";
 import { OfferTile } from "@/components/offer-tile";
 import { Button, ConditionBadge } from "@/components/ui";
 import { getCard } from "@/lib/catalog";
-import { buybackLine, DEFAULT_RULES, eurToHal, formatCzk } from "@/lib/pricing";
-
-// Orientační kurz pro odhad výkupu, dokud nemáme denní kurz z databáze.
-const FALLBACK_EUR_CZK = 24.3;
+import { buybackCardFor } from "@/lib/buyback";
+import { estimateItem } from "@/lib/buyback-shared";
+import { formatCzk } from "@/lib/pricing";
 
 export async function generateMetadata({ params }: PageProps<"/karta/[slug]">): Promise<Metadata> {
   const card = await getCard(decodeURIComponent((await params).slug));
@@ -32,18 +31,9 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
   const variants = [...card.variants].sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || b.priceHal - a.priceHal);
   const selected = variants.find((v) => v.id === wanted) ?? variants.find((v) => v.stock > 0) ?? variants[0];
   const out = selected.stock <= 0;
-  const trend = variants.find((v) => v.trendEur != null)?.trendEur;
-  const estimate =
-    trend != null
-      ? buybackLine({
-          trendHal: eurToHal(trend, FALLBACK_EUR_CZK),
-          condition: "NM",
-          language: "EN",
-          quantity: 1,
-          payout: "cash",
-          rules: DEFAULT_RULES,
-        })
-      : null;
+  // odhad výkupu stejným výpočtem jako formulář výkupu (Cardmarket low, Near Mint, EN)
+  const bbCard = await buybackCardFor(slug);
+  const estimate = bbCard ? estimateItem(bbCard, { condition: "NM", language: "EN", quantity: 1 }, "cash") : null;
   const setHref = `/karty?edice=${encodeURIComponent(selected.set)}`;
 
   return (
@@ -174,7 +164,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                   "Vezmeme ji v rámci hromadného výkupu."
                 ) : (
                   <>
-                    Vykoupíme ji, odhad v Near Mint <strong>{formatCzk(estimate.unitHal)}</strong>.
+                    Vykoupíme ji, nezávazný odhad v Near Mint <strong>{formatCzk(estimate.unitHal)}</strong>.
                   </>
                 )}
               </span>

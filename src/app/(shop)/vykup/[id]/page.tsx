@@ -30,8 +30,8 @@ export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[
             Výkup máme zapsaný
           </h1>
           <p className="m-0 text-[17px] leading-[26px]">
-            Číslo výkupu <strong style={{ fontFamily: "var(--font-mono)" }}>{req.number}</strong>. Odhad{" "}
-            <strong>{formatCzk(req.estimateHal)}</strong> {req.payout === "credit" ? "v kreditu" : "na účet"} platí do {validTo}.
+            Číslo výkupu <strong style={{ fontFamily: "var(--font-mono)" }}>{req.number}</strong>. Nezávazný odhad{" "}
+            <strong>{formatCzk(req.estimateHal)}</strong> {req.payout === "credit" ? "v kreditu" : "na účet"} platí do {validTo}. Přesnou nabídku ti pošleme po fyzické kontrole karet.
           </p>
         </div>
       </section>

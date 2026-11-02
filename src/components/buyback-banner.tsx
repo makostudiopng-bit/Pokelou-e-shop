@@ -36,7 +36,7 @@ export async function BuybackBanner() {
             které nehraješ?
           </h2>
           <p className="m-0 max-w-[460px] text-[17px] leading-[26px]">
-            Spočítej si odhad výkupu za minutu. Za kredit do e-shopu dostaneš víc.
+            Nezávazný odhad výkupu uvidíš hned online. Přesnou nabídku dostaneš po kontrole karet a za kredit do e-shopu vždy o 5 % víc.
           </p>
           <Link href="/vykup" className="pl-cta-dark mt-2 inline-flex items-center gap-3 rounded-xl border-2 py-2.5 pr-2.5 pl-6 text-[17px] font-extrabold no-underline">
             Spočítat výkup
@@ -57,7 +57,7 @@ export async function BuybackBanner() {
             )}
             <figure className="pl-ticket m-0" aria-label={`Příklad odhadu výkupu: ${card.name}`}>
               <figcaption className="pl-ticket__head">
-                <span>Příklad odhadu</span>
+                <span>Příklad nezávazného odhadu</span>
                 <span className="font-mono">NM · EN</span>
               </figcaption>
               <strong className="block text-[19px] leading-[24px]">{card.name}</strong>

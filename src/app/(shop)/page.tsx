@@ -153,9 +153,9 @@ export default async function Home() {
           </div>
           <ol className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 p-0">
             {[
-              ["Vyber karty a stav", "Najdeš je podle názvu nebo čísla. Odhad ceny uvidíš hned."],
+              ["Vyber karty a stav", "Najdeš je podle názvu nebo čísla. Nezávazný odhad ceny uvidíš hned."],
               ["Pošli je nám", "Zásilkovnou nebo osobně. Odhad platí 7 dní."],
-              ["Dostaneš peníze nebo kredit", "Po kontrole karet potvrdíme cenu a pošleme platbu."],
+              ["Dostaneš peníze nebo kredit", "Po fyzické kontrole karet pošleme přesnou nabídku a pak platbu."],
             ].map(([title, text], i) => (
               <li
                 key={title}

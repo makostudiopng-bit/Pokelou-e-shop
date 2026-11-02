@@ -2,7 +2,7 @@
 // takže build funguje i lokálně a v náhledech bez databáze.
 // Prázdnou databázi naplní ukázkovým skladem; vypnout jde přes SEED_DEMO=0.
 import { getDb } from "../src/db/index";
-import { seedDemo } from "../src/db/seed-demo";
+import { backfillDemoLow, seedDemo } from "../src/db/seed-demo";
 
 const url = process.env.DATABASE_URL;
 if (!url) {
@@ -25,5 +25,7 @@ console.log("migrate: databáze je aktuální");
 if (process.env.SEED_DEMO !== "0") {
   const res = await seedDemo(db, new Date().toISOString().slice(0, 10));
   console.log(res.seeded ? `seed: ukázkový sklad (${res.stock} kusů)` : "seed: databáze už obsahuje data, přeskakuji");
+  const low = await backfillDemoLow(db);
+  if (low > 0) console.log(`seed: doplněna ukázková cena low u ${low} karet`);
 }
 process.exit(0);

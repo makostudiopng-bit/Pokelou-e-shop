@@ -23,14 +23,18 @@ export default function VykupPodminkyPage() {
       <h2>Odhad a konečná cena</h2>
       <ul>
         <li>
-          Odhad ve formuláři vychází z tržní ceny (trend Cardmarketu), stavu a jazyka karty. V penězích vykupujeme za {DEFAULT_RULES.buybackCashPct} % tržní ceny, v kreditu za{" "}
-          {DEFAULT_RULES.buybackCreditPct} %. U některých edic a karet může být sazba jiná, formulář s tím počítá.
+          Odhad ve formuláři je <strong>nezávazný</strong>. Vychází z nejnižší aktuální nabídky na Cardmarketu (cena „low“), stavu a jazyka karty. Za peníze
+          vykupujeme za {DEFAULT_RULES.buybackCashPct} % této ceny, za kredit do e-shopu za {DEFAULT_RULES.buybackCreditPct} %. U některých edic a karet může být sazba
+          jiná, formulář s tím počítá.
         </li>
         <li>Odhad platí 7 dní od odeslání formuláře. Karty nám v té době pošli nebo přines.</li>
         <li>
           Karty s odhadem pod {DEFAULT_RULES.buybackMinHal / 100} Kč za kus bereme jen hromadně jako bulk za <Ph>[CENA ZA BULK]</Ph>.
         </li>
-        <li>Konečnou cenu určíme po kontrole karet u nás. Když se stav liší od toho, co jsi zadal(a), pošleme ti protinabídku.</li>
+        <li>
+          Přesnou nabídku dostaneš až po fyzické kontrole karet u nás. Když stav sedí, platí odhad. Když se liší od toho, co jsi zadal(a), pošleme ti novou nabídku a
+          je na tobě, jestli ji přijmeš, nebo ti karty vrátíme.
+        </li>
       </ul>
 
       <h2>Jak výkup probíhá</h2>

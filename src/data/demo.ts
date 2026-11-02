@@ -53,6 +53,9 @@ export const demoSetInfo: Record<string, { id: string; name: string; series: str
 /** Číslo karty v edici podle TCGdex (bez „/165“). */
 export const demoLocalId = (c: DemoCard) => c.number.split("/")[0];
 
+/** Ukázková Cardmarket low (nejnižší nabídka) v EUR: pro náhled 85 % trendu. */
+export const demoLow = (slug: string) => Math.round(demoTrend[slug] * 85) / 100;
+
 /** Ukázkový trend Cardmarketu v EUR. */
 export const demoTrend: Record<string, number> = {
   "venusaur-ex-mew-198": 88,
