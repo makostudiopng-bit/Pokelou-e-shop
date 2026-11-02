@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Image src="/brand/logo.png" alt="" width={40} height={40} />
           <span className="text-lg font-extrabold">Administrace</span>
         </Link>
-        <AdminNav orders={counts?.ordersToHandle ?? 0} buybacks={counts?.buybacksToHandle ?? 0} />
+        <AdminNav orders={counts?.ordersToHandle ?? 0} buybacks={counts?.buybacksToHandle ?? 0} fair={counts?.fairConflicts ?? 0} />
         <div className="mt-auto flex flex-col gap-1 text-sm">
           <Link href="/" className="font-bold" style={{ color: "var(--ink-inverse)" }}>
             ← Na e-shop

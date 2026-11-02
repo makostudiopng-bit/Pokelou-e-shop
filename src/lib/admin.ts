@@ -14,12 +14,13 @@ export class AdminError extends Error {}
 // ---------- Přehled ----------
 
 export async function dashboardCounts(db: Db) {
-  const [orders, buybacks, stock] = await Promise.all([
+  const [orders, buybacks, stock, fair] = await Promise.all([
     db.select({ status: s.orders.status, n: count() }).from(s.orders).groupBy(s.orders.status),
     db.select({ status: s.buybackRequests.status, n: count() }).from(s.buybackRequests).groupBy(s.buybackRequests.status),
     db
       .select({ items: count(), pieces: sql<number>`coalesce(sum(${s.stockItems.quantity}), 0)::int`, value: sql<number>`coalesce(sum(${s.stockItems.quantity} * ${s.stockItems.priceHal}), 0)::bigint` })
       .from(s.stockItems),
+    db.select({ n: count() }).from(s.fairSales).where(and(eq(s.fairSales.status, "conflict"), sql`${s.fairSales.resolvedAt} is null`)),
   ]);
   const o = Object.fromEntries(orders.map((r) => [r.status, r.n])) as Partial<Record<OrderStatus, number>>;
   const b = Object.fromEntries(buybacks.map((r) => [r.status, r.n])) as Partial<Record<BuybackStatus, number>>;
@@ -28,6 +29,7 @@ export async function dashboardCounts(db: Db) {
     buybacks: b,
     ordersToHandle: (o.new ?? 0) + (o.paid ?? 0) + (o.packed ?? 0),
     buybacksToHandle: (b.submitted ?? 0) + (b.received ?? 0) + (b.checking ?? 0) + (b.approved ?? 0),
+    fairConflicts: fair[0]?.n ?? 0,
     stock: { items: stock[0].items, pieces: Number(stock[0].pieces), valueHal: Number(stock[0].value) },
   };
 }

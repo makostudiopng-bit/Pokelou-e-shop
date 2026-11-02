@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function AdminNav({ orders, buybacks }: { orders: number; buybacks: number }) {
+export function AdminNav({ orders, buybacks, fair }: { orders: number; buybacks: number; fair: number }) {
   const path = usePathname();
   const items: [string, string, number?][] = [
     ["/admin", "Přehled"],
@@ -10,6 +10,7 @@ export function AdminNav({ orders, buybacks }: { orders: number; buybacks: numbe
     ["/admin/vykupy", "Výkupy", buybacks],
     ["/admin/sklad", "Sklad"],
     ["/admin/naskladnit", "Naskladnit"],
+    ["/admin/burzy", "Burzy", fair],
     ["/admin/slevy", "Slevové kódy"],
     ["/admin/edice", "Edice z TCGdex"],
   ];

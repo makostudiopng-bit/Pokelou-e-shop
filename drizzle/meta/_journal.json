@@ -15,6 +15,13 @@
       "when": 1793567477475,
       "tag": "0001_discounts_and_note",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793659842764,
+      "tag": "0002_fair_sales",
+      "breakpoints": true
     }
   ]
 }

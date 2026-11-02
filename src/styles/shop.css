@@ -257,3 +257,47 @@
 }
 .pl-theme-anim, .pl-theme-anim * { transition: background-color .35s ease, color .35s ease, border-color .35s ease !important; }
 @media (prefers-reduced-motion: reduce) { .pl-theme-anim, .pl-theme-anim * { transition: none !important; } }
+
+/* Prodej na burze (telefon): velké dotykové plochy, účtenka přilepená dole */
+.pl-pos { display: flex; flex-direction: column; min-height: 100dvh; max-width: 640px; width: 100%; margin: 0 auto; background: var(--surface-000); color: var(--ink); padding-bottom: env(safe-area-inset-bottom); }
+.pl-pos__bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); background: var(--surface-inverse); color: var(--ink-inverse); }
+.pl-pos__event { background: transparent; border: 0; border-bottom: 1.5px dashed currentColor; color: inherit; font: 800 18px/24px var(--font-sans); padding: 0; min-width: 0; width: 100%; }
+.pl-pos__net { flex: none; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 5px 10px; }
+.pl-pos__net::before { content: "●"; margin-right: 5px; }
+.pl-pos__net.is-on { background: var(--success); color: #fff; }
+.pl-pos__net.is-off { background: var(--brand-red); color: var(--on-red); }
+.pl-pos__alert { margin: 12px 16px 0; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--brand-red); background: var(--surface-100); font-size: 14px; }
+.pl-pos__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 12px 16px 6px; }
+.pl-pos__tabs button { min-height: 44px; border-radius: 12px; border: 2px solid var(--ink); background: var(--surface-100); color: var(--ink); font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+.pl-pos__tabs button[aria-pressed="true"] { background: var(--brand-yellow); color: var(--on-yellow); }
+.pl-pos__search { position: sticky; top: 64px; z-index: 4; display: flex; gap: 8px; padding: 8px 16px; background: var(--surface-000); }
+.pl-pos__search input { flex: 1; min-width: 0; min-height: 48px; border-radius: 999px; border: 2px solid var(--ink); background: var(--surface-100); color: var(--ink); padding: 0 18px; font-size: 16px; }
+.pl-pos__list { list-style: none; margin: 8px 0 0; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.pl-pos__item { width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface-100); color: var(--ink); cursor: pointer; font-size: 15px; min-height: 64px; }
+.pl-pos__item:active { transform: scale(.98); border-color: var(--ink); }
+.pl-pos__item:disabled { opacity: .45; cursor: not-allowed; }
+.pl-pos__thumb { flex: none; width: 44px; height: 60px; border-radius: 4px; overflow: hidden; background: var(--surface-200); }
+.pl-pos__basket { position: sticky; bottom: 0; z-index: 6; margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; padding-bottom: max(14px, env(safe-area-inset-bottom)); background: var(--surface-100); border-top: 3px solid var(--ink); box-shadow: 0 -10px 30px rgba(0,0,0,.15); max-height: 70dvh; overflow-y: auto; }
+.pl-pos__line { display: flex; align-items: center; gap: 8px; }
+.pl-pos__qty { display: inline-flex; align-items: center; border: 2px solid var(--ink); border-radius: 999px; }
+.pl-pos__qty button { width: 34px; height: 34px; font-size: 18px; font-weight: 800; background: none; border: 0; color: var(--ink); cursor: pointer; }
+.pl-pos__qty span { min-width: 18px; text-align: center; font-weight: 800; }
+.pl-pos__price { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; }
+.pl-pos__price input, .pl-pos__given { width: 82px; min-height: 36px; text-align: right; border-radius: 8px; border: 1.5px solid var(--line-strong); background: var(--surface-000); color: var(--ink); font: 800 15px/1 var(--font-sans); padding: 0 8px; }
+.pl-pos__pay { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pl-pos__pay button { min-height: 44px; border-radius: 10px; border: 2px solid var(--line-strong); background: var(--surface-000); color: var(--ink); font-weight: 800; cursor: pointer; }
+.pl-pos__pay button[aria-checked="true"] { border-color: var(--ink); background: var(--surface-inverse); color: var(--ink-inverse); }
+.pl-pos__sell { min-height: 56px; font-size: 18px; }
+.pl-pos__manual { display: grid; grid-template-columns: 1fr 90px 56px auto; gap: 6px; margin: 4px 16px 0; padding: 10px; border-radius: 12px; border: 2px dashed var(--line-strong); }
+.pl-pos__manual input { min-width: 0; min-height: 40px; border-radius: 8px; border: 1.5px solid var(--line-strong); background: var(--surface-100); color: var(--ink); padding: 0 8px; font-size: 15px; }
+@media (max-width: 420px) { .pl-pos__manual { grid-template-columns: 1fr 1fr 56px; } .pl-pos__manual input:first-child { grid-column: 1 / -1; } }
+.pl-pos__sum { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.pl-pos__sum div { display: flex; flex-direction: column; padding: 10px 12px; border-radius: 12px; background: var(--surface-100); border: 1.5px solid var(--line); }
+.pl-pos__sum div:first-child { background: var(--brand-yellow); color: var(--on-yellow); border-color: var(--ink); }
+.pl-pos__sum span { font-size: 12px; font-weight: 700; opacity: .8; }
+.pl-pos__sum strong { font-size: 20px; }
+.pl-pos__sale { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--surface-100); border: 1.5px solid var(--line); }
+.pl-pos__sale.is-pending { border-style: dashed; border-color: var(--brand-yellow); }
+.pl-pos__sale.is-conflict, .pl-pos__sale.is-error { border: 2px solid var(--brand-red); }
+.pl-pos__sale.is-cancelled { opacity: .5; text-decoration: line-through; }
+.pl-pos__toast { position: fixed; left: 50%; top: 76px; z-index: 50; transform: translateX(-50%); max-width: calc(100vw - 32px); background: var(--surface-inverse); color: var(--ink-inverse); font-weight: 800; font-size: 15px; padding: 12px 18px; border-radius: 12px; box-shadow: 4px 4px 0 var(--brand-yellow); animation: pl-suggest-in .2s var(--ease-pop); }

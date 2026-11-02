@@ -23,7 +23,7 @@ export class StockConflictError extends Error {
 }
 
 /** Odečte všechny kusy najednou; vrátí ID kusů, které se odečíst nepodařilo. */
-async function takeStock(db: Db, lines: OrderLine[]) {
+export async function takeStock(db: Db, lines: Pick<OrderLine, "stockItemId" | "qty">[]) {
   const want = sql.join(
     lines.map((l) => sql`(${l.stockItemId}::text, ${l.qty}::int)`),
     sql`, `,

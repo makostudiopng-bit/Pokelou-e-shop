@@ -391,3 +391,37 @@ export const discountCodes = pgTable("discount_codes", {
   note: text("note"),
   createdAt: createdAt(),
 });
+
+// ---------- Prodej na burzách (offline) ----------
+
+export const FAIR_PAYMENTS = ["cash", "card", "transfer"] as const;
+export const fairPaymentEnum = pgEnum("fair_payment", FAIR_PAYMENTS);
+/** ok = odečteno ze skladu; conflict = kus mezitím prodaný jinde (třeba na e-shopu); cancelled = storno */
+export const fairSaleStatusEnum = pgEnum("fair_sale_status", ["ok", "conflict", "cancelled"]);
+
+export const fairSales = pgTable(
+  "fair_sales",
+  {
+    /** ID vyrobí telefon prodejce, takže opakované odeslání (výpadek sítě) nic nezdvojí */
+    id: text("id").primaryKey(),
+    /** jedna účtenka = jeden zákazník, může mít víc řádků */
+    receiptId: text("receipt_id").notNull(),
+    eventName: text("event_name").notNull(),
+    /** null = ruční položka mimo sklad e-shopu (bulk, příslušenství) */
+    stockItemId: text("stock_item_id").references(() => stockItems.id),
+    title: text("title").notNull(),
+    condition: conditionEnum("condition"),
+    language: text("language"),
+    quantity: integer("quantity").notNull(),
+    /** skutečná prodejní cena za kus (po slevě na místě) */
+    unitHal: integer("unit_hal").notNull(),
+    /** cena z e-shopu v době prodeje, pro přehled slev */
+    listHal: integer("list_hal"),
+    payment: fairPaymentEnum("payment").notNull(),
+    status: fairSaleStatusEnum("status").notNull(),
+    soldAt: timestamp("sold_at", { withTimezone: true }).notNull(),
+    syncedAt: timestamp("synced_at", { withTimezone: true }).notNull().defaultNow(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (t) => [index("fair_sales_sold_idx").on(t.soldAt), index("fair_sales_receipt_idx").on(t.receiptId)],
+);

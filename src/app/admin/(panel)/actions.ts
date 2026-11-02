@@ -17,6 +17,7 @@ import { requireAdmin } from "@/lib/admin-session";
 import type { BuybackStatus, OrderStatus } from "@/lib/admin-status";
 import { BUYBACK_LANGUAGES } from "@/lib/buyback-shared";
 import { createCode, DiscountError, normalizeCode, setCodeActive } from "@/lib/discounts";
+import { cancelSale, closeConflict, FairError, retryConflict } from "@/lib/fair";
 import { importSet } from "@/lib/sync";
 
 export type ActionState = { ok?: string; error?: string };
@@ -183,4 +184,30 @@ export async function toggleCodeAction(_p: ActionState, f: FormData) {
   });
   revalidatePath("/admin/slevy");
   return r;
+}
+
+// ---------- Burzy ----------
+
+async function fairRun(fn: () => Promise<void>, msg: string) {
+  const r = await run(async () => {
+    try {
+      await fn();
+    } catch (e) {
+      if (e instanceof FairError) throw new AdminError(e.message);
+      throw e;
+    }
+    return msg;
+  });
+  revalidatePath("/admin/burzy");
+  return r;
+}
+
+export async function fairRetryAction(_p: ActionState, f: FormData) {
+  return fairRun(async () => retryConflict(await getDb(), str(f, "id")), "Odečteno ze skladu");
+}
+export async function fairCloseAction(_p: ActionState, f: FormData) {
+  return fairRun(async () => closeConflict(await getDb(), str(f, "id")), "Konflikt uzavřený");
+}
+export async function fairCancelAction(_p: ActionState, f: FormData) {
+  return fairRun(async () => cancelSale(await getDb(), str(f, "id")), "Stornováno, kus je zpátky ve skladu");
 }
