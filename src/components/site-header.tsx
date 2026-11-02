@@ -4,6 +4,7 @@ import { cartCount as cartCount_ } from "@/lib/cart-server";
 import { SHOP } from "@/config/shop";
 import { InstagramIcon } from "./instagram-icon";
 import { Marquee } from "./marquee";
+import { ThemeToggle } from "./theme-toggle";
 import { SearchBox } from "./search-box";
 
 const STRIP = [
@@ -71,6 +72,7 @@ export async function SiteHeader() {
             <Link href="/vykup" className="py-2.5 no-underline">
               Výkup
             </Link>
+            <ThemeToggle />
             <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig pl-lift" aria-label={`Instagram ${SHOP.instagram} (otevře se v novém okně)`}>
               <InstagramIcon />
             </a>
@@ -83,7 +85,7 @@ export async function SiteHeader() {
               <CartIcon />
               Košík
               {cartCount > 0 && (
-                <span className="grid h-[22px] min-w-[22px] place-items-center rounded-full text-xs" style={{ background: "var(--brand-red)", color: "#fff" }}>
+                <span className="grid h-[22px] min-w-[22px] place-items-center rounded-full text-xs" style={{ background: "var(--brand-red)", color: "var(--on-red)" }}>
                   {cartCount}
                 </span>
               )}
