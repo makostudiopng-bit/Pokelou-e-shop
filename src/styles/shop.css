@@ -231,7 +231,7 @@
 .pl-zoom__close { position: fixed; top: 14px; right: 14px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink); background: var(--brand-yellow); color: var(--on-yellow); font: 800 26px/1 var(--font-sans); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
 
 /* Instagram: kulaté tlačítko v hlavičce a tlačítko v patičce */
-.pl-ig { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface-100); color: var(--ink); }
+.pl-ig { place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface-100); color: var(--ink); }
 .pl-ig:hover { background: var(--brand-red); color: var(--on-red); }
 .pl-ig-btn { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--ink); border-radius: 999px; padding: 8px 16px; background: var(--surface-100); color: var(--ink); font-weight: 800; font-size: 14px; }
 .pl-ig-btn:hover { background: var(--brand-yellow); color: var(--on-yellow); }

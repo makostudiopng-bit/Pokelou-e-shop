@@ -57,12 +57,12 @@ export async function SiteHeader() {
         </Marquee>
       </div>
       <header style={{ borderBottom: "1px solid var(--line)", background: "var(--surface-000)" }}>
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-8 gap-y-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:gap-x-8 sm:gap-y-4 sm:px-6">
           <Link href="/" className="pl-wiggle-hover block flex-none" aria-label="PokeLou – domů">
-            <Image src="/brand/logo.png" alt="PokeLou" width={128} height={128} priority className="h-[84px] w-[84px] sm:h-[128px] sm:w-[128px]" />
+            <Image src="/brand/logo.png" alt="PokeLou" width={128} height={128} priority className="h-[68px] w-[68px] sm:h-[128px] sm:w-[128px]" />
           </Link>
           <SearchBox />
-          <nav aria-label="Hlavní" className="ml-auto flex flex-wrap items-center gap-x-6 gap-y-1 text-[15px] font-extrabold sm:ml-0">
+          <nav aria-label="Hlavní" className="ml-auto flex flex-nowrap items-center gap-x-3 text-[15px] font-extrabold sm:ml-0 sm:gap-x-6">
             <Link href="/karty" className="py-2.5 no-underline">
               Karty
             </Link>
@@ -73,12 +73,12 @@ export async function SiteHeader() {
               Výkup
             </Link>
             <ThemeToggle />
-            <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig pl-lift" aria-label={`Instagram ${SHOP.instagram} (otevře se v novém okně)`}>
+            <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig pl-lift hidden sm:grid" aria-label={`Instagram ${SHOP.instagram} (otevře se v novém okně)`}>
               <InstagramIcon />
             </a>
             <Link
               href="/kosik"
-              className="pl-lift flex items-center gap-2 rounded-full border-2 px-4 py-2 no-underline"
+              className="pl-lift flex items-center gap-2 rounded-full border-2 px-3 py-2 no-underline sm:px-4"
               style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "var(--ink)" }}
               aria-label={cartCount > 0 ? `Košík, ${cartCount} ${cartCount === 1 ? "kus" : cartCount < 5 ? "kusy" : "kusů"}` : "Košík je prázdný"}
             >
