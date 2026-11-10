@@ -213,7 +213,6 @@
 /* Novinky: štítek na dlaždici a ve filtru */
 .pl-tile__flag--hot { background: var(--brand-yellow); color: var(--on-yellow); border: 1.5px solid var(--on-yellow); transform: rotate(-4deg); }
 .pl-tile__flag--hot::before { content: "🔥 "; }
-.pl-hot-dot { display: inline-block; margin-left: 4px; background: var(--brand-red); color: var(--on-red); font-size: 10px; line-height: 14px; font-weight: 800; letter-spacing: .04em; padding: 1px 5px; border-radius: 4px; transform: rotate(-4deg); vertical-align: 2px; }
 .pl-linkbtn { align-self: flex-start; background: none; border: 0; padding: 0; font: 700 13px/18px var(--font-sans); color: var(--ink); text-decoration: underline; cursor: pointer; }
 .pl-check[hidden] { display: none; }
 

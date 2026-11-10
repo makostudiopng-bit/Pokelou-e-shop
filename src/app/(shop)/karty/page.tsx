@@ -75,9 +75,7 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
               <div className="flex flex-col gap-2.5">
                 <label className="pl-check pl-check--hot font-bold" style={{ fontSize: 15 }}>
                   <input type="checkbox" name="novinky" value="1" defaultChecked={q.fresh} />
-                  <span>
-                    Nově naskladněno <span className="pl-hot-dot" aria-hidden="true">HOT</span>
-                  </span>
+                  <span>Nově naskladněno</span>
                   <span className="pl-check__n" title={`za posledních ${NEW_DAYS} dní`}>{freshCount}</span>
                 </label>
                 <label className="pl-check font-bold" style={{ fontSize: 15 }}>

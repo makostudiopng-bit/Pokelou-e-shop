@@ -32,7 +32,7 @@ export type Sort = keyof typeof SORTS;
 
 export const PAGE_SIZE = 24;
 
-/** Kolik dní po naskladnění je kus „novinka“ (filtr i štítek HOT novinka). */
+/** Kolik dní po naskladnění je kus „novinka“ (filtr i štítek Novinka). */
 export const NEW_DAYS = 14;
 export const isNew = (o: Pick<Offer, "addedAt">, now = Date.now()) => now - o.addedAt < NEW_DAYS * 86_400_000;
 
