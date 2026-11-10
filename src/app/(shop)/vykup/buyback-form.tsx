@@ -247,7 +247,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
             </>
           )}
         </dl>
-        <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--ink)" }}>
+        <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--on-yellow)", boxShadow: "var(--shadow-on-yellow)" }}>
           <span className="flex flex-col">
             <span className="text-[15px] font-extrabold">Odhad celkem</span>
             <span className="text-[12px] font-bold opacity-80">nezávazný</span>

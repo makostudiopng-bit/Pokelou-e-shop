@@ -213,7 +213,7 @@ export default async function ObjednavkaPage({ params }: PageProps<"/objednavka/
         </dl>
       </section>
 
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl px-6 py-5" style={{ background: "var(--surface-inverse)", color: "var(--ink-inverse)" }}>
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl px-6 py-5" style={{ background: "var(--band-bg)", color: "var(--band-ink)", border: "2px solid var(--band-border)" }}>
         <div className="flex flex-col gap-1">
           <strong className="text-lg">Máš doma karty, které nehraješ?</strong>
           <span className="text-[15px]">Vykoupíme je. Za kredit dostaneš víc a můžeš ho použít na další nákup.</span>

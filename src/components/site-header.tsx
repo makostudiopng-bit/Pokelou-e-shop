@@ -79,7 +79,7 @@ export async function SiteHeader() {
             <Link
               href="/kosik"
               className="pl-lift flex items-center gap-2 rounded-full border-2 px-3 py-2 no-underline sm:px-4"
-              style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "var(--ink)" }}
+              style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "var(--on-yellow)" }}
               aria-label={cartCount > 0 ? `Košík, ${cartCount} ${cartCount === 1 ? "kus" : cartCount < 5 ? "kusy" : "kusů"}` : "Košík je prázdný"}
             >
               <CartIcon />

@@ -4,7 +4,7 @@ import { InstagramIcon } from "./instagram-icon";
 
 export function SiteFooter() {
   return (
-    <footer style={{ borderTop: "3px solid var(--ink)", background: "var(--surface-200)" }}>
+    <footer style={{ borderTop: "3px solid var(--rule)", background: "var(--surface-200)" }}>
       <div className="mx-auto flex max-w-[1280px] flex-wrap justify-between gap-6 px-4 py-8 text-sm leading-6 sm:px-6" style={{ color: "var(--ink-muted)" }}>
         <div className="flex flex-col gap-1">
           <strong style={{ color: "var(--ink)" }}>PokeLou</strong>

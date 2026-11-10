@@ -20,18 +20,25 @@
   --cond-good: #9a6a00;
   --cond-played: #c42a14;
   --shadow-sticker: 3px 3px 0 #141414;
+  /* doplňky pro noční režim (ve dne beze změny) */
+  --rule: #141414;
+  --input-bg: #ffffff;
+  --shadow-on-yellow: 3px 3px 0 #141414;
+  --band-bg: #141414;
+  --band-ink: #f4eee6;
+  --band-border: #141414;
 }
 [data-theme="dark"] {
   color-scheme: dark;
-  --surface-000: #111111;
-  --surface-100: #1c1c1c;
-  --surface-200: #262626;
+  --surface-000: #14120f;
+  --surface-100: #1e1b17;
+  --surface-200: #2a2620;
   --surface-inverse: #f4eee6;
   --ink: #f4eee6;
-  --ink-muted: #a9a39a;
+  --ink-muted: #b3ab9f;
   --ink-inverse: #141414;
-  --line: #333333;
-  --line-strong: #7a7a7a;
+  --line: #39342d;
+  --line-strong: #80786d;
   --brand-yellow: #f2a400;
   --brand-yellow-hover: #ffb82e;
   --on-yellow: #141414;
@@ -43,20 +50,27 @@
   --cond-good: #f2a400;
   --cond-played: #ff6a4d;
   --shadow-sticker: 3px 3px 0 #f2a400;
+  /* teplá černá jako logo; čáry a pole tlumené, žluté prvky s jantarovým stínem */
+  --rule: #39342d;
+  --input-bg: #14120f;
+  --shadow-on-yellow: 3px 3px 0 #8a5a00;
+  --band-bg: #2a2620;
+  --band-ink: #f4eee6;
+  --band-border: #f2a400;
 }
 /* Noční verze podle nastavení zařízení, dokud si zákazník nevybere sám */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --surface-000: #111111;
-    --surface-100: #1c1c1c;
-    --surface-200: #262626;
+    --surface-000: #14120f;
+    --surface-100: #1e1b17;
+    --surface-200: #2a2620;
     --surface-inverse: #f4eee6;
     --ink: #f4eee6;
-    --ink-muted: #a9a39a;
+    --ink-muted: #b3ab9f;
     --ink-inverse: #141414;
-    --line: #333333;
-    --line-strong: #7a7a7a;
+    --line: #39342d;
+    --line-strong: #80786d;
     --brand-yellow: #f2a400;
     --brand-yellow-hover: #ffb82e;
     --on-yellow: #141414;
@@ -68,6 +82,13 @@
     --cond-good: #f2a400;
     --cond-played: #ff6a4d;
     --shadow-sticker: 3px 3px 0 #f2a400;
+  /* teplá černá jako logo; čáry a pole tlumené, žluté prvky s jantarovým stínem */
+  --rule: #39342d;
+  --input-bg: #14120f;
+  --shadow-on-yellow: 3px 3px 0 #8a5a00;
+  --band-bg: #2a2620;
+  --band-ink: #f4eee6;
+  --band-border: #f2a400;
   }
 }
 

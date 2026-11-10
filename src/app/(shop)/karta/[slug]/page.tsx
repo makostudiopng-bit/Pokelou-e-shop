@@ -156,7 +156,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
           {estimate && !estimate.rejected && (
             <div
               className="flex flex-wrap items-center justify-between gap-3 rounded-[10px] px-5 py-4"
-              style={{ background: "var(--surface-inverse)", color: "var(--ink-inverse)" }}
+              style={{ background: "var(--band-bg)", color: "var(--band-ink)", border: "2px solid var(--band-border)" }}
             >
               <span className="text-[15px] leading-[22px]">
                 Máš tuhle kartu doma?{" "}

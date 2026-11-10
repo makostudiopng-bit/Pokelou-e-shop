@@ -8,7 +8,7 @@ body { background: var(--surface-000); color: var(--ink); font-family: var(--fon
 .pl-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .pl-btn--sm { font-size: 13px; line-height: 18px; padding: 6px 12px; }
 .pl-btn--block { display: flex; width: 100%; }
-.pl-btn--primary { background: var(--brand-yellow); color: var(--on-yellow); border-color: var(--ink); box-shadow: var(--shadow-sticker); }
+.pl-btn--primary { background: var(--brand-yellow); color: var(--on-yellow); border-color: var(--on-yellow); box-shadow: var(--shadow-on-yellow); }
 .pl-btn--primary:hover { background: var(--brand-yellow-hover); transform: translate(-2px, -2px) rotate(-1.5deg); }
 .pl-btn--primary:active { transform: translate(3px, 3px); box-shadow: none; }
 .pl-btn--secondary { background: var(--surface-100); color: var(--ink); border-color: var(--line-strong); }
@@ -63,7 +63,7 @@ body { background: var(--surface-000); color: var(--ink); font-family: var(--fon
 /* Input */
 .pl-field { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-sans); }
 .pl-field__label { font-size: 13px; line-height: 18px; font-weight: 700; color: var(--ink); }
-.pl-field__input { font: 400 15px/22px var(--font-sans); color: var(--ink); background: var(--surface-100); border: 1.5px solid var(--line-strong); border-radius: var(--radius-sm); padding: 9px 12px; min-width: 0; }
+.pl-field__input { font: 400 15px/22px var(--font-sans); color: var(--ink); background: var(--input-bg, var(--surface-100)); border: 1.5px solid var(--line-strong); border-radius: var(--radius-sm); padding: 9px 12px; min-width: 0; }
 .pl-field__input::placeholder { color: var(--ink-muted); }
 .pl-field__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-color: var(--ink); }
 .pl-field__wrap { position: relative; display: flex; }
@@ -115,7 +115,7 @@ body { background: var(--surface-000); color: var(--ink); font-family: var(--fon
 .pl-lift--yellow:hover { background: var(--brand-yellow); }
 .pl-lift--yellow:hover, .pl-lift--yellow:hover * { color: var(--on-yellow) !important; }
 .pl-wiggle-hover:hover, .pl-lift:hover .pl-wiggle-child { animation: pl-wiggle .5s ease-in-out; }
-.pl-sticker-num { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--brand-yellow); color: var(--on-yellow); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); font: 800 30px/1 var(--font-display); }
+.pl-sticker-num { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--brand-yellow); color: var(--on-yellow); border: 3px solid var(--on-yellow); box-shadow: var(--shadow-on-yellow); font: 800 30px/1 var(--font-display); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
