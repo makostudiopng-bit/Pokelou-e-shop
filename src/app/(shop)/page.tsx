@@ -13,7 +13,7 @@ function HeroFan() {
   const [a, c, b] = heroCards;
   return (
     <div className="pl-fan relative h-[300px] min-w-0 flex-[1_1_440px] sm:h-[460px]" aria-hidden="true">
-      <div className="absolute inset-y-0 right-0 left-[8%] top-[34px] rotate-2 rounded-3xl" style={{ background: "var(--on-yellow)" }} />
+      <div className="absolute inset-y-0 right-0 left-[8%] top-[34px] rotate-2 rounded-3xl" style={{ background: "var(--board-back)" }} />
       <div
         className="absolute top-[14px] right-[4%] bottom-5 left-[4%] rounded-3xl border-[3px]"
         style={{
@@ -141,7 +141,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section aria-labelledby="how-h" style={{ background: "var(--surface-200)", borderTop: "3px solid var(--rule)", borderBottom: "3px solid var(--rule)" }}>
+      <section aria-labelledby="how-h" className="pl-section-alt" style={{ borderTop: "3px solid var(--rule)", borderBottom: "3px solid var(--rule)" }}>
         <div className="mx-auto flex max-w-[1280px] flex-col gap-7 px-4 py-14 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
             <h2 id="how-h" className="m-0 text-[44px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>

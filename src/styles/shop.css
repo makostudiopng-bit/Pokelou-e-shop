@@ -154,7 +154,7 @@
 .pl-sell {
   background-color: var(--brand-yellow); color: var(--on-yellow); border-color: var(--on-yellow);
   background-image: radial-gradient(rgba(20,20,20,.16) 2px, transparent 2.4px); background-size: 18px 18px;
-  box-shadow: 8px 8px 0 var(--on-yellow);
+  box-shadow: 8px 8px 0 var(--board-back);
 }
 .pl-sell::after { /* velký obrys mince v rohu */
   content: ""; position: absolute; right: -90px; bottom: -120px; width: 340px; height: 340px; border-radius: 50%;
@@ -300,3 +300,6 @@
 .pl-pos__sale.is-conflict, .pl-pos__sale.is-error { border: 2px solid var(--brand-red); }
 .pl-pos__sale.is-cancelled { opacity: .5; text-decoration: line-through; }
 .pl-pos__toast { position: fixed; left: 50%; top: 76px; z-index: 50; transform: translateX(-50%); max-width: calc(100vw - 32px); background: var(--surface-inverse); color: var(--ink-inverse); font-weight: 800; font-size: 15px; padding: 12px 18px; border-radius: 12px; box-shadow: 4px 4px 0 var(--brand-yellow); animation: pl-suggest-in .2s var(--ease-pop); }
+
+/* Střídavá sekce: ve dne papír o tón tmavší, v noci černá se žlutými tečkami jako ve stories */
+.pl-section-alt { background-color: var(--section-bg, var(--surface-200)); background-image: var(--section-dots, none); background-size: 28px 28px; }

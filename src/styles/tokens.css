@@ -27,18 +27,21 @@
   --band-bg: #141414;
   --band-ink: #f4eee6;
   --band-border: #141414;
+  --board-back: #141414;
+  --section-dots: none;
+  --section-bg: #f1ebe1;
 }
 [data-theme="dark"] {
   color-scheme: dark;
-  --surface-000: #14120f;
-  --surface-100: #1e1b17;
-  --surface-200: #2a2620;
+  --surface-000: #141414;
+  --surface-100: #1e1d1b;
+  --surface-200: #282725;
   --surface-inverse: #f4eee6;
   --ink: #f4eee6;
-  --ink-muted: #b3ab9f;
+  --ink-muted: #aca69d;
   --ink-inverse: #141414;
-  --line: #39342d;
-  --line-strong: #80786d;
+  --line: #3a3936;
+  --line-strong: #85807a;
   --brand-yellow: #f2a400;
   --brand-yellow-hover: #ffb82e;
   --on-yellow: #141414;
@@ -50,27 +53,31 @@
   --cond-good: #f2a400;
   --cond-played: #ff6a4d;
   --shadow-sticker: 3px 3px 0 #f2a400;
-  /* teplá černá jako logo; čáry a pole tlumené, žluté prvky s jantarovým stínem */
-  --rule: #39342d;
-  --input-bg: #14120f;
-  --shadow-on-yellow: 3px 3px 0 #8a5a00;
-  --band-bg: #2a2620;
+  /* noc jako logo a stories: černá #141414, žlutá linka, žluté tečky,
+     tmavé prvky mají žlutý tvrdý stín, barevné (žluté) prvky krémový */
+  --rule: #f2a400;
+  --input-bg: #141414;
+  --shadow-on-yellow: 3px 3px 0 #f4eee6;
+  --band-bg: #1e1d1b;
   --band-ink: #f4eee6;
   --band-border: #f2a400;
+  --board-back: #f4eee6;
+  --section-dots: radial-gradient(rgba(242,164,0,.16) 2px, transparent 2.6px);
+  --section-bg: #141414;
 }
 /* Noční verze podle nastavení zařízení, dokud si zákazník nevybere sám */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --surface-000: #14120f;
-    --surface-100: #1e1b17;
-    --surface-200: #2a2620;
+  color-scheme: dark;
+    --surface-000: #141414;
+    --surface-100: #1e1d1b;
+    --surface-200: #282725;
     --surface-inverse: #f4eee6;
     --ink: #f4eee6;
-    --ink-muted: #b3ab9f;
+    --ink-muted: #aca69d;
     --ink-inverse: #141414;
-    --line: #39342d;
-    --line-strong: #80786d;
+    --line: #3a3936;
+    --line-strong: #85807a;
     --brand-yellow: #f2a400;
     --brand-yellow-hover: #ffb82e;
     --on-yellow: #141414;
@@ -82,13 +89,17 @@
     --cond-good: #f2a400;
     --cond-played: #ff6a4d;
     --shadow-sticker: 3px 3px 0 #f2a400;
-  /* teplá černá jako logo; čáry a pole tlumené, žluté prvky s jantarovým stínem */
-  --rule: #39342d;
-  --input-bg: #14120f;
-  --shadow-on-yellow: 3px 3px 0 #8a5a00;
-  --band-bg: #2a2620;
-  --band-ink: #f4eee6;
-  --band-border: #f2a400;
+    /* noc jako logo a stories: černá #141414, žlutá linka, žluté tečky,
+       tmavé prvky mají žlutý tvrdý stín, barevné (žluté) prvky krémový */
+    --rule: #f2a400;
+    --input-bg: #141414;
+    --shadow-on-yellow: 3px 3px 0 #f4eee6;
+    --band-bg: #1e1d1b;
+    --band-ink: #f4eee6;
+    --band-border: #f2a400;
+    --board-back: #f4eee6;
+    --section-dots: radial-gradient(rgba(242,164,0,.16) 2px, transparent 2.6px);
+    --section-bg: #141414;
   }
 }
 
