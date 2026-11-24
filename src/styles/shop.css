@@ -311,3 +311,13 @@
   :root:not([data-theme="light"]) .pl-lift--yellow:hover { background: var(--surface-100); border-color: var(--brand-yellow); }
   :root:not([data-theme="light"]) .pl-lift--yellow:hover, :root:not([data-theme="light"]) .pl-lift--yellow:hover * { color: var(--brand-yellow) !important; }
 }
+
+/* Nadpis v noci: „Sbírej“ oranžově (brand žlutá), zvýrazňovač pod ním červený */
+[data-theme="dark"] .pl-word.pl-hl { color: var(--brand-yellow); }
+[data-theme="dark"] .pl-word.pl-hl::before { background: var(--brand-red); }
+[data-theme="dark"] .pl-word.pl-hl:hover { text-shadow: 5px 5px 0 var(--ink); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pl-word.pl-hl { color: var(--brand-yellow); }
+  :root:not([data-theme="light"]) .pl-word.pl-hl::before { background: var(--brand-red); }
+  :root:not([data-theme="light"]) .pl-word.pl-hl:hover { text-shadow: 5px 5px 0 var(--ink); }
+}
