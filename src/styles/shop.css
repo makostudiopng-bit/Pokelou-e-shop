@@ -303,3 +303,11 @@
 
 /* Střídavá sekce: ve dne papír o tón tmavší, v noci černá se žlutými tečkami jako ve stories */
 .pl-section-alt { background-color: var(--section-bg, var(--surface-200)); background-image: var(--section-dots, none); background-size: 28px 28px; }
+
+/* Edice v noci: po najetí zůstane dlaždice tmavá, text, rámeček a stín zežloutnou (čitelnější než černá na žluté) */
+[data-theme="dark"] .pl-lift--yellow:hover { background: var(--surface-100); border-color: var(--brand-yellow); }
+[data-theme="dark"] .pl-lift--yellow:hover, [data-theme="dark"] .pl-lift--yellow:hover * { color: var(--brand-yellow) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pl-lift--yellow:hover { background: var(--surface-100); border-color: var(--brand-yellow); }
+  :root:not([data-theme="light"]) .pl-lift--yellow:hover, :root:not([data-theme="light"]) .pl-lift--yellow:hover * { color: var(--brand-yellow) !important; }
+}
