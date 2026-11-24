@@ -1,4 +1,5 @@
 // Filtry a řazení katalogu jako čisté funkce: parametry z URL → výběr nabídek.
+import { FALLBACK_EUR_CZK } from "./pricing";
 import { CONDITIONS, type Condition } from "@/db/schema";
 
 /** Jedna nabídka = jeden skladový kus (karta v daném stavu, jazyce a provedení). */
@@ -42,8 +43,10 @@ export type CatalogQuery = {
   conditions: Condition[];
   langs: string[];
   finishes: string[];
-  min?: number; // Kč
-  max?: number; // Kč
+  min?: number; // Kč, nebo eura když eur
+  max?: number;
+  /** cenové rozpětí je v eurech (anglická verze, ?mena=eur) */
+  eur: boolean;
   soldOut: boolean;
   /** jen nově naskladněné */
   fresh: boolean;
@@ -71,6 +74,7 @@ export function parseQuery(p: Params): CatalogQuery {
     finishes: all(p.provedeni),
     min: kc(one(p.od)),
     max: kc(one(p.do)),
+    eur: one(p.mena) === "eur",
     soldOut: one(p.vyprodane) === "1",
     fresh: one(p.novinky) === "1",
     sort: sort in SORTS ? (sort as Sort) : "nove",
@@ -89,6 +93,7 @@ export function toSearch(q: CatalogQuery, patch: Partial<CatalogQuery> = {}) {
   v.finishes.forEach((x) => sp.append("provedeni", x));
   if (v.min != null) sp.set("od", String(v.min));
   if (v.max != null) sp.set("do", String(v.max));
+  if (v.eur && (v.min != null || v.max != null)) sp.set("mena", "eur");
   if (v.soldOut) sp.set("vyprodane", "1");
   if (v.fresh) sp.set("novinky", "1");
   if (v.sort !== "nove") sp.set("razeni", v.sort);
@@ -119,8 +124,10 @@ export function matchesSearch(o: Offer, q: string) {
     .every((t) => hay.includes(t));
 }
 
-export function applyQuery(offers: Offer[], q: CatalogQuery, now = Date.now()) {
+/** eurCzk: kurz pro cenové rozpětí zadané v eurech. */
+export function applyQuery(offers: Offer[], q: CatalogQuery, eurCzk = FALLBACK_EUR_CZK, now = Date.now()) {
   const setKeys = new Set(q.sets.map(norm));
+  const unitHal = q.eur ? eurCzk * 100 : 100;
   const filtered = offers.filter(
     (o) =>
       (q.soldOut || o.stock > 0) &&
@@ -130,8 +137,8 @@ export function applyQuery(offers: Offer[], q: CatalogQuery, now = Date.now()) {
       (q.conditions.length === 0 || q.conditions.includes(o.condition)) &&
       (q.langs.length === 0 || q.langs.includes(o.lang)) &&
       (q.finishes.length === 0 || q.finishes.includes(o.finish || "Běžné")) &&
-      (q.min == null || o.priceHal >= q.min * 100) &&
-      (q.max == null || o.priceHal <= q.max * 100),
+      (q.min == null || o.priceHal >= q.min * unitHal) &&
+      (q.max == null || o.priceHal <= q.max * unitHal),
   );
 
   const byNumber = (a: Offer, b: Offer) => {

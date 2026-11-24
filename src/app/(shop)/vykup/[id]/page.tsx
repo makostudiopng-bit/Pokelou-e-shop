@@ -32,7 +32,8 @@ export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[
           </h1>
           <p className="m-0 text-[17px] leading-[26px]">
             {t("Číslo výkupu")} <strong style={{ fontFamily: "var(--font-mono)" }}>{req.number}</strong>. {t("Nezávazný odhad")}{" "}
-            <strong>{t.czk(req.estimateHal)}</strong> {req.payout === "credit" ? t("v kreditu") : t("na účet")} {t("platí do {date}.", { date: validTo })} {t("Přesnou nabídku ti pošleme po fyzické kontrole karet.")}
+            <strong>{t.czk(req.estimateHal)}</strong>
+            {t.eur(req.estimateHal) && ` (${t.eur(req.estimateHal)})`} {req.payout === "credit" ? t("v kreditu") : t("na účet")} {t("platí do {date}.", { date: validTo })} {t("Přesnou nabídku ti pošleme po fyzické kontrole karet.")}
           </p>
         </div>
       </section>

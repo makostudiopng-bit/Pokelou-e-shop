@@ -68,14 +68,14 @@ export async function BuybackBanner() {
               <dl className="pl-ticket__rows">
                 <div>
                   <dt>{t("Na účet (peníze)")}</dt>
-                  <dd>{t.czk(cash.totalHal)}</dd>
+                  <dd>{t.price(cash.totalHal)}</dd>
                 </div>
                 <div className="pl-ticket__best">
                   <dt>{t("Kreditem")}</dt>
-                  <dd>{t.czk(credit.totalHal)}</dd>
+                  <dd>{t.price(credit.totalHal)}</dd>
                 </div>
               </dl>
-              <span className="pl-ticket__bonus">{t("+{amount} navíc za kredit", { amount: t.czk(credit.totalHal - cash.totalHal) })}</span>
+              <span className="pl-ticket__bonus">{t("+{amount} navíc za kredit", { amount: t.price(credit.totalHal - cash.totalHal) })}</span>
             </figure>
           </div>
         )}

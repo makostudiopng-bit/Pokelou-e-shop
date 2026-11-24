@@ -4,10 +4,10 @@ import { getDb, hasDb, type Db } from "@/db";
 import * as s from "@/db/schema";
 import { demoCards, demoLow, demoTrend } from "@/data/demo";
 import { BUYBACK_MAX_ITEMS, ESTIMATE_VALID_DAYS, estimateItem, type BuybackCard, type BuybackItemInput } from "./buyback-shared";
-import { DEFAULT_RULES, eurToHal, resolveRules, type RuleValues } from "./pricing";
+import { DEFAULT_RULES, eurToHal, FALLBACK_EUR_CZK, resolveRules, type RuleValues } from "./pricing";
 import { ruleFromRow } from "./sync";
 
-export const FALLBACK_EUR_CZK = 24.3;
+export { FALLBACK_EUR_CZK };
 
 export async function latestRate(db: Db) {
   const [r] = await db.select().from(s.exchangeRates).orderBy(desc(s.exchangeRates.day)).limit(1);

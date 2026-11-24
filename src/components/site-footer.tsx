@@ -31,6 +31,12 @@ export async function SiteFooter() {
         </nav>
       </div>
       <p className="mx-auto max-w-[1280px] px-4 pb-6 text-xs leading-[18px] sm:px-6" style={{ color: "var(--ink-muted)" }}>
+        {t.locale !== "cs" && (
+          <>
+            {t("Ceny v eurech jsou orientační, přepočtené podle kurzu ČNB {rate} Kč za euro. Platí se v korunách (CZK).", { rate: t.eurCzk.toFixed(2) })}
+            <br />
+          </>
+        )}
         {t("Pokémon a související názvy jsou ochranné známky společností Nintendo, Creatures Inc., GAME FREAK Inc. a The Pokémon Company. PokeLou s nimi není spojen.")}
       </p>
     </footer>

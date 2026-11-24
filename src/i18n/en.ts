@@ -53,6 +53,12 @@ export const EN: Record<string, string> = {
   "od": "from",
   "do": "to",
 
+  "Ceny v eurech jsou orientační, přepočtené podle kurzu ČNB {rate} Kč za euro. Platí se v korunách (CZK).":
+    "Euro prices are approximate, converted at the Czech National Bank rate of {rate} CZK per euro. Payment is in Czech crowns (CZK).",
+  "Platí se v korunách (CZK). Částka v eurech je orientační podle kurzu ČNB {rate} Kč za euro.":
+    "You pay in Czech crowns (CZK). The euro amount is approximate, at the Czech National Bank rate of {rate} CZK per euro.",
+  "platíš {amount}": "you pay {amount}",
+
   // ——— Úvodní stránka ———
   "VÝKUP ✦ ZA KREDIT ✦ I ZA PENÍZE ✦": "WE BUY ✦ FOR CREDIT ✦ OR CASH ✦",
   "Pokémon single · prodej a výkup": "Pokémon singles · buy & sell",

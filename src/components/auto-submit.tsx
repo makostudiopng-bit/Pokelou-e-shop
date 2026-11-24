@@ -22,7 +22,11 @@ export function AutoSubmit({ formId }: { formId: string }) {
     // Posluchač na formuláři běží dřív než odeslání v next/form (to poslouchá až na kořeni).
     const onSubmit = () => {
       const fields = [...form.elements, ...document.querySelectorAll(`[form="${formId}"]`)] as HTMLInputElement[];
-      const off = fields.filter((el) => el.name && !el.disabled && (el.value === "" || (el.name === "razeni" && el.value === "nove")));
+      // měna rozpětí (mena=eur) má smysl jen s vyplněnou cenou
+      const noPrice = fields.every((el) => (el.name !== "od" && el.name !== "do") || el.value.trim() === "");
+      const off = fields.filter(
+        (el) => el.name && !el.disabled && (el.value === "" || (el.name === "razeni" && el.value === "nove") || (el.name === "mena" && noPrice)),
+      );
       off.forEach((el) => (el.disabled = true));
       setTimeout(() => off.forEach((el) => (el.disabled = false)));
     };

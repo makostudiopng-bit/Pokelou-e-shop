@@ -29,7 +29,7 @@ function activeChips(q: CatalogQuery, t: T) {
   for (const l of q.langs) chips.push({ label: l, href: href({ langs: q.langs.filter((x) => x !== l) }) });
   for (const f of q.finishes) chips.push({ label: f, href: href({ finishes: q.finishes.filter((x) => x !== f) }) });
   if (q.min != null || q.max != null)
-    chips.push({ label: `${q.min ?? 0}–${q.max ?? "∞"} ${t("Kč")}`, href: href({ min: undefined, max: undefined }) });
+    chips.push({ label: `${q.min ?? 0}–${q.max ?? "∞"} ${q.eur ? "€" : t("Kč")}`, href: href({ min: undefined, max: undefined, eur: false }) });
   if (q.fresh) chips.push({ label: t("nově naskladněné"), href: href({ fresh: false }) });
   if (q.soldOut) chips.push({ label: t("i vyprodané"), href: href({ soldOut: false }) });
   return chips;
@@ -40,7 +40,10 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
   const t = await getT();
   const { offers, demo } = await getOffers();
   const f = facets(offers);
-  const res = applyQuery(offers, q);
+  const res = applyQuery(offers, q, t.eurCzk);
+  // cenové pole v měně stránky: anglicky v eurech, česky v korunách (rozpětí z odkazu v druhé měně se přepočte)
+  const priceEur = t.locale !== "cs";
+  const inCur = (v?: number) => (v == null ? undefined : q.eur === priceEur ? v : Math.round(priceEur ? v / t.eurCzk : v * t.eurCzk));
   const inStock = offers.filter((o) => o.stock > 0).length;
   const freshCount = offers.filter((o) => o.stock > 0 && isNew(o)).length;
   const chips = activeChips(q, t);
@@ -70,6 +73,7 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <Form id={FORM} action="/karty" className="contents">
           {q.q && <input type="hidden" name="q" value={q.q} />}
+          {priceEur && <input type="hidden" name="mena" value="eur" />}
           <details className="pl-filters md:w-[260px] md:flex-none">
             <summary>{t("Filtry")}{chips.length > 0 && ` (${chips.length})`}</summary>
             {/* key: po změně adresy (např. „Zrušit vše“) se pole znovu vytvoří podle URL, jinak by zůstala zaškrtnutá */}
@@ -132,8 +136,8 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
                 <div className="flex gap-3">
                   {(
                     [
-                      ["od", t("od"), q.min, "0"],
-                      ["do", t("do"), q.max, "10 000"],
+                      ["od", t("od"), inCur(q.min), "0"],
+                      ["do", t("do"), inCur(q.max), priceEur ? "400" : "10 000"],
                     ] as const
                   ).map(([name, label, v, ph]) => (
                     <label key={name} className="pl-field min-w-0 flex-1">
@@ -147,7 +151,7 @@ export default async function KartyPage({ searchParams }: PageProps<"/karty">) {
                           placeholder={ph}
                           defaultValue={v ?? ""}
                         />
-                        <span className="pl-field__suffix">{t("Kč")}</span>
+                        <span className="pl-field__suffix">{priceEur ? "€" : t("Kč")}</span>
                       </span>
                     </label>
                   ))}

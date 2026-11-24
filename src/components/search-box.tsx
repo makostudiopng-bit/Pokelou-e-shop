@@ -173,7 +173,7 @@ export function SearchBox() {
                         <>
                           <span className="text-[15px] leading-5 font-extrabold whitespace-nowrap">
                             {s.priceRange && <span className="text-[12px] font-bold" style={{ color: "var(--ink-muted)" }}>{t("od")} </span>}
-                            {t.czk(s.fromHal)}
+                            {t.price(s.fromHal)}
                           </span>
                           <span className="text-[12px] leading-4 font-bold" style={{ color: "var(--success)" }}>
                             {t("{n} ks skladem", { n: s.stock })}

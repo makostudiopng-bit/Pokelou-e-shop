@@ -95,7 +95,10 @@ export default async function ObjednavkaPage({ params }: PageProps<"/objednavka/
             </p>
             <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-[15px]">
               <dt style={{ color: "var(--ink-muted)" }}>{t("Částka")}</dt>
-              <dd className="m-0 text-lg font-extrabold">{t.czk(o.totalHal)}</dd>
+              <dd className="m-0 text-lg font-extrabold">
+                {t.czk(o.totalHal)}
+                {t.eur(o.totalHal) && <span className="ml-2 text-[13px] font-bold" style={{ color: "var(--ink-muted)" }}>{t.eur(o.totalHal)}</span>}
+              </dd>
               <dt style={{ color: "var(--ink-muted)" }}>{t("Číslo účtu")}</dt>
               <dd className="m-0 font-bold" style={{ fontFamily: "var(--font-mono)" }}>
                 {SHOP.bankAccount ?? (iban ? formatIban(iban) : "[ČÍSLO ÚČTU – doplní klient]")}
@@ -210,7 +213,10 @@ export default async function ObjednavkaPage({ params }: PageProps<"/objednavka/
           <dt style={{ color: "var(--ink-muted)" }}>{t("Platba")} · {pay && t(pay.title)}</dt>
           <dd className="m-0 text-right font-bold">{o.codFeeHal ? `+ ${t.czk(o.codFeeHal)}` : ""}</dd>
           <dt className="font-extrabold">{t("Celkem")}</dt>
-          <dd className="m-0 text-right text-lg font-extrabold">{t.czk(o.totalHal)}</dd>
+          <dd className="m-0 text-right text-lg font-extrabold">
+            {t.czk(o.totalHal)}
+            {t.eur(o.totalHal) && <span className="block text-[13px] font-bold" style={{ color: "var(--ink-muted)" }}>{t.eur(o.totalHal)}</span>}
+          </dd>
         </dl>
       </section>
 

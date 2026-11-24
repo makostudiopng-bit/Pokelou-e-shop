@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<"/karta/[slug]">): 
   const v = card.variants[0];
   return {
     title: `${v.name} ${v.number} (${v.set})`,
-    description: t("{name}, {set} {number}, {rarity}. Od {price}.", { name: v.name, set: v.set, number: v.number, rarity: v.rarity, price: t.czk(Math.min(...card.variants.map((x) => x.priceHal))) }),
+    description: t("{name}, {set} {number}, {rarity}. Od {price}.", { name: v.name, set: v.set, number: v.number, rarity: v.rarity, price: t.price(Math.min(...card.variants.map((x) => x.priceHal))) }),
   };
 }
 
@@ -112,7 +112,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                       {v.stock > 0 ? t("Skladem {n} ks", { n: v.stock }) : t("Vyprodáno")}
                     </span>
                   </span>
-                  <strong className="text-right text-lg leading-6 whitespace-nowrap sm:min-w-24">{t.czk(v.priceHal)}</strong>
+                  <strong className="text-right text-lg leading-6 whitespace-nowrap sm:min-w-24">{t.price(v.priceHal)}</strong>
                 </Link>
               );
             })}
@@ -128,7 +128,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
             ) : (
               <>
                 <div className="min-w-0 flex-[1_1_320px]">
-                  <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`${t("Do košíku")} · ${t.czk(selected.priceHal)}`} />
+                  <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`${t("Do košíku")} · ${t.price(selected.priceHal)}`} />
                 </div>
                 <Button variant="secondary">{t("Hlídat cenu")}</Button>
               </>
@@ -167,7 +167,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                   t("Vezmeme ji v rámci hromadného výkupu.")
                 ) : (
                   <>
-                    {t("Vykoupíme ji, nezávazný odhad v Near Mint")} <strong>{t.czk(estimate.unitHal)}</strong>.
+                    {t("Vykoupíme ji, nezávazný odhad v Near Mint")} <strong>{t.price(estimate.unitHal)}</strong>.
                   </>
                 )}
               </span>

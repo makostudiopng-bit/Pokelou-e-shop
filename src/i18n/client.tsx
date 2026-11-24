@@ -4,13 +4,14 @@
 import { createContext, useContext, useMemo } from "react";
 import { DEFAULT_LOCALE, makeT, type Locale } from "./core";
 
-const Ctx = createContext<Locale>(DEFAULT_LOCALE);
+const Ctx = createContext<{ locale: Locale; eurCzk?: number }>({ locale: DEFAULT_LOCALE });
 
-export function LocaleProvider({ locale, children }: { locale: Locale; children: React.ReactNode }) {
-  return <Ctx.Provider value={locale}>{children}</Ctx.Provider>;
+export function LocaleProvider({ locale, eurCzk, children }: { locale: Locale; eurCzk?: number; children: React.ReactNode }) {
+  const value = useMemo(() => ({ locale, eurCzk }), [locale, eurCzk]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
 export function useT() {
-  const locale = useContext(Ctx);
-  return useMemo(() => makeT(locale), [locale]);
+  const { locale, eurCzk } = useContext(Ctx);
+  return useMemo(() => makeT(locale, eurCzk), [locale, eurCzk]);
 }

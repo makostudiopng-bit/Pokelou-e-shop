@@ -107,8 +107,8 @@ export async function CardTile(p: CardTileProps) {
       </div>
       <div className="pl-tile__row">
         <div>
-          {drop && <span className="pl-tile__was">{t.czk(p.wasPriceHal!)}</span>}
-          <span className={cx("pl-tile__price", drop && "pl-tile__drop")}>{t.czk(p.priceHal)}</span>
+          {drop && <span className="pl-tile__was">{t.price(p.wasPriceHal!)}</span>}
+          <span className={cx("pl-tile__price", drop && "pl-tile__drop")}>{t.price(p.priceHal)}</span>
           <div className={cx("pl-tile__stock", out && "pl-tile__stock--out")}>
             {out ? t("Vyprodáno") : t("Skladem {n} ks", { n: p.stock })}
           </div>

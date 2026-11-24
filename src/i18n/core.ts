@@ -1,6 +1,7 @@
 // Překlady. Klíčem je český text (čeština je výchozí jazyk webu), anglický slovník je v en.ts.
 // Chybějící překlad se ukáže česky, test i18n.test.ts hlídá, že žádný nechybí.
 // Soubor běží na serveru i v prohlížeči, nesmí proto importovat nic serverového.
+import { FALLBACK_EUR_CZK } from "@/lib/pricing";
 import { type Locale } from "./config";
 import { EN } from "./en";
 
@@ -16,8 +17,17 @@ export type T = {
   locale: Locale;
   /** Množné číslo: klíč „{n} karta|{n} karty|{n} karet“ (česky 1 | 2–4 | 5+), anglicky „{n} card|{n} cards“. */
   p: (n: number, key: string, vars?: Vars) => string;
-  /** Cena z haléřů: „1 290 Kč“ / „1,290 CZK“. */
+  /**
+   * Cena k zobrazení: česky „1 290 Kč“, anglicky orientačně v eurech „€51.19“ (kurz ČNB).
+   * Pro částky, které zákazník opravdu platí nebo dostane, použij czk() + eur().
+   */
+  price: (hal: number) => string;
+  /** Závazná částka vždy v korunách: „1 290 Kč“ / „1,290 CZK“. */
   czk: (hal: number) => string;
+  /** Orientační přepočet „≈ €51.19“ (jen v angličtině, česky prázdný řetězec). */
+  eur: (hal: number) => string;
+  /** Kurz EUR/CZK, podle kterého se přepočítává. */
+  eurCzk: number;
   /** Datum bez času. */
   date: (d: Date) => string;
 };
@@ -46,7 +56,10 @@ export function translate(locale: Locale, key: string) {
   return hit ?? key;
 }
 
-export function makeT(locale: Locale): T {
+const EUR = new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" });
+const toEur = (hal: number, eurCzk: number) => EUR.format(hal / 100 / eurCzk);
+
+export function makeT(locale: Locale, eurCzk: number = FALLBACK_EUR_CZK): T {
   const t = ((key: string, vars?: Vars) => fill(translate(locale, key), vars)) as T;
   t.locale = locale;
   t.p = (n, key, vars) => {
@@ -55,6 +68,9 @@ export function makeT(locale: Locale): T {
     return fill(forms[Math.min(i, forms.length - 1)], { n, ...vars });
   };
   t.czk = locale === "cs" ? czkCs : czkEn;
+  t.price = locale === "cs" ? czkCs : (hal) => toEur(hal, eurCzk);
+  t.eur = locale === "cs" ? () => "" : (hal) => `≈ ${toEur(hal, eurCzk)}`;
+  t.eurCzk = eurCzk;
   t.date = (d) =>
     d.toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-GB", locale === "cs" ? { day: "numeric", month: "numeric", year: "numeric" } : { day: "numeric", month: "short", year: "numeric" });
   return t;

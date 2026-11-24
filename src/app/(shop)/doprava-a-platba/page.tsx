@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DopravaAPlatbaPage() {
   const t = await getT();
-  const czk = (hal: number) => (hal === 0 ? t("zdarma") : t.czk(hal));
+  const czk = (hal: number) => (hal === 0 ? t("zdarma") : t.price(hal));
   return (
     <LegalPage title={t("Doprava a platba")} updated="[DATUM SPUŠTĚNÍ]">
       <h2>{t("Doprava")}</h2>

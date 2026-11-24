@@ -67,6 +67,9 @@ describe("applyQuery", () => {
     expect(applyQuery(offers, parseQuery({ stav: "EX" })).items.map((x) => x.id)).toEqual(["a"]);
     expect(applyQuery(offers, parseQuery({ jazyk: "JP" })).items.map((x) => x.id)).toEqual(["d"]);
     expect(applyQuery(offers, parseQuery({ od: "200", do: "400" })).items.map((x) => x.id)).toEqual(["a"]);
+    // anglická verze: rozpětí v eurech, 8–16 € při kurzu 25 = 200–400 Kč
+    expect(applyQuery(offers, parseQuery({ od: "8", do: "16", mena: "eur" }), 25).items.map((x) => x.id)).toEqual(["a"]);
+    expect(toSearch(parseQuery({ od: "8", mena: "eur" }))).toBe("?od=8&mena=eur");
   });
 
   it("řadí podle ceny", () => {

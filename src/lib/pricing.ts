@@ -50,6 +50,9 @@ export function resolveRules(...layers: (PartialRule | null | undefined)[]): Rul
 }
 
 /** Tržní cena v EUR → haléře podle kurzu. */
+/** Kurz pro případ, že databáze ještě nemá žádný kurz ČNB (ukázková data, výpadek). */
+export const FALLBACK_EUR_CZK = 24.3;
+
 export function eurToHal(eur: number, eurCzk: number): number {
   return Math.round(eur * eurCzk * 100);
 }

@@ -274,11 +274,15 @@ function Fields({
           )}
         </dl>
         <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--on-yellow)", boxShadow: "var(--shadow-on-yellow)" }}>
-          <span className="text-[15px] font-extrabold">{t("Celkem")}</span>
+          <span className="flex flex-col">
+            <span className="text-[15px] font-extrabold">{t("Celkem")}</span>
+            {t.eur(sum.totalHal) && <span className="text-[13px] font-bold opacity-80">{t.eur(sum.totalHal)}</span>}
+          </span>
           <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }} aria-live="polite">
             {t.czk(sum.totalHal)}
           </strong>
         </div>
+        {t.locale !== "cs" && <p className="pl-note m-0">{t("Platí se v korunách (CZK). Částka v eurech je orientační podle kurzu ČNB {rate} Kč za euro.", { rate: t.eurCzk.toFixed(2) })}</p>}
         <div className="flex flex-col gap-1">
           <label className="pl-check items-start text-[13px] leading-[18px]">
             <input type="checkbox" name="terms" defaultChecked={v?.terms} aria-invalid={e.terms ? true : undefined} aria-describedby={e.terms ? "f-terms-err" : undefined} className="mt-0.5" />

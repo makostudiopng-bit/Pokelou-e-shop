@@ -92,10 +92,10 @@ export default async function KosikPage() {
                 </div>
 
                 <div className="flex min-w-[110px] flex-col text-right">
-                  <strong className="text-xl leading-6 font-extrabold">{t.czk(lineHal)}</strong>
+                  <strong className="text-xl leading-6 font-extrabold">{t.price(lineHal)}</strong>
                   {qty > 1 && (
                     <span className="text-xs" style={{ color: "var(--ink-muted)" }}>
-                      {t.czk(o.priceHal)} / {t("ks")}
+                      {t.price(o.priceHal)} / {t("ks")}
                     </span>
                   )}
                 </div>
@@ -149,12 +149,12 @@ export default async function KosikPage() {
             </h2>
             <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2.5 text-[15px] leading-[22px]">
               <dt style={{ color: "var(--ink-muted)" }}>{t("Karty")} ({t.p(cart.count, "{n} kus|{n} kusy|{n} kusů")})</dt>
-              <dd className="m-0 text-right font-bold">{t.czk(cart.subtotalHal)}</dd>
+              <dd className="m-0 text-right font-bold">{t.price(cart.subtotalHal)}</dd>
               {discountHal > 0 && (
                 <>
                   <dt style={{ color: "var(--ink-muted)" }}>{t("Sleva")} {discount.status === "ok" && discount.code}</dt>
                   <dd className="m-0 text-right font-bold" style={{ color: "var(--success)" }}>
-                    −{t.czk(discountHal)}
+                    −{t.price(discountHal)}
                   </dd>
                 </>
               )}
@@ -167,9 +167,12 @@ export default async function KosikPage() {
               className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5"
               style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--on-yellow)", boxShadow: "var(--shadow-on-yellow)" }}
             >
-              <span className="text-[15px] font-extrabold">{t("Celkem")}</span>
+              <span className="flex flex-col">
+                <span className="text-[15px] font-extrabold">{t("Celkem")}</span>
+                {t.locale !== "cs" && <span className="text-[13px] font-bold opacity-80">{t("platíš {amount}", { amount: t.czk(cart.subtotalHal - discountHal) })}</span>}
+              </span>
               <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }}>
-                {t.czk(cart.subtotalHal - discountHal)}
+                {t.price(cart.subtotalHal - discountHal)}
               </strong>
             </div>
             <DiscountForm
