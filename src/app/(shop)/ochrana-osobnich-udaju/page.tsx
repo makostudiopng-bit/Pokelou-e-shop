@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { LegalPage, Operator, Ph } from "@/components/legal";
+import { getT } from "@/i18n/server";
 import { SHOP } from "@/config/shop";
 
-export const metadata: Metadata = { title: "Ochrana osobních údajů" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Ochrana osobních údajů") };
+}
 
 export default function OchranaUdajuPage() {
   return (
-    <LegalPage title="Ochrana osobních údajů" updated="[DATUM SPUŠTĚNÍ]">
+    <LegalPage title="Ochrana osobních údajů" updated="[DATUM SPUŠTĚNÍ]" czechOnly>
       <h2>Kdo údaje zpracovává</h2>
       <p>
         Správcem osobních údajů je <Operator />. S dotazy k osobním údajům piš na {SHOP.email}.

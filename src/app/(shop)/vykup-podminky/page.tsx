@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, Operator, Ph } from "@/components/legal";
+import { getT } from "@/i18n/server";
 import { SHOP } from "@/config/shop";
 import { DEFAULT_RULES } from "@/lib/pricing";
 
-export const metadata: Metadata = { title: "Podmínky výkupu" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Podmínky výkupu") };
+}
 
 export default function VykupPodminkyPage() {
   return (
-    <LegalPage title="Podmínky výkupu" updated="[DATUM SPUŠTĚNÍ]">
+    <LegalPage title="Podmínky výkupu" updated="[DATUM SPUŠTĚNÍ]" czechOnly>
       <p>
         Karty od tebe vykupuje <Operator />. Odesláním výkupního formuláře s těmito podmínkami souhlasíš.
       </p>

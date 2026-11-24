@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useActionState, useState, type ReactNode } from "react";
 import type { PaymentId, ShippingId } from "@/config/shop";
 import { paymentAllowed, totals } from "@/lib/checkout-calc";
-import { formatCzk } from "@/lib/pricing";
+import type { T } from "@/i18n/core";
+import { useT } from "@/i18n/client";
 import { placeOrderAction, type CheckoutState } from "./actions";
 
 type Option = { id: string; title: string; note: string; priceHal: number };
 export type SummaryItem = { id: string; name: string; meta: string; lineHal: number; image: string | null };
 
-const priceText = (hal: number, plus = false) => (hal === 0 ? "zdarma" : `${plus ? "+ " : ""}${formatCzk(hal)}`);
+const priceText = (t: T, hal: number, plus = false) => (hal === 0 ? t("zdarma") : `${plus ? "+ " : ""}${t.czk(hal)}`);
 
 function Field({
   name,
@@ -146,6 +147,7 @@ function Fields({
   pickupAddress: string;
   pending: boolean;
 }) {
+  const t = useT();
   const v = state.values;
   const e = state.errors;
   const [ship, setShip] = useState<ShippingId>((v?.shipping as ShippingId) ?? "zasilkovna");
@@ -153,7 +155,7 @@ function Fields({
   const [company, setCompany] = useState(Boolean(v?.company));
   // když vybraná platba k dopravě nesedí, přepni na převod
   const pay: PaymentId = paymentAllowed(payPick, ship, cardEnabled) ? payPick : "bank_transfer";
-  const t = totals(subtotalHal, ship, pay, discount?.discountHal ?? 0);
+  const sum = totals(subtotalHal, ship, pay, discount?.discountHal ?? 0);
   const shipTitle = shipping.find((s) => s.id === ship)?.title;
 
   return (
@@ -165,45 +167,45 @@ function Fields({
           </p>
         )}
 
-        <Section n={1} title="Kontakt">
+        <Section n={1} title={t("Kontakt")}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field name="email" label="E-mail" type="email" autoComplete="email" inputMode="email" placeholder="jan@email.cz" hint="Pošleme sem potvrzení a sledování zásilky." defaultValue={v?.email} error={e.email} />
-            <Field name="phone" label="Telefon" type="tel" autoComplete="tel" inputMode="tel" placeholder="+420 777 123 456" hint="Kvůli doručení zásilky." defaultValue={v?.phone} error={e.phone} />
-            <Field name="name" label="Jméno a příjmení" autoComplete="name" placeholder="Jan Novák" defaultValue={v?.name} error={e.name} className="sm:col-span-2" />
+            <Field name="email" label={t("E-mail")} type="email" autoComplete="email" inputMode="email" placeholder={t("jan@email.cz")} hint={t("Pošleme sem potvrzení a sledování zásilky.")} defaultValue={v?.email} error={e.email} />
+            <Field name="phone" label={t("Telefon")} type="tel" autoComplete="tel" inputMode="tel" placeholder="+420 777 123 456" hint={t("Kvůli doručení zásilky.")} defaultValue={v?.phone} error={e.phone} />
+            <Field name="name" label={t("Jméno a příjmení")} autoComplete="name" placeholder={t("Jan Novák")} defaultValue={v?.name} error={e.name} className="sm:col-span-2" />
           </div>
-          <p className="pl-note m-0">Účet nepotřebuješ, objednáš i bez registrace.</p>
+          <p className="pl-note m-0">{t("Účet nepotřebuješ, objednáš i bez registrace.")}</p>
         </Section>
 
-        <Section n={2} title="Doprava">
-          <div role="radiogroup" aria-label="Doprava" className="flex flex-col gap-2.5">
+        <Section n={2} title={t("Doprava")}>
+          <div role="radiogroup" aria-label={t("Doprava")} className="flex flex-col gap-2.5">
             {shipping.map((o) => (
-              <Choice key={o.id} name="shipping" value={o.id} checked={ship === o.id} onPick={() => setShip(o.id as ShippingId)} title={o.title} note={o.note} price={priceText(o.priceHal)} />
+              <Choice key={o.id} name="shipping" value={o.id} checked={ship === o.id} onPick={() => setShip(o.id as ShippingId)} title={o.title} note={o.note} price={priceText(t, o.priceHal)} />
             ))}
           </div>
           {ship === "zasilkovna" && (
-            <Field name="point" label="Výdejní místo nebo Z-BOX" placeholder="Např. Z-BOX Praha 3, Seifertova 12" hint="Výběr na mapě připojíme se Zásilkovnou. Zatím stačí napsat adresu nebo název místa." defaultValue={v?.point} error={e.point} />
+            <Field name="point" label={t("Výdejní místo nebo Z-BOX")} placeholder={t("Např. Z-BOX Praha 3, Seifertova 12")} hint={t("Výběr na mapě připojíme se Zásilkovnou. Zatím stačí napsat adresu nebo název místa.")} defaultValue={v?.point} error={e.point} />
           )}
           {ship === "ceska_posta" && (
             <div className="grid gap-4 sm:grid-cols-[2fr_1.4fr_1fr]">
-              <Field name="street" label="Ulice a číslo" autoComplete="street-address" placeholder="Dlouhá 12" defaultValue={v?.street} error={e.street} />
-              <Field name="city" label="Město" autoComplete="address-level2" placeholder="Praha" defaultValue={v?.city} error={e.city} />
-              <Field name="zip" label="PSČ" autoComplete="postal-code" inputMode="numeric" placeholder="110 00" defaultValue={v?.zip} error={e.zip} />
+              <Field name="street" label={t("Ulice a číslo")} autoComplete="street-address" placeholder="Dlouhá 12" defaultValue={v?.street} error={e.street} />
+              <Field name="city" label={t("Město")} autoComplete="address-level2" placeholder="Praha" defaultValue={v?.city} error={e.city} />
+              <Field name="zip" label={t("PSČ")} autoComplete="postal-code" inputMode="numeric" placeholder="110 00" defaultValue={v?.zip} error={e.zip} />
             </div>
           )}
           {ship === "pickup" && (
             <p className="m-0 rounded-xl px-4 py-3 text-[15px]" style={{ background: "var(--surface-200)" }}>
-              Vyzvednutí na adrese <strong>{pickupAddress}</strong>. Napíšeme ti, až bude objednávka připravená.
+              {t("Vyzvednutí na adrese")} <strong>{pickupAddress}</strong>. {t("Napíšeme ti, až bude objednávka připravená.")}
             </p>
           )}
-          <p className="pl-note m-0">Dražší zásilky posíláme vždy pojištěné.</p>
+          <p className="pl-note m-0">{t("Dražší zásilky posíláme vždy pojištěné.")}</p>
         </Section>
 
-        <Section n={3} title="Platba">
-          <div role="radiogroup" aria-label="Platba" className="flex flex-col gap-2.5">
+        <Section n={3} title={t("Platba")}>
+          <div role="radiogroup" aria-label={t("Platba")} className="flex flex-col gap-2.5">
             {payment.map((o) => {
               const off = !paymentAllowed(o.id as PaymentId, ship, cardEnabled);
-              const note = o.id === "card" && !cardEnabled ? "Připravujeme, brzy spustíme" : o.id === "cod" && off ? "Jen při doručení Zásilkovnou nebo poštou" : o.note;
-              return <Choice key={o.id} name="payment" value={o.id} checked={pay === o.id} disabled={off} onPick={() => setPay(o.id as PaymentId)} title={o.title} note={note} price={priceText(o.priceHal, true)} />;
+              const note = o.id === "card" && !cardEnabled ? t("Připravujeme, brzy spustíme") : o.id === "cod" && off ? t("Jen při doručení Zásilkovnou nebo poštou") : o.note;
+              return <Choice key={o.id} name="payment" value={o.id} checked={pay === o.id} disabled={off} onPick={() => setPay(o.id as PaymentId)} title={o.title} note={note} price={priceText(t, o.priceHal, true)} />;
             })}
           </div>
           {e.payment && <span className="pl-field__error">{e.payment}</span>}
@@ -212,29 +214,29 @@ function Fields({
         <div className="flex flex-col gap-3 rounded-2xl p-5 sm:p-6" style={{ background: "var(--surface-100)", border: "2px solid var(--line)" }}>
           <label className="pl-check font-bold">
             <input type="checkbox" name="company" checked={company} onChange={(ev) => setCompany(ev.target.checked)} />
-            Chci fakturu na firmu
+            {t("Chci fakturu na firmu")}
           </label>
-          {company && <Field name="companyId" label="IČO" inputMode="numeric" placeholder="12345678" defaultValue={v?.companyId} error={e.companyId} className="max-w-[220px]" />}
+          {company && <Field name="companyId" label={t("IČO")} inputMode="numeric" placeholder="12345678" defaultValue={v?.companyId} error={e.companyId} className="max-w-[220px]" />}
           <div className="pl-field">
             <label htmlFor="f-note" className="pl-field__label">
-              Poznámka nebo požadavek k objednávce (nepovinné)
+              {t("Poznámka nebo požadavek k objednávce (nepovinné)")}
             </label>
-            <textarea id="f-note" name="note" rows={3} maxLength={1000} defaultValue={v?.note} placeholder="Např. pošlete prosím obě karty v jednom toploaderu" className="pl-field__input" />
+            <textarea id="f-note" name="note" rows={3} maxLength={1000} defaultValue={v?.note} placeholder={t("Např. pošlete prosím obě karty v jednom toploaderu")} className="pl-field__input" />
           </div>
         </div>
       </div>
 
       <aside
-        aria-label="Souhrn objednávky"
+        aria-label={t("Souhrn objednávky")}
         className="flex min-w-0 max-w-[440px] flex-[1_1_340px] flex-col gap-4 rounded-2xl p-[22px] md:sticky md:top-4"
         style={{ background: "var(--surface-100)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-sticker)" }}
       >
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="m-0 text-[30px] leading-8 font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-            Souhrn
+            {t("Souhrn")}
           </h2>
           <Link href="/kosik" className="text-sm font-bold">
-            Upravit košík
+            {t("Upravit košík")}
           </Link>
         </div>
         <ul className="m-0 flex list-none flex-col gap-3 p-0">
@@ -247,41 +249,41 @@ function Fields({
                   {it.meta}
                 </span>
               </span>
-              <strong className="text-sm whitespace-nowrap">{formatCzk(it.lineHal)}</strong>
+              <strong className="text-sm whitespace-nowrap">{t.czk(it.lineHal)}</strong>
             </li>
           ))}
         </ul>
         <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[15px] leading-[22px]" style={{ borderTop: "1px solid var(--line)", paddingTop: 12 }}>
-          <dt style={{ color: "var(--ink-muted)" }}>Karty</dt>
-          <dd className="m-0 text-right font-bold">{formatCzk(t.itemsHal)}</dd>
-          {t.discountHal > 0 && (
+          <dt style={{ color: "var(--ink-muted)" }}>{t("Karty")}</dt>
+          <dd className="m-0 text-right font-bold">{t.czk(sum.itemsHal)}</dd>
+          {sum.discountHal > 0 && (
             <>
-              <dt style={{ color: "var(--ink-muted)" }}>Sleva · {discount?.code}</dt>
+              <dt style={{ color: "var(--ink-muted)" }}>{t("Sleva")} · {discount?.code}</dt>
               <dd className="m-0 text-right font-bold" style={{ color: "var(--success)" }}>
-                −{formatCzk(t.discountHal)}
+                −{t.czk(sum.discountHal)}
               </dd>
             </>
           )}
-          <dt style={{ color: "var(--ink-muted)" }}>Doprava · {shipTitle}</dt>
-          <dd className="m-0 text-right font-bold">{priceText(t.shippingHal)}</dd>
-          {t.codFeeHal > 0 && (
+          <dt style={{ color: "var(--ink-muted)" }}>{t("Doprava")} · {shipTitle}</dt>
+          <dd className="m-0 text-right font-bold">{priceText(t, sum.shippingHal)}</dd>
+          {sum.codFeeHal > 0 && (
             <>
-              <dt style={{ color: "var(--ink-muted)" }}>Dobírka</dt>
-              <dd className="m-0 text-right font-bold">{formatCzk(t.codFeeHal)}</dd>
+              <dt style={{ color: "var(--ink-muted)" }}>{t("Dobírka")}</dt>
+              <dd className="m-0 text-right font-bold">{t.czk(sum.codFeeHal)}</dd>
             </>
           )}
         </dl>
         <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--on-yellow)", boxShadow: "var(--shadow-on-yellow)" }}>
-          <span className="text-[15px] font-extrabold">Celkem</span>
+          <span className="text-[15px] font-extrabold">{t("Celkem")}</span>
           <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }} aria-live="polite">
-            {formatCzk(t.totalHal)}
+            {t.czk(sum.totalHal)}
           </strong>
         </div>
         <div className="flex flex-col gap-1">
           <label className="pl-check items-start text-[13px] leading-[18px]">
             <input type="checkbox" name="terms" defaultChecked={v?.terms} aria-invalid={e.terms ? true : undefined} aria-describedby={e.terms ? "f-terms-err" : undefined} className="mt-0.5" />
             <span>
-              Souhlasím s <Link href="/obchodni-podminky">obchodními podmínkami</Link> a beru na vědomí <Link href="/ochrana-osobnich-udaju">zpracování osobních údajů</Link>.
+              {t("Souhlasím s")} <Link href="/obchodni-podminky">{t("obchodními podmínkami")}</Link> {t("a beru na vědomí")} <Link href="/ochrana-osobnich-udaju">{t("zpracování osobních údajů")}</Link>.
             </span>
           </label>
           {e.terms && (
@@ -291,9 +293,9 @@ function Fields({
           )}
         </div>
         <button type="submit" disabled={pending} className="pl-btn pl-btn--primary pl-btn--block">
-          {pending ? "Odesílám…" : pay === "card" ? "Objednat a zaplatit" : "Odeslat objednávku zavazující k platbě"}
+          {pending ? t("Odesílám…") : pay === "card" ? t("Objednat a zaplatit") : t("Odeslat objednávku zavazující k platbě")}
         </button>
-        <p className="pl-note m-0">Ceny dopravy a dobírky jsou zatím ukázkové.</p>
+        <p className="pl-note m-0">{t("Ceny dopravy a dobírky jsou zatím ukázkové.")}</p>
       </aside>
     </div>
   );

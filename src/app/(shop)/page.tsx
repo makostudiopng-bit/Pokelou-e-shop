@@ -5,11 +5,13 @@ import { OfferTile } from "@/components/offer-tile";
 import { getOffers } from "@/lib/catalog";
 import { demoSets } from "@/data/demo";
 import { heroCards } from "@/data/hero";
+import { tk, type T } from "@/i18n/core";
+import { getT } from "@/i18n/server";
 
 const linkBtn =
   "pl-lift inline-flex items-center justify-center gap-2 rounded-xl border-2 px-6 py-3.5 text-[17px] font-extrabold no-underline";
 
-function HeroFan() {
+function HeroFan({ t }: { t: T }) {
   const [a, c, b] = heroCards;
   return (
     <div className="pl-fan relative h-[300px] min-w-0 flex-[1_1_440px] sm:h-[460px]" aria-hidden="true">
@@ -39,7 +41,7 @@ function HeroFan() {
           </defs>
           <circle cx="66" cy="66" r="64" fill="var(--brand-red)" stroke="var(--on-yellow)" strokeWidth="3" />
           <text fill="#ffffff" fontFamily="Manrope Variable, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2.2">
-            <textPath href="#pl-circle">VÝKUP ✦ ZA KREDIT ✦ I ZA PENÍZE ✦</textPath>
+            <textPath href="#pl-circle">{t("VÝKUP ✦ ZA KREDIT ✦ I ZA PENÍZE ✦")}</textPath>
           </text>
         </svg>
         <div className="absolute inset-[27%] grid place-items-center rounded-full border-[3px]" style={{ background: "#fff", borderColor: "var(--on-yellow)" }}>
@@ -50,7 +52,7 @@ function HeroFan() {
         className="absolute bottom-8 left-0 z-[3] -rotate-[4deg] rounded-[10px] border-2 px-3.5 py-2.5 text-[15px] font-extrabold"
         style={{ background: "#fff", color: "var(--on-yellow)", borderColor: "var(--on-yellow)", boxShadow: "4px 4px 0 var(--on-yellow)" }}
       >
-        Nové karty každý týden
+        {t("Nové karty každý týden")}
       </div>
     </div>
   );
@@ -58,6 +60,7 @@ function HeroFan() {
 
 export default async function Home() {
   const { offers } = await getOffers();
+  const t = await getT();
   const seen = new Set<string>();
   // nejnovější kusy skladem, každá karta jen jednou
   const fresh = [...offers]
@@ -73,27 +76,27 @@ export default async function Home() {
             className="pl-pop pl-d1 self-start rounded-full border-2 px-3.5 py-1.5 text-[13px] leading-[18px] font-extrabold"
             style={{ background: "var(--surface-100)", borderColor: "var(--ink)" }}
           >
-            Pokémon single · prodej a výkup
+            {t("Pokémon single · prodej a výkup")}
           </span>
           <h1
             className="m-0 flex flex-col text-[58px] leading-[54px] font-extrabold uppercase sm:text-[88px] sm:leading-[82px]"
             style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.5px" }}
           >
             <span className="pl-pop pl-d2 pl-word-row">
-              <span className="pl-word">Kup</span>
+              <span className="pl-word">{t("Kup")}</span>
               <span className="pl-tag pl-tag--white" aria-hidden="true">
                 <span className="pl-tag__dot" />
-                poctivý stav
+                {t("poctivý stav")}
               </span>
             </span>
             <span className="pl-pop pl-d3 pl-word-row">
-              <span className="pl-word">Prodej</span>
+              <span className="pl-word">{t("Prodej")}</span>
               <span className="pl-tag pl-tag--red" aria-hidden="true">
-                peníze i kredit
+                {t("peníze i kredit")}
               </span>
             </span>
             <span className="pl-pop pl-d4 pl-word-row">
-              <span className="pl-word pl-hl">Sbírej</span>
+              <span className="pl-word pl-hl">{t("Sbírej")}</span>
               <span className="pl-sparkles" aria-hidden="true">
                 <span>✦</span>
                 <span>✦</span>
@@ -102,12 +105,11 @@ export default async function Home() {
             </span>
           </h1>
           <p className="pl-pop pl-d4 m-0 max-w-[520px] text-lg leading-7" style={{ color: "var(--ink-muted)" }}>
-            Tisíce jednotlivých karet skladem, s poctivě popsaným stavem. Karty, které už nepotřebuješ, od tebe vykoupíme
-            za peníze nebo kredit.
+            {t("Tisíce jednotlivých karet skladem, s poctivě popsaným stavem. Karty, které už nepotřebuješ, od tebe vykoupíme za peníze nebo kredit.")}
           </p>
           <div className="pl-pop pl-d5 mt-2 flex flex-wrap gap-3.5">
             <Link href="/karty" className="pl-cta-dark inline-flex items-center gap-3 rounded-xl border-2 py-2.5 pr-2.5 pl-6 text-[17px] font-extrabold no-underline">
-              Prohlédnout karty
+              {t("Prohlédnout karty")}
               <span className="pl-cta-dark__arrow grid h-8 w-8 place-items-center rounded-lg" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -115,23 +117,23 @@ export default async function Home() {
               </span>
             </Link>
             <Link href="/vykup" className={`${linkBtn} pl-lift--right`} style={{ background: "var(--surface-100)", borderColor: "var(--ink)" }}>
-              Prodat své karty
+              {t("Prodat své karty")}
             </Link>
           </div>
         </div>
-        <HeroFan />
+        <HeroFan t={t} />
       </section>
 
       <section aria-labelledby="new-h" className="mx-auto flex max-w-[1280px] flex-col gap-5 px-4 pb-12 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <h2 id="new-h" className="m-0 flex items-center gap-3.5 text-[44px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-            Nově naskladněno
+            {t("Nově naskladněno")}
             <span className="pl-bounce rounded-md px-2 py-1.5 text-[13px] leading-none font-extrabold tracking-wide" style={{ background: "var(--brand-red)", color: "var(--on-red)", fontFamily: "var(--font-sans)" }}>
-              NOVÉ
+              {t("NOVÉ")}
             </span>
           </h2>
           <Link href="/karty?novinky=1" className="text-[15px] font-extrabold">
-            Všechny novinky →
+            {t("Všechny novinky")} →
           </Link>
         </div>
         <div className="pl-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(208px,1fr))] sm:gap-6">
@@ -145,17 +147,17 @@ export default async function Home() {
         <div className="mx-auto flex max-w-[1280px] flex-col gap-7 px-4 py-14 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
             <h2 id="how-h" className="m-0 text-[44px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-              Výkup ve třech krocích
+              {t("Výkup ve třech krocích")}
             </h2>
             <Link href="/vykup" className="text-[15px] font-extrabold">
-              Začít výkup →
+              {t("Začít výkup")} →
             </Link>
           </div>
           <ol className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6 p-0">
             {[
-              ["Vyber karty a stav", "Najdeš je podle názvu nebo čísla. Nezávazný odhad ceny uvidíš hned."],
-              ["Pošli je nám", "Zásilkovnou nebo osobně. Odhad platí 7 dní."],
-              ["Dostaneš peníze nebo kredit", "Po fyzické kontrole karet pošleme přesnou nabídku a pak platbu."],
+              [tk("Vyber karty a stav"), tk("Najdeš je podle názvu nebo čísla. Nezávazný odhad ceny uvidíš hned.")],
+              [tk("Pošli je nám"), tk("Zásilkovnou nebo osobně. Odhad platí 7 dní.")],
+              [tk("Dostaneš peníze nebo kredit"), tk("Po fyzické kontrole karet pošleme přesnou nabídku a pak platbu.")],
             ].map(([title, text], i) => (
               <li
                 key={title}
@@ -163,9 +165,9 @@ export default async function Home() {
                 style={{ background: "var(--surface-100)", borderColor: "var(--line)" }}
               >
                 <span className="pl-sticker-num pl-wiggle-child">{i + 1}</span>
-                <strong className="text-[19px] leading-[26px]">{title}</strong>
+                <strong className="text-[19px] leading-[26px]">{t(title)}</strong>
                 <span className="text-[15px] leading-[22px]" style={{ color: "var(--ink-muted)" }}>
-                  {text}
+                  {t(text)}
                 </span>
               </li>
             ))}
@@ -175,7 +177,7 @@ export default async function Home() {
 
       <section aria-labelledby="sets-h" className="mx-auto flex max-w-[1280px] flex-col gap-5 px-4 py-14 sm:px-6">
         <h2 id="sets-h" className="m-0 text-[44px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-          Procházej podle edice
+          {t("Procházej podle edice")}
         </h2>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
           {demoSets.map((s) => (

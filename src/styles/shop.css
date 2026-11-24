@@ -321,3 +321,7 @@
   :root:not([data-theme="light"]) .pl-word.pl-hl::before { background: var(--brand-red); }
   :root:not([data-theme="light"]) .pl-word.pl-hl:hover { text-shadow: 5px 5px 0 var(--ink); }
 }
+
+/* Přepínač jazyka: stejné kolečko jako den/noc, uvnitř zkratka jazyka */
+.pl-lang-toggle { font: 800 13px/1 var(--font-sans); letter-spacing: .02em; }
+.pl-lang-toggle:disabled { opacity: .6; cursor: progress; }

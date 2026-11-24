@@ -8,6 +8,8 @@ import { setQty } from "@/lib/cart";
 import { getOffers } from "@/lib/catalog";
 import { formToInput, validateCheckout, type FieldErrors } from "@/lib/checkout";
 import { createOrder, StockConflictError } from "@/lib/orders";
+import { translateMessage } from "@/i18n/core";
+import { getLocale } from "@/i18n/server";
 
 export type CheckoutState = {
   attempt: number;
@@ -17,10 +19,14 @@ export type CheckoutState = {
 
 export async function placeOrderAction(prev: CheckoutState, form: FormData): Promise<CheckoutState> {
   const attempt = prev.attempt + 1;
+  const locale = await getLocale();
   const v = validateCheckout(form, cardPaymentEnabled());
-  if (!v.ok) return { attempt, errors: v.errors, values: v.values };
+  if (!v.ok) {
+    const errors = Object.fromEntries(Object.entries(v.errors).map(([k, m]) => [k, m && translateMessage(locale, m)])) as FieldErrors;
+    return { attempt, errors, values: v.values };
+  }
 
-  const fail = (msg: string): CheckoutState => ({ attempt, errors: { form: msg }, values: formToInput(form) });
+  const fail = (msg: string): CheckoutState => ({ attempt, errors: { form: translateMessage(locale, msg) }, values: formToInput(form) });
   const { demo } = await getOffers();
   if (!hasDb() || demo) return fail("Objednávky zatím nejde odeslat, e-shop ještě nemá napojený sklad.");
 

@@ -3,11 +3,13 @@
 // Vyhledávací pole nemá name, takže se do adresy neposílá; zaškrtnuté edice zůstávají vidět vždy.
 import { useState } from "react";
 import { norm } from "@/lib/catalog-query";
+import { useT } from "@/i18n/client";
 
 const SEARCH_FROM = 6; // pole ukázat, až je edic víc
 const COLLAPSED = 8; // bez hledání ukázat jen prvních pár
 
 export function SetFilter({ sets, selected }: { sets: [string, number][]; selected: string[] }) {
+  const t_ = useT();
   const [term, setTerm] = useState("");
   const [all, setAll] = useState(false);
   const isOn = (s: string) => selected.some((x) => x.toLowerCase() === s.toLowerCase());
@@ -18,14 +20,14 @@ export function SetFilter({ sets, selected }: { sets: [string, number][]; select
 
   return (
     <fieldset className="pl-fs">
-      <legend>Edice</legend>
+      <legend>{t_("Edice")}</legend>
       {sets.length > SEARCH_FROM && (
         <label className="pl-field">
-          <span className="sr-only">Hledat edici</span>
+          <span className="sr-only">{t_("Hledat edici")}</span>
           <input
             type="search"
             className="pl-field__input w-full"
-            placeholder="Hledat edici…"
+            placeholder={t_("Hledat edici…")}
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             // Enter tu nemá odeslat filtry
@@ -42,15 +44,15 @@ export function SetFilter({ sets, selected }: { sets: [string, number][]; select
           <span className="pl-check__n">{n}</span>
         </label>
       ))}
-      {t && matches.length === 0 && <span className="pl-note">Žádná edice neodpovídá.</span>}
+      {t && matches.length === 0 && <span className="pl-note">{t_("Žádná edice neodpovídá.")}</span>}
       {!t && hiddenCount > 0 && (
         <button type="button" className="pl-linkbtn" onClick={() => setAll(true)}>
-          Zobrazit všechny edice ({sets.length})
+          {t_("Zobrazit všechny edice ({n})", { n: sets.length })}
         </button>
       )}
       {!t && all && sets.length > COLLAPSED && (
         <button type="button" className="pl-linkbtn" onClick={() => setAll(false)}>
-          Zobrazit méně
+          {t_("Zobrazit méně")}
         </button>
       )}
     </fieldset>

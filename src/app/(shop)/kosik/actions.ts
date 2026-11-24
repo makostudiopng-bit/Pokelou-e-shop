@@ -5,6 +5,8 @@ import { getDb, hasDb } from "@/db";
 import { getCartView, readCart, writeCart, writeCodeCookie } from "@/lib/cart-server";
 import { checkCode, findCode, normalizeCode } from "@/lib/discounts";
 import { getOffers } from "@/lib/catalog";
+import { translateMessage } from "@/i18n/core";
+import { getLocale } from "@/i18n/server";
 
 export type AddState = { status: "idle" | "added" | "max" | "unavailable"; count?: number };
 
@@ -44,12 +46,14 @@ export type CodeState = { error?: string };
 
 /** Uplatnit slevový kód: ověří se hned, do cookie se uloží jen platný. */
 export async function applyCodeAction(_prev: CodeState, form: FormData): Promise<CodeState> {
+  const locale = await getLocale();
+  const err = (msg: string) => ({ error: translateMessage(locale, msg) });
   const code = normalizeCode(str(form.get("kod")));
-  if (!code) return { error: "Zadej slevový kód." };
-  if (!hasDb()) return { error: "Slevové kódy zatím nefungují." };
+  if (!code) return err("Zadej slevový kód.");
+  if (!hasDb()) return err("Slevové kódy zatím nefungují.");
   const cart = await getCartView();
   const r = checkCode(await findCode(await getDb(), code), cart.subtotalHal);
-  if (!r.ok) return { error: r.reason };
+  if (!r.ok) return err(r.reason);
   await writeCodeCookie(code);
   return {};
 }

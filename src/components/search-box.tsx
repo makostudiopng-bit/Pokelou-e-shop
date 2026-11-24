@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Suggestion } from "@/lib/catalog-query";
-import { formatCzk } from "@/lib/pricing";
+import { useT } from "@/i18n/client";
 
 type Result = { q: string; items: Suggestion[]; total: number };
 
@@ -14,6 +14,7 @@ const cardHref = (s: Suggestion) => `/karta/${encodeURIComponent(s.slug)}`;
 const allHref = (q: string) => `/karty?q=${encodeURIComponent(q.trim())}`;
 
 export function SearchBox() {
+  const t = useT();
   const router = useRouter();
   const listId = useId();
   const boxRef = useRef<HTMLFormElement>(null);
@@ -104,7 +105,7 @@ export function SearchBox() {
       }}
     >
       <label htmlFor="q" className="sr-only">
-        Hledat kartu
+        {t("Hledat kartu")}
       </label>
       <input
         id="q"
@@ -116,7 +117,7 @@ export function SearchBox() {
         aria-controls={listId}
         aria-autocomplete="list"
         aria-activedescendant={showList && active >= 0 ? optId(active) : undefined}
-        placeholder="Jakou kartu hledáš? (např. Gardevoir 245/198)"
+        placeholder={t("Jakou kartu hledáš? (např. Gardevoir 245/198)")}
         value={q}
         onChange={(e) => {
           setQ(e.target.value);
@@ -129,7 +130,7 @@ export function SearchBox() {
       />
       <button
         type="submit"
-        aria-label="Hledat"
+        aria-label={t("Hledat")}
         className="grid w-14 flex-none cursor-pointer place-items-center rounded-r-full border-2"
         style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", borderColor: "var(--ink)" }}
       >
@@ -140,21 +141,21 @@ export function SearchBox() {
       </button>
 
       <span className="sr-only" role="status" aria-live="polite">
-        {showList && !loading ? (res.total === 0 ? "Nic jsme nenašli" : `${res.total} ${res.total === 1 ? "karta" : res.total < 5 ? "karty" : "karet"}`) : ""}
+        {showList && !loading ? (res.total === 0 ? t("Nic jsme nenašli") : t.p(res.total, "{n} karta|{n} karty|{n} karet")) : ""}
       </span>
 
       {showList && (
         <div className="pl-suggest" data-loading={loading || undefined}>
           {items.length === 0 ? (
             <p className="pl-suggest__empty">
-              {loading ? "Hledám…" : (
+              {loading ? t("Hledám…") : (
                 <>
-                  Na „{res.q}“ jsme nic nenašli. Zkus jen název karty, nebo číslo jako <strong>245/198</strong>.
+                  {t("Na „{q}“ jsme nic nenašli. Zkus jen název karty, nebo číslo jako", { q: res.q })} <strong>245/198</strong>.
                 </>
               )}
             </p>
           ) : (
-            <ul id={listId} role="listbox" aria-label="Návrhy karet" className="m-0 list-none p-0">
+            <ul id={listId} role="listbox" aria-label={t("Návrhy karet")} className="m-0 list-none p-0">
               {items.map((s, i) => (
                 <li key={s.slug} id={optId(i)} role="option" aria-selected={i === active}>
                   <Link href={cardHref(s)} className="pl-suggest__item" onClick={() => setOpen(false)} onPointerMove={() => setActive(i)} tabIndex={-1}>
@@ -171,16 +172,16 @@ export function SearchBox() {
                       {s.fromHal != null ? (
                         <>
                           <span className="text-[15px] leading-5 font-extrabold whitespace-nowrap">
-                            {s.priceRange && <span className="text-[12px] font-bold" style={{ color: "var(--ink-muted)" }}>od </span>}
-                            {formatCzk(s.fromHal)}
+                            {s.priceRange && <span className="text-[12px] font-bold" style={{ color: "var(--ink-muted)" }}>{t("od")} </span>}
+                            {t.czk(s.fromHal)}
                           </span>
                           <span className="text-[12px] leading-4 font-bold" style={{ color: "var(--success)" }}>
-                            {s.stock} ks skladem
+                            {t("{n} ks skladem", { n: s.stock })}
                           </span>
                         </>
                       ) : (
                         <span className="text-[12px] font-bold" style={{ color: "var(--ink-muted)" }}>
-                          vyprodáno
+                          {t("vyprodáno")}
                         </span>
                       )}
                     </span>
@@ -189,7 +190,7 @@ export function SearchBox() {
               ))}
               <li id={optId(items.length)} role="option" aria-selected={active === items.length}>
                 <Link href={allHref(q)} className="pl-suggest__all" onClick={() => setOpen(false)} onPointerMove={() => setActive(items.length)} tabIndex={-1}>
-                  {res.total > items.length ? `Zobrazit všech ${res.total} výsledků` : "Zobrazit v katalogu"}
+                  {res.total > items.length ? t("Zobrazit všech {n} výsledků", { n: res.total }) : t("Zobrazit v katalogu")}
                   <span aria-hidden="true">→</span>
                 </Link>
               </li>

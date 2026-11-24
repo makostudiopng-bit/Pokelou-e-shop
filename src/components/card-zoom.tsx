@@ -3,11 +3,13 @@
 // otevře kartu přes celou obrazovku.
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { useT } from "@/i18n/client";
 
 const LENS = 170; // průměr lupy v px
 const ZOOM = 2.6;
 
 export function CardZoom({ src, alt }: { src: string; alt: string }) {
+  const t = useT();
   const box = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const [lens, setLens] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
@@ -27,7 +29,7 @@ export function CardZoom({ src, alt }: { src: string; alt: string }) {
         onPointerMove={move}
         onPointerLeave={() => setLens(null)}
         onClick={() => dialog.current?.showModal()}
-        aria-label={`Zvětšit obrázek: ${alt}`}
+        aria-label={t("Zvětšit obrázek: {alt}", { alt })}
       >
         <Image src={src} alt={alt} width={630} height={880} sizes="(max-width: 640px) 80vw, 360px" priority className="h-auto w-full" />
         {lens && (
@@ -50,7 +52,7 @@ export function CardZoom({ src, alt }: { src: string; alt: string }) {
             <circle cx="11" cy="11" r="7" />
             <path d="M20 20l-3.5-3.5M11 8v6M8 11h6" />
           </svg>
-          Zvětšit
+          {t("Zvětšit")}
         </span>
       </button>
 
@@ -62,7 +64,7 @@ export function CardZoom({ src, alt }: { src: string; alt: string }) {
         onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
       >
         <Image src={src} alt={alt} width={630} height={880} sizes="(max-width: 640px) 100vw, 640px" className="pl-zoom__big" />
-        <button type="button" className="pl-zoom__close" onClick={() => dialog.current?.close()} aria-label="Zavřít">
+        <button type="button" className="pl-zoom__close" onClick={() => dialog.current?.close()} aria-label={t("Zavřít")}>
           ×
         </button>
       </dialog>

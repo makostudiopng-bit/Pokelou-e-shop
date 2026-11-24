@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import type { Condition } from "@/db/schema";
 import { BUYBACK_CONDITIONS, BUYBACK_LANGUAGES, estimateItem, type BuybackCard } from "@/lib/buyback-shared";
-import { formatCzk } from "@/lib/pricing";
+import { useT } from "@/i18n/client";
 import { submitBuybackAction, type BuybackState } from "./actions";
 
 type Line = { key: number; card: BuybackCard; condition: Condition; language: string; quantity: number };
 type Payout = "cash" | "credit";
 
 function Search({ onAdd }: { onAdd: (c: BuybackCard) => void }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const [results, setResults] = useState<BuybackCard[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ function Search({ onAdd }: { onAdd: (c: BuybackCard) => void }) {
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="bq" className="text-[15px] font-bold">
-        Přidat kartu k výkupu
+        {t("Přidat kartu k výkupu")}
       </label>
       <input
         id="bq"
@@ -48,20 +49,20 @@ function Search({ onAdd }: { onAdd: (c: BuybackCard) => void }) {
         value={q}
         onChange={(e) => search(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-        placeholder="Název nebo číslo karty (např. Mimikyu TG16)"
+        placeholder={t("Název nebo číslo karty (např. Mimikyu TG16)")}
         autoComplete="off"
         className="w-full rounded-full border-2 px-5 py-3 text-[15px] font-medium"
         style={{ borderColor: "var(--ink)", background: "var(--surface-100)", color: "var(--ink)" }}
         aria-describedby="bq-status"
       />
       <span id="bq-status" role="status" className="sr-only">
-        {loading ? "Hledám" : results ? `${results.length} výsledků` : ""}
+        {loading ? t("Hledám") : results ? t.p(results.length, "{n} výsledek|{n} výsledky|{n} výsledků") : ""}
       </span>
       {results && (
         <ul className="m-0 flex max-h-[360px] list-none flex-col gap-1 overflow-y-auto rounded-xl p-1.5" style={{ background: "var(--surface-100)", border: "1.5px solid var(--line-strong)" }}>
           {results.length === 0 && (
             <li className="px-3 py-2.5 text-sm" style={{ color: "var(--ink-muted)" }}>
-              Nic jsme nenašli. Zkus anglický název karty nebo její číslo.
+              {t("Nic jsme nenašli. Zkus anglický název karty nebo její číslo.")}
             </li>
           )}
           {results.map((c) => (
@@ -83,7 +84,7 @@ function Search({ onAdd }: { onAdd: (c: BuybackCard) => void }) {
                     {c.set} · <span style={{ fontFamily: "var(--font-mono)" }}>{c.number}</span>
                   </span>
                 </span>
-                <span className="text-sm font-extrabold">Přidat +</span>
+                <span className="text-sm font-extrabold">{t("Přidat +")}</span>
               </button>
             </li>
           ))}
@@ -94,6 +95,7 @@ function Search({ onAdd }: { onAdd: (c: BuybackCard) => void }) {
 }
 
 export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: BuybackCard[]; minHal: number; cashPct: number; creditPct: number }) {
+  const t = useT();
   const [state, action, pending] = useActionState(submitBuybackAction, { attempt: 0, errors: {} } as BuybackState);
   const nextKey = useRef(initial.length + 1);
   const [lines, setLines] = useState<Line[]>(() => initial.map((card, i) => ({ key: i + 1, card, condition: "NM", language: "EN", quantity: 1 })));
@@ -122,7 +124,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
       <input type="hidden" name="items" value={itemsJson} />
       <input type="hidden" name="payout" value={payout} />
 
-      <section aria-label="Karty k výkupu" className="flex min-w-0 flex-[999_1_560px] flex-col gap-4">
+      <section aria-label={t("Karty k výkupu")} className="flex min-w-0 flex-[999_1_560px] flex-col gap-4">
         <Search onAdd={add} />
         {e.items && <span className="pl-field__error">{e.items}</span>}
 
@@ -135,7 +137,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
                 {l.card.set} · <span style={{ fontFamily: "var(--font-mono)" }}>{l.card.number}</span>
               </span>
             </div>
-            <div role="radiogroup" aria-label={`Stav karty ${l.card.name}`} className="flex flex-wrap gap-1">
+            <div role="radiogroup" aria-label={t("Stav karty {name}", { name: l.card.name })} className="flex flex-wrap gap-1">
               {BUYBACK_CONDITIONS.map((c) => (
                 <button
                   key={c}
@@ -155,36 +157,36 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
               ))}
             </div>
             <label className="sr-only" htmlFor={`lang-${l.key}`}>
-              Jazyk karty
+              {t("Jazyk karty")}
             </label>
             <select id={`lang-${l.key}`} value={l.language} onChange={(ev) => update(l.key, { language: ev.target.value })} className="pl-select h-9 py-1">
               {BUYBACK_LANGUAGES.map((x) => (
                 <option key={x}>{x}</option>
               ))}
             </select>
-            <div role="group" aria-label="Počet kusů" className="flex items-center rounded-full" style={{ border: "2px solid var(--ink)" }}>
-              <button type="button" aria-label="Ubrat kus" onClick={() => update(l.key, { quantity: Math.max(1, l.quantity - 1) })} className="h-9 w-9 cursor-pointer text-lg font-extrabold">
+            <div role="group" aria-label={t("Počet kusů")} className="flex items-center rounded-full" style={{ border: "2px solid var(--ink)" }}>
+              <button type="button" aria-label={t("Ubrat kus")} onClick={() => update(l.key, { quantity: Math.max(1, l.quantity - 1) })} className="h-9 w-9 cursor-pointer text-lg font-extrabold">
                 −
               </button>
               <span className="min-w-6 text-center font-extrabold">{l.quantity}</span>
-              <button type="button" aria-label="Přidat kus" onClick={() => update(l.key, { quantity: Math.min(50, l.quantity + 1) })} className="h-9 w-9 cursor-pointer text-lg font-extrabold">
+              <button type="button" aria-label={t("Přidat kus")} onClick={() => update(l.key, { quantity: Math.min(50, l.quantity + 1) })} className="h-9 w-9 cursor-pointer text-lg font-extrabold">
                 +
               </button>
             </div>
             <div className="flex min-w-[96px] flex-col text-right">
               <span className="text-xs" style={{ color: "var(--ink-muted)" }}>
-                odhad
+                {t("odhad")}
               </span>
               <strong className="text-lg leading-6">
-                {est.noPrice ? "posoudíme" : est.rejected ? "nevykupujeme" : est.bulkOnly ? "bulk" : formatCzk(est.totalHal)}
+                {est.noPrice ? t("posoudíme") : est.rejected ? t("nevykupujeme") : est.bulkOnly ? t("bulk") : t.czk(est.totalHal)}
               </strong>
               {est.acceptedQty > 0 && est.acceptedQty < l.quantity && (
                 <span className="text-xs" style={{ color: "var(--red-text)" }}>
-                  max. {est.acceptedQty} ks
+                  max. {est.acceptedQty} {t("ks")}
                 </span>
               )}
             </div>
-            <button type="button" aria-label={`Odebrat ${l.card.name}`} onClick={() => setLines((ls) => ls.filter((x) => x.key !== l.key))} className="pl-wiggle-hover grid h-10 w-10 cursor-pointer place-items-center" style={{ color: "var(--ink-muted)" }}>
+            <button type="button" aria-label={t("Odebrat {name}", { name: l.card.name })} onClick={() => setLines((ls) => ls.filter((x) => x.key !== l.key))} className="pl-wiggle-hover grid h-10 w-10 cursor-pointer place-items-center" style={{ color: "var(--ink-muted)" }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
               </svg>
@@ -192,33 +194,33 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           </div>
         ))}
 
-        {lines.length === 0 && <div className="pl-empty text-[15px]">Zatím žádné karty. Přidej první přes vyhledávání.</div>}
+        {lines.length === 0 && <div className="pl-empty text-[15px]">{t("Zatím žádné karty. Přidej první přes vyhledávání.")}</div>}
 
         <p className="pl-note m-0">
-          Karty s odhadem pod {formatCzk(minHal)} za kus vykupujeme jen hromadně jako bulk. Stavy karet popisuje <Link href="/stav-karet">průvodce stavem</Link>.
+          {t("Karty s odhadem pod {amount} za kus vykupujeme jen hromadně jako bulk.", { amount: t.czk(minHal) })} {t("Stavy karet popisuje")} <Link href="/stav-karet">{t("průvodce stavem")}</Link>.
         </p>
       </section>
 
       <aside
-        aria-label="Souhrn výkupu"
+        aria-label={t("Souhrn výkupu")}
         className="flex min-w-0 max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-2xl p-[22px] md:sticky md:top-4"
         style={{ background: "var(--surface-100)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-sticker)" }}
       >
         <h2 className="m-0 text-[30px] leading-8 font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-          Souhrn
+          {t("Souhrn")}
         </h2>
         {e.form && (
           <p role="alert" className="m-0 text-sm font-bold" style={{ color: "var(--red-text)" }}>
             {e.form}
           </p>
         )}
-        <div role="radiogroup" aria-label="Způsob výplaty" className="grid grid-cols-2 gap-2">
+        <div role="radiogroup" aria-label={t("Způsob výplaty")} className="grid grid-cols-2 gap-2">
           {(
             [
-              ["cash", "Peníze", "převodem na účet"],
-              ["credit", "Kredit", `do e-shopu, ${creditPct} % místo ${cashPct} %`],
+              ["cash", t("Peníze"), t("převodem na účet")],
+              ["credit", t("Kredit"), t("do e-shopu, {credit} % místo {cash} %", { credit: creditPct, cash: cashPct })],
             ] as const
-          ).map(([id, t, d]) => (
+          ).map(([id, title, d]) => (
             <button
               key={id}
               type="button"
@@ -228,7 +230,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
               className="flex cursor-pointer flex-col items-start rounded-[10px] px-3.5 py-3 text-left"
               style={payout === id ? { background: "var(--surface-200)", border: "2px solid var(--ink)" } : { background: "var(--surface-100)", border: "1.5px solid var(--line-strong)" }}
             >
-              <strong>{t}</strong>
+              <strong>{title}</strong>
               <span className="text-[13px]" style={{ color: "var(--ink-muted)" }}>
                 {d}
               </span>
@@ -236,40 +238,40 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           ))}
         </div>
         <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[15px]">
-          <dt style={{ color: "var(--ink-muted)" }}>Karet</dt>
-          <dd className="m-0 text-right font-bold">{count} ks</dd>
-          <dt style={{ color: "var(--ink-muted)" }}>Výkupní sazba</dt>
-          <dd className="m-0 text-right font-bold">{payout === "cash" ? cashPct : creditPct} % z Cardmarket low</dd>
+          <dt style={{ color: "var(--ink-muted)" }}>{t("Karet")}</dt>
+          <dd className="m-0 text-right font-bold">{count} {t("ks")}</dd>
+          <dt style={{ color: "var(--ink-muted)" }}>{t("Výkupní sazba")}</dt>
+          <dd className="m-0 text-right font-bold">{t("{pct} % z Cardmarket low", { pct: payout === "cash" ? cashPct : creditPct })}</dd>
           {bulk > 0 && (
             <>
               <dt style={{ color: "var(--ink-muted)" }}>Bulk</dt>
-              <dd className="m-0 text-right font-bold">{bulk} ks</dd>
+              <dd className="m-0 text-right font-bold">{bulk} {t("ks")}</dd>
             </>
           )}
         </dl>
         <div className="flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5" style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)", border: "2px solid var(--on-yellow)", boxShadow: "var(--shadow-on-yellow)" }}>
           <span className="flex flex-col">
-            <span className="text-[15px] font-extrabold">Odhad celkem</span>
-            <span className="text-[12px] font-bold opacity-80">nezávazný</span>
+            <span className="text-[15px] font-extrabold">{t("Odhad celkem")}</span>
+            <span className="text-[12px] font-bold opacity-80">{t("nezávazný")}</span>
           </span>
           <strong className="text-[40px] leading-10" style={{ fontFamily: "var(--font-display)" }} aria-live="polite">
-            {formatCzk(total)}
+            {t.czk(total)}
           </strong>
         </div>
 
         <div className={`pl-field${e.email ? " pl-field--error" : ""}`}>
           <label htmlFor="b-email" className="pl-field__label">
-            E-mail
+            {t("E-mail")}
           </label>
-          <input id="b-email" name="email" type="email" autoComplete="email" value={email} onChange={(ev) => setEmail(ev.target.value)} placeholder="jan@email.cz" className="pl-field__input" aria-invalid={e.email ? true : undefined} aria-describedby="b-email-msg" />
+          <input id="b-email" name="email" type="email" autoComplete="email" value={email} onChange={(ev) => setEmail(ev.target.value)} placeholder={t("jan@email.cz")} className="pl-field__input" aria-invalid={e.email ? true : undefined} aria-describedby="b-email-msg" />
           <span id="b-email-msg" className={e.email ? "pl-field__error" : "pl-field__hint"}>
-            {e.email ?? "Pošleme sem číslo výkupu a instrukce."}
+            {e.email ?? t("Pošleme sem číslo výkupu a instrukce.")}
           </span>
         </div>
         {payout === "cash" && (
           <div className={`pl-field${e.bankAccount ? " pl-field--error" : ""}`}>
             <label htmlFor="b-bank" className="pl-field__label">
-              Číslo účtu
+              {t("Číslo účtu")}
             </label>
             <input id="b-bank" name="bankAccount" value={bank} onChange={(ev) => setBank(ev.target.value)} placeholder="123456789/0100" className="pl-field__input" aria-invalid={e.bankAccount ? true : undefined} aria-describedby={e.bankAccount ? "b-bank-err" : undefined} />
             {e.bankAccount && (
@@ -283,16 +285,16 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           <label className="pl-check items-start text-[13px] leading-[18px]">
             <input type="checkbox" name="adult" checked={adult} onChange={(ev) => setAdult(ev.target.checked)} className="mt-0.5" aria-invalid={e.adult ? true : undefined} />
             <span>
-              Je mi 18 let a karty jsou moje. Souhlasím s <Link href="/vykup-podminky">podmínkami výkupu</Link>.
+              {t("Je mi 18 let a karty jsou moje. Souhlasím s")} <Link href="/vykup-podminky">{t("podmínkami výkupu")}</Link>.
             </span>
           </label>
           {e.adult && <span className="pl-field__error">{e.adult}</span>}
         </div>
         <button type="submit" disabled={pending || lines.length === 0} className="pl-btn pl-btn--primary pl-btn--block">
-          {pending ? "Odesílám…" : "Odeslat k výkupu"}
+          {pending ? t("Odesílám…") : t("Odeslat k výkupu")}
         </button>
         <p className="pl-note m-0">
-          Odhad je nezávazný a platí 7 dní. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Když se stav liší, pošleme ti novou nabídku, nebo karty vrátíme.
+          {t("Odhad je nezávazný a platí 7 dní. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Když se stav liší, pošleme ti novou nabídku, nebo karty vrátíme.")}
         </p>
       </aside>
     </form>

@@ -1,7 +1,9 @@
 "use client";
+import { useT } from "@/i18n/client";
 // Přepínač den/noc. Výchozí je podle zařízení; volba se pamatuje v tomhle prohlížeči.
 // Ikona se řídí jen CSS podle aktuálního motivu, takže se server a prohlížeč nikdy neliší.
 export function ThemeToggle() {
+  const t = useT();
   function toggle() {
     const root = document.documentElement;
     const now = root.dataset.theme ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
@@ -16,7 +18,7 @@ export function ThemeToggle() {
     }
   }
   return (
-    <button type="button" onClick={toggle} className="pl-theme pl-lift" aria-label="Přepnout denní a noční verzi" title="Den / noc">
+    <button type="button" onClick={toggle} className="pl-theme pl-lift" aria-label={t("Přepnout denní a noční verzi")} title={t("Den / noc")}>
       <svg className="pl-theme__moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
       </svg>

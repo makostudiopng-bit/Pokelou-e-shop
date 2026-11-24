@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, Operator, Ph } from "@/components/legal";
+import { getT } from "@/i18n/server";
 import { SHOP } from "@/config/shop";
 
-export const metadata: Metadata = { title: "Reklamace" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Reklamace") };
+}
 
 export default function ReklamacePage() {
   return (
-    <LegalPage title="Reklamace" updated="[DATUM SPUŠTĚNÍ]">
+    <LegalPage title="Reklamace" updated="[DATUM SPUŠTĚNÍ]" czechOnly>
       <p>
         Reklamace vyřizuje <Operator />.
       </p>

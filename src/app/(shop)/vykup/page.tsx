@@ -5,18 +5,24 @@ import type { BuybackCard } from "@/lib/buyback-shared";
 import { DEFAULT_RULES, resolveRules } from "@/lib/pricing";
 import { ruleFromRow } from "@/lib/sync";
 import * as s from "@/db/schema";
+import { tk } from "@/i18n/core";
+import { getT } from "@/i18n/server";
 import { BuybackForm } from "./buyback-form";
 
-export const metadata: Metadata = {
-  title: "Výkup karet",
-  description: "Spočítej si odhad výkupu Pokémon karet. Vykupujeme za peníze i za kredit do e-shopu, přesnou nabídku pošleme po fyzické kontrole.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return {
+    title: t("Výkup karet"),
+    description: t("Spočítej si odhad výkupu Pokémon karet. Vykupujeme za peníze i za kredit do e-shopu, přesnou nabídku pošleme po fyzické kontrole."),
+  };
+}
 
-const STEPS = ["Karty", "Odeslání", "Kontrola", "Výplata"];
+const STEPS = [tk("Karty"), tk("Odeslání"), tk("Kontrola"), tk("Výplata")];
 
 export default async function VykupPage({ searchParams }: PageProps<"/vykup">) {
   const karta = (await searchParams).karta;
   const id = typeof karta === "string" ? karta.slice(0, 80) : null;
+  const t = await getT();
 
   let initial: BuybackCard[] = [];
   let rules = DEFAULT_RULES;
@@ -37,13 +43,13 @@ export default async function VykupPage({ searchParams }: PageProps<"/vykup">) {
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 pb-16 sm:px-6">
       <div className="flex flex-col gap-3">
         <h1 className="m-0 text-[40px] leading-[40px] font-extrabold sm:text-[48px] sm:leading-[48px]" style={{ fontFamily: "var(--font-display)" }}>
-          Výkup karet
+          {t("Výkup karet")}
         </h1>
         <p className="m-0 max-w-[720px] text-[17px] leading-[26px]" style={{ color: "var(--ink-muted)" }}>
-          Přidej karty, zvol stav a hned uvidíš nezávazný odhad. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Odhad platí 7 dní.
+          {t("Přidej karty, zvol stav a hned uvidíš nezávazný odhad. Přesnou nabídku dostaneš po fyzické kontrole karet u nás. Odhad platí 7 dní.")}
         </p>
       </div>
-      <ol aria-label="Jak výkup probíhá" className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">
+      <ol aria-label={t("Jak výkup probíhá")} className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">
         {STEPS.map((st, i) => (
           <li
             key={st}
@@ -51,7 +57,7 @@ export default async function VykupPage({ searchParams }: PageProps<"/vykup">) {
             className="rounded-full px-4 py-[7px]"
             style={i === 0 ? { background: "var(--surface-inverse)", color: "var(--ink-inverse)" } : { background: "var(--surface-200)", color: "var(--ink-muted)" }}
           >
-            {i + 1} · {st}
+            {i + 1} · {t(st)}
           </li>
         ))}
       </ol>

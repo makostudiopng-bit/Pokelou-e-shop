@@ -1,9 +1,13 @@
-const STEPS = ["Košík", "Doprava a platba", "Hotovo"];
+import { tk } from "@/i18n/core";
+import { getT } from "@/i18n/server";
+
+const STEPS = [tk("Košík"), tk("Doprava a platba"), tk("Hotovo")];
 
 /** Kroky nákupu: 0 = košík, 1 = pokladna, 2 = potvrzení */
-export function Steps({ current }: { current: 0 | 1 | 2 }) {
+export async function Steps({ current }: { current: 0 | 1 | 2 }) {
+  const t = await getT();
   return (
-    <ol aria-label="Kroky nákupu" className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">
+    <ol aria-label={t("Kroky nákupu")} className="m-0 flex list-none flex-wrap gap-2 p-0 text-sm font-extrabold">
       {STEPS.map((s, i) => (
         <li
           key={s}
@@ -17,7 +21,7 @@ export function Steps({ current }: { current: 0 | 1 | 2 }) {
                 : { background: "var(--surface-200)", color: "var(--ink-muted)" }
           }
         >
-          {i < current ? "✓" : i + 1} · {s}
+          {i < current ? "✓" : i + 1} · {t(s)}
         </li>
       ))}
     </ol>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import type { Condition } from "@/db/schema";
-import { formatCzk } from "@/lib/pricing";
+import { getT } from "@/i18n/server";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -68,7 +68,8 @@ export type CardTileProps = {
   cta?: ReactNode;
 };
 
-export function CardTile(p: CardTileProps) {
+export async function CardTile(p: CardTileProps) {
+  const t = await getT();
   const out = p.stock <= 0;
   const drop = p.wasPriceHal != null && p.wasPriceHal > p.priceHal;
   return (
@@ -85,9 +86,9 @@ export function CardTile(p: CardTileProps) {
             priority={p.priority}
           />
         ) : (
-          <div className="pl-tile__ph" role="img" aria-label="Obrázek karty chybí" />
+          <div className="pl-tile__ph" role="img" aria-label={t("Obrázek karty chybí")} />
         )}
-        {drop ? <span className="pl-tile__flag">Zlevněno</span> : p.hot && !out && <span className="pl-tile__flag pl-tile__flag--hot">Novinka</span>}
+        {drop ? <span className="pl-tile__flag">{t("Zlevněno")}</span> : p.hot && !out && <span className="pl-tile__flag pl-tile__flag--hot">{t("Novinka")}</span>}
       </Link>
       <div>
         <h3 className="pl-tile__name">
@@ -106,20 +107,20 @@ export function CardTile(p: CardTileProps) {
       </div>
       <div className="pl-tile__row">
         <div>
-          {drop && <span className="pl-tile__was">{formatCzk(p.wasPriceHal!)}</span>}
-          <span className={cx("pl-tile__price", drop && "pl-tile__drop")}>{formatCzk(p.priceHal)}</span>
+          {drop && <span className="pl-tile__was">{t.czk(p.wasPriceHal!)}</span>}
+          <span className={cx("pl-tile__price", drop && "pl-tile__drop")}>{t.czk(p.priceHal)}</span>
           <div className={cx("pl-tile__stock", out && "pl-tile__stock--out")}>
-            {out ? "Vyprodáno" : `Skladem ${p.stock} ks`}
+            {out ? t("Vyprodáno") : t("Skladem {n} ks", { n: p.stock })}
           </div>
         </div>
         {p.cta ??
           (out ? (
             <Button variant="secondary" size="sm">
-              Hlídat
+              {t("Hlídat")}
             </Button>
           ) : (
             <Button variant="primary" size="sm">
-              Do košíku
+              {t("Do košíku")}
             </Button>
           ))}
       </div>

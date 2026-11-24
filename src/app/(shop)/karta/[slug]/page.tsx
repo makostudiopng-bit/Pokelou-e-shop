@@ -9,15 +9,17 @@ import { Button, ConditionBadge } from "@/components/ui";
 import { getCard } from "@/lib/catalog";
 import { buybackCardFor } from "@/lib/buyback";
 import { estimateItem } from "@/lib/buyback-shared";
-import { formatCzk } from "@/lib/pricing";
+import { tk } from "@/i18n/core";
+import { getT } from "@/i18n/server";
 
 export async function generateMetadata({ params }: PageProps<"/karta/[slug]">): Promise<Metadata> {
   const card = await getCard(decodeURIComponent((await params).slug));
-  if (!card) return { title: "Karta nenalezena" };
+  const t = await getT();
+  if (!card) return { title: t("Karta nenalezena") };
   const v = card.variants[0];
   return {
     title: `${v.name} ${v.number} (${v.set})`,
-    description: `${v.name}, ${v.set} ${v.number}, ${v.rarity}. Od ${formatCzk(Math.min(...card.variants.map((x) => x.priceHal)))}.`,
+    description: t("{name}, {set} {number}, {rarity}. Od {price}.", { name: v.name, set: v.set, number: v.number, rarity: v.rarity, price: t.czk(Math.min(...card.variants.map((x) => x.priceHal))) }),
   };
 }
 
@@ -25,6 +27,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
   const slug = decodeURIComponent((await params).slug);
   const card = await getCard(slug);
   if (!card) notFound();
+  const t = await getT();
 
   const sp = await searchParams;
   const wanted = typeof sp.kus === "string" ? sp.kus : undefined;
@@ -38,13 +41,13 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
 
   return (
     <main className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-6 pb-14 sm:px-6">
-      <nav aria-label="Drobečková navigace" className="flex flex-wrap gap-2 text-[13px] leading-[18px]" style={{ color: "var(--ink-muted)" }}>
+      <nav aria-label={t("Drobečková navigace")} className="flex flex-wrap gap-2 text-[13px] leading-[18px]" style={{ color: "var(--ink-muted)" }}>
         <Link href="/" style={{ color: "var(--ink-muted)" }}>
-          Domů
+          {t("Domů")}
         </Link>
         <span aria-hidden="true">/</span>
         <Link href="/karty" style={{ color: "var(--ink-muted)" }}>
-          Karty
+          {t("Karty")}
         </Link>
         <span aria-hidden="true">/</span>
         <Link href={setHref} style={{ color: "var(--ink-muted)" }}>
@@ -62,10 +65,10 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                 <CardZoom src={selected.image} alt={`${selected.name}, ${selected.set} ${selected.number}`} />
               </div>
             ) : (
-              <div className="pl-tile__ph w-full max-w-[360px]" role="img" aria-label="Obrázek karty chybí" />
+              <div className="pl-tile__ph w-full max-w-[360px]" role="img" aria-label={t("Obrázek karty chybí")} />
             )}
           </div>
-          <p className="pl-note m-0">Na fotce je konkrétní kus, který ti pošleme. U levnějších karet může jít o ilustrační foto.</p>
+          <p className="pl-note m-0">{t("Na fotce je konkrétní kus, který ti pošleme. U levnějších karet může jít o ilustrační foto.")}</p>
         </div>
 
         <div className="flex min-w-0 flex-[999_1_420px] flex-col gap-5">
@@ -84,7 +87,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
 
           <section aria-labelledby="kus-h" className="flex flex-col gap-2">
             <h2 id="kus-h" className="m-0 mb-1 text-base font-bold">
-              {variants.length > 1 ? "Vyber si kus" : "Kus skladem"}
+              {variants.length > 1 ? t("Vyber si kus") : t("Kus skladem")}
             </h2>
             {variants.map((v) => {
               const current = v.id === selected.id;
@@ -106,10 +109,10 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                       className="basis-full text-[13px] font-semibold sm:ml-auto sm:basis-auto"
                       style={{ color: v.stock > 0 ? "var(--ink-muted)" : "var(--red-text)" }}
                     >
-                      {v.stock > 0 ? `Skladem ${v.stock} ks` : "Vyprodáno"}
+                      {v.stock > 0 ? t("Skladem {n} ks", { n: v.stock }) : t("Vyprodáno")}
                     </span>
                   </span>
-                  <strong className="text-right text-lg leading-6 whitespace-nowrap sm:min-w-24">{formatCzk(v.priceHal)}</strong>
+                  <strong className="text-right text-lg leading-6 whitespace-nowrap sm:min-w-24">{t.czk(v.priceHal)}</strong>
                 </Link>
               );
             })}
@@ -119,34 +122,34 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
             {out ? (
               <>
                 <Button variant="primary" className="flex-[1_1_220px]" block>
-                  Hlídat, až bude skladem
+                  {t("Hlídat, až bude skladem")}
                 </Button>
               </>
             ) : (
               <>
                 <div className="min-w-0 flex-[1_1_320px]">
-                  <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`Do košíku · ${formatCzk(selected.priceHal)}`} />
+                  <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`${t("Do košíku")} · ${t.czk(selected.priceHal)}`} />
                 </div>
-                <Button variant="secondary">Hlídat cenu</Button>
+                <Button variant="secondary">{t("Hlídat cenu")}</Button>
               </>
             )}
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            {[
-              ["Bezpečné balení", "Obal, toploader a pevná obálka."],
-              ["Jak hodnotíme stav", null],
-              ["Doprava", "Zásilkovna, Česká pošta, osobní odběr."],
-            ].map(([t, d]) => (
-              <div key={t} className="flex flex-col gap-1 rounded-[10px] px-4 py-3.5" style={{ border: "1px solid var(--line)" }}>
-                <strong className="text-sm">{t}</strong>
+            {([
+              [tk("Bezpečné balení"), tk("Obal, toploader a pevná obálka.")],
+              [tk("Jak hodnotíme stav"), null],
+              [tk("Doprava"), tk("Zásilkovna, Česká pošta, osobní odběr.")],
+            ] as [string, string | null][]).map(([title, d]) => (
+              <div key={title} className="flex flex-col gap-1 rounded-[10px] px-4 py-3.5" style={{ border: "1px solid var(--line)" }}>
+                <strong className="text-sm">{t(title)}</strong>
                 {d ? (
                   <span className="text-[13px] leading-[18px]" style={{ color: "var(--ink-muted)" }}>
-                    {d}
+                    {t(d)}
                   </span>
                 ) : (
                   <Link href="/stav-karet" className="text-[13px] leading-[18px]">
-                    Průvodce stavem karet
+                    {t("Průvodce stavem karet")}
                   </Link>
                 )}
               </div>
@@ -159,12 +162,12 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
               style={{ background: "var(--band-bg)", color: "var(--band-ink)", border: "2px solid var(--band-border)" }}
             >
               <span className="text-[15px] leading-[22px]">
-                Máš tuhle kartu doma?{" "}
+                {t("Máš tuhle kartu doma?")}{" "}
                 {estimate.bulkOnly ? (
-                  "Vezmeme ji v rámci hromadného výkupu."
+                  t("Vezmeme ji v rámci hromadného výkupu.")
                 ) : (
                   <>
-                    Vykoupíme ji, nezávazný odhad v Near Mint <strong>{formatCzk(estimate.unitHal)}</strong>.
+                    {t("Vykoupíme ji, nezávazný odhad v Near Mint")} <strong>{t.czk(estimate.unitHal)}</strong>.
                   </>
                 )}
               </span>
@@ -173,7 +176,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                 className="pl-lift rounded-[10px] px-4 py-2.5 text-sm font-bold no-underline"
                 style={{ background: "var(--brand-yellow)", color: "var(--on-yellow)" }}
               >
-                Prodat kartu
+                {t("Prodat kartu")}
               </Link>
             </div>
           )}
@@ -183,7 +186,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
       {card.more.length > 0 && (
         <section aria-labelledby="more-h" className="mt-4 flex flex-col gap-4">
           <h2 id="more-h" className="m-0 text-[28px] leading-8 font-extrabold sm:text-[32px] sm:leading-9" style={{ fontFamily: "var(--font-display)" }}>
-            Mohlo by se ti líbit
+            {t("Mohlo by se ti líbit")}
           </h2>
           <div className="pl-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-5">
             {card.more.map((o) => (

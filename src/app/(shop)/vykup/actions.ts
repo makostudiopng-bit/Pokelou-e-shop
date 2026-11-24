@@ -6,6 +6,8 @@ import { getDb, hasDb } from "@/db";
 import { createBuyback } from "@/lib/buyback";
 import { BUYBACK_LANGUAGES, BUYBACK_MAX_ITEMS } from "@/lib/buyback-shared";
 import { czAccountToIban, isValidIban } from "@/lib/spayd";
+import { makeT } from "@/i18n/core";
+import { getLocale } from "@/i18n/server";
 
 export type BuybackState = { attempt: number; errors: Partial<Record<"email" | "bankAccount" | "adult" | "items" | "form", string>> };
 
@@ -25,6 +27,7 @@ const validAccount = (a: string) => czAccountToIban(a) != null || isValidIban(a)
 
 export async function submitBuybackAction(prev: BuybackState, form: FormData): Promise<BuybackState> {
   const attempt = prev.attempt + 1;
+  const t = makeT(await getLocale());
   const errors: BuybackState["errors"] = {};
   const str = (k: string) => {
     const v = form.get(k);
@@ -34,20 +37,20 @@ export async function submitBuybackAction(prev: BuybackState, form: FormData): P
   const email = str("email");
   const bankAccount = str("bankAccount").replace(/\s/g, "");
 
-  if (!z.email().safeParse(email).success) errors.email = "Zkontroluj e-mail";
-  if (payout === "cash" && !validAccount(bankAccount)) errors.bankAccount = "Číslo účtu ve tvaru 123456789/0100";
-  if (form.get("adult") !== "on") errors.adult = "Výkup je jen pro plnoleté. Pokud ti ještě není 18, požádej rodiče.";
+  if (!z.email().safeParse(email).success) errors.email = t("Zkontroluj e-mail");
+  if (payout === "cash" && !validAccount(bankAccount)) errors.bankAccount = t("Číslo účtu ve tvaru 123456789/0100");
+  if (form.get("adult") !== "on") errors.adult = t("Výkup je jen pro plnoleté. Pokud ti ještě není 18, požádej rodiče.");
 
   let items: z.infer<typeof itemsSchema> = [];
   try {
     const parsed = itemsSchema.safeParse(JSON.parse(str("items") || "[]"));
     if (parsed.success) items = parsed.data;
-    else errors.items = "Přidej aspoň jednu kartu";
+    else errors.items = t("Přidej aspoň jednu kartu");
   } catch {
-    errors.items = "Přidej aspoň jednu kartu";
+    errors.items = t("Přidej aspoň jednu kartu");
   }
   if (Object.keys(errors).length) return { attempt, errors };
-  if (!hasDb()) return { attempt, errors: { form: "Výkup zatím nejde odeslat, e-shop ještě nemá napojenou databázi." } };
+  if (!hasDb()) return { attempt, errors: { form: t("Výkup zatím nejde odeslat, e-shop ještě nemá napojenou databázi.") } };
 
   let id: string;
   try {
@@ -55,7 +58,7 @@ export async function submitBuybackAction(prev: BuybackState, form: FormData): P
     id = req.id;
   } catch (e) {
     console.error("Výkup se nepovedl", e);
-    const msg = e instanceof Error && e.message.startsWith("Žádná") ? e.message : "Výkup se nepodařilo uložit. Zkus to prosím za chvíli.";
+    const msg = e instanceof Error && e.message.startsWith("Žádná") ? t(e.message) : t("Výkup se nepodařilo uložit. Zkus to prosím za chvíli.");
     return { attempt, errors: { form: msg } };
   }
   redirect(`/vykup/${id}`);

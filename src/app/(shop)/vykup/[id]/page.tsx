@@ -5,19 +5,20 @@ import { ConditionBadge } from "@/components/ui";
 import { SHOP } from "@/config/shop";
 import { getDb, hasDb } from "@/db";
 import { getBuyback } from "@/lib/buyback";
-import { formatCzk } from "@/lib/pricing";
+import { getT } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Výkup přijat",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t("Výkup přijat"), robots: { index: false } };
+}
 
 export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[id]">) {
   if (!hasDb()) notFound();
   const data = await getBuyback(await getDb(), (await params).id);
   if (!data) notFound();
   const { req, items } = data;
-  const validTo = req.estimateValidTo.toLocaleDateString("cs-CZ", { day: "numeric", month: "numeric", year: "numeric" });
+  const t = await getT();
+  const validTo = t.date(req.estimateValidTo);
 
   return (
     <main className="mx-auto flex max-w-[1080px] flex-col gap-8 px-4 pt-8 pb-16 sm:px-6">
@@ -27,30 +28,30 @@ export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[
         </span>
         <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-2">
           <h1 className="m-0 text-[44px] leading-[44px] font-extrabold uppercase sm:text-[56px] sm:leading-[54px]" style={{ fontFamily: "var(--font-display)" }}>
-            Výkup máme zapsaný
+            {t("Výkup máme zapsaný")}
           </h1>
           <p className="m-0 text-[17px] leading-[26px]">
-            Číslo výkupu <strong style={{ fontFamily: "var(--font-mono)" }}>{req.number}</strong>. Nezávazný odhad{" "}
-            <strong>{formatCzk(req.estimateHal)}</strong> {req.payout === "credit" ? "v kreditu" : "na účet"} platí do {validTo}. Přesnou nabídku ti pošleme po fyzické kontrole karet.
+            {t("Číslo výkupu")} <strong style={{ fontFamily: "var(--font-mono)" }}>{req.number}</strong>. {t("Nezávazný odhad")}{" "}
+            <strong>{t.czk(req.estimateHal)}</strong> {req.payout === "credit" ? t("v kreditu") : t("na účet")} {t("platí do {date}.", { date: validTo })} {t("Přesnou nabídku ti pošleme po fyzické kontrole karet.")}
           </p>
         </div>
       </section>
 
       <section aria-labelledby="send-h" className="flex flex-col gap-4 rounded-2xl p-5 sm:p-6" style={{ background: "var(--surface-100)", border: "2px solid var(--ink)", boxShadow: "var(--shadow-sticker)" }}>
         <h2 id="send-h" className="m-0 text-[30px] leading-8 font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-          Jak nám karty poslat
+          {t("Jak nám karty poslat")}
         </h2>
         <ol className="m-0 grid list-none gap-4 p-0 sm:grid-cols-3">
           {[
-            ["Zabal karty", "Každou do obalu, dražší i do toploaderu. Celé do pevné obálky nebo krabičky."],
-            ["Přilož číslo výkupu", `Na lísteček napiš ${req.number}, ať karty hned spárujeme.`],
-            ["Pošli nebo přines", SHOP.buybackAddress],
-          ].map(([t, d], i) => (
-            <li key={t} className="flex flex-col gap-2">
+            [t("Zabal karty"), t("Každou do obalu, dražší i do toploaderu. Celé do pevné obálky nebo krabičky.")],
+            [t("Přilož číslo výkupu"), t("Na lísteček napiš {number}, ať karty hned spárujeme.", { number: req.number })],
+            [t("Pošli nebo přines"), SHOP.buybackAddress],
+          ].map(([title, d], i) => (
+            <li key={title} className="flex flex-col gap-2">
               <span className="pl-sticker-num" style={{ width: 44, height: 44, fontSize: 22 }} aria-hidden="true">
                 {i + 1}
               </span>
-              <strong className="text-[17px]">{t}</strong>
+              <strong className="text-[17px]">{title}</strong>
               <span className="text-sm leading-5" style={{ color: "var(--ink-muted)" }}>
                 {d}
               </span>
@@ -58,13 +59,15 @@ export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[
           ))}
         </ol>
         <p className="pl-note m-0">
-          Po doručení karty zkontrolujeme. Když stav sedí, {req.payout === "credit" ? "připíšeme kredit" : "pošleme peníze na účet"}. Když ne, napíšeme ti protinabídku, nebo ti karty vrátíme.
+          {req.payout === "credit"
+            ? t("Po doručení karty zkontrolujeme. Když stav sedí, připíšeme kredit. Když ne, napíšeme ti protinabídku, nebo ti karty vrátíme.")
+            : t("Po doručení karty zkontrolujeme. Když stav sedí, pošleme peníze na účet. Když ne, napíšeme ti protinabídku, nebo ti karty vrátíme.")}
         </p>
       </section>
 
       <section aria-labelledby="items-h" className="flex flex-col gap-3 rounded-2xl p-5 sm:p-6" style={{ background: "var(--surface-100)", border: "2px solid var(--line)" }}>
         <h2 id="items-h" className="m-0 text-[28px] leading-8 font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-          Karty k výkupu
+          {t("Karty k výkupu")}
         </h2>
         <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
           {items.map(({ item, name, localId, set, setCode }) => (
@@ -77,16 +80,16 @@ export default async function VykupPotvrzeniPage({ params }: PageProps<"/vykup/[
               </span>
               <ConditionBadge condition={item.declaredCondition} />
               <span className="pl-lang">{item.language}</span>
-              <span className="text-sm">{item.quantity} ks</span>
-              <strong className="min-w-[90px] text-right">{item.estimateHal ? formatCzk(item.estimateHal) : "bulk"}</strong>
+              <span className="text-sm">{item.quantity} {t("ks")}</span>
+              <strong className="min-w-[90px] text-right">{item.estimateHal ? t.czk(item.estimateHal) : t("bulk")}</strong>
             </li>
           ))}
         </ul>
-        {req.bulkCount > 0 && <p className="pl-note m-0">{req.bulkCount} ks posoudíme jako bulk, cenu za ně doplníme po kontrole.</p>}
+        {req.bulkCount > 0 && <p className="pl-note m-0">{t("{n} ks posoudíme jako bulk, cenu za ně doplníme po kontrole.", { n: req.bulkCount })}</p>}
       </section>
 
       <p className="m-0 text-[15px]">
-        Máš dotaz? Napiš na <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a> a uveď číslo výkupu. <Link href="/karty">Zpátky do obchodu</Link>
+        {t("Máš dotaz? Napiš na")} <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a> {t("a uveď číslo výkupu.")} <Link href="/karty">{t("Zpátky do obchodu")}</Link>
       </p>
     </main>
   );

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getT } from "@/i18n/server";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getT();
   return (
     <>
     <SiteHeader />
@@ -11,13 +13,13 @@ export default function NotFound() {
         ?
       </span>
       <h1 className="m-0 text-[40px] leading-[44px] font-extrabold" style={{ fontFamily: "var(--font-display)" }}>
-        Tahle stránka utekla
+        {t("Tahle stránka utekla")}
       </h1>
       <p className="m-0 text-[17px] leading-[26px]" style={{ color: "var(--ink-muted)" }}>
-        Možná už je karta prodaná, nebo se adresa změnila.
+        {t("Možná už je karta prodaná, nebo se adresa změnila.")}
       </p>
       <Link href="/karty" className="pl-btn pl-btn--primary no-underline">
-        Prohlédnout karty
+        {t("Prohlédnout karty")}
       </Link>
     </main>
     <SiteFooter />

@@ -1,36 +1,37 @@
 import Link from "next/link";
 import { SHOP } from "@/config/shop";
+import { getT } from "@/i18n/server";
 import { InstagramIcon } from "./instagram-icon";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const t = await getT();
   return (
     <footer style={{ borderTop: "3px solid var(--rule)", background: "var(--section-bg, var(--surface-200))" }}>
       <div className="mx-auto flex max-w-[1280px] flex-wrap justify-between gap-6 px-4 py-8 text-sm leading-6 sm:px-6" style={{ color: "var(--ink-muted)" }}>
         <div className="flex flex-col gap-1">
           <strong style={{ color: "var(--ink)" }}>PokeLou</strong>
           <span>
-            {SHOP.operator} · IČO {SHOP.ico.replace(/^\[IČO\]$/, "[doplnit]")}
+            {SHOP.operator} · {t("IČO")} {SHOP.ico.replace(/^\[IČO\]$/, "[doplnit]")}
           </span>
           <span>
             <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a> · {SHOP.phone}
           </span>
           <a href={SHOP.instagramUrl} target="_blank" rel="noopener noreferrer" className="pl-ig-btn pl-lift mt-2 self-start no-underline">
             <InstagramIcon size={18} />
-            Sleduj nás na Instagramu <span className="font-mono text-[13px] opacity-80">{SHOP.instagram}</span>
+            {t("Sleduj nás na Instagramu")} <span className="font-mono text-[13px] opacity-80">{SHOP.instagram}</span>
           </a>
         </div>
-        <nav aria-label="Informace" className="flex flex-wrap gap-x-6 gap-y-2">
-          <Link href="/obchodni-podminky">Obchodní podmínky</Link>
-          <Link href="/reklamace">Reklamace</Link>
-          <Link href="/doprava-a-platba">Doprava a platba</Link>
-          <Link href="/stav-karet">Průvodce stavem karet</Link>
-          <Link href="/vykup-podminky">Podmínky výkupu</Link>
-          <Link href="/ochrana-osobnich-udaju">Ochrana osobních údajů</Link>
+        <nav aria-label={t("Informace")} className="flex flex-wrap gap-x-6 gap-y-2">
+          <Link href="/obchodni-podminky">{t("Obchodní podmínky")}</Link>
+          <Link href="/reklamace">{t("Reklamace")}</Link>
+          <Link href="/doprava-a-platba">{t("Doprava a platba")}</Link>
+          <Link href="/stav-karet">{t("Průvodce stavem karet")}</Link>
+          <Link href="/vykup-podminky">{t("Podmínky výkupu")}</Link>
+          <Link href="/ochrana-osobnich-udaju">{t("Ochrana osobních údajů")}</Link>
         </nav>
       </div>
       <p className="mx-auto max-w-[1280px] px-4 pb-6 text-xs leading-[18px] sm:px-6" style={{ color: "var(--ink-muted)" }}>
-        Pokémon a související názvy jsou ochranné známky společností Nintendo, Creatures Inc., GAME FREAK Inc. a The
-        Pokémon Company. PokeLou s nimi není spojen.
+        {t("Pokémon a související názvy jsou ochranné známky společností Nintendo, Creatures Inc., GAME FREAK Inc. a The Pokémon Company. PokeLou s nimi není spojen.")}
       </p>
     </footer>
   );

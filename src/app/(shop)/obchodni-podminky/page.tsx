@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, Operator, Ph } from "@/components/legal";
+import { getT } from "@/i18n/server";
 import { SHOP } from "@/config/shop";
 
-export const metadata: Metadata = { title: "Obchodní podmínky" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Obchodní podmínky") };
+}
 
 export default function ObchodniPodminkyPage() {
   return (
-    <LegalPage title="Obchodní podmínky" updated="[DATUM SPUŠTĚNÍ]">
+    <LegalPage title="Obchodní podmínky" updated="[DATUM SPUŠTĚNÍ]" czechOnly>
       <h2>1. Kdo prodává</h2>
       <p>
         E-shop {SHOP.web} provozuje <Operator />. Tyto podmínky upravují nákup karet přes e-shop. Pro výkup karet od zákazníků platí samostatné{" "}
