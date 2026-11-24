@@ -96,7 +96,7 @@ export default async function VykupAdmin({ params }: PageProps<"/admin/vykupy/[i
                         <ConditionBadge condition={checked} />
                       )}
                       {worse && (
-                        <span className="ml-2 text-xs font-bold" style={{ color: "var(--brand-red)" }}>
+                        <span className="ml-2 text-xs font-bold" style={{ color: "var(--red-text)" }}>
                           horší než uvedeno
                         </span>
                       )}

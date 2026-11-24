@@ -33,7 +33,7 @@
 
 .pl-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; background: var(--surface-200); border-radius: 999px; padding: 6px 8px 6px 12px; text-decoration: none; color: var(--ink); }
 .pl-chip__x { font-size: 16px; line-height: 1; padding: 0 4px; }
-.pl-chip:hover .pl-chip__x { color: var(--brand-red); }
+.pl-chip:hover .pl-chip__x { color: var(--red-text); }
 
 .pl-select { font: 500 14px/20px var(--font-sans); color: var(--ink); background: var(--surface-100); border: 1.5px solid var(--line-strong); border-radius: 6px; padding: 8px 10px; }
 
@@ -142,7 +142,7 @@
 .pl-sparkles { position: relative; width: 64px; height: 1em; align-self: stretch; font-family: var(--font-sans); }
 .pl-sparkles span { position: absolute; line-height: 1; color: var(--brand-yellow); -webkit-text-stroke: 1.5px var(--ink); animation: pl-twinkle 2.4s ease-in-out infinite; }
 .pl-sparkles span:nth-child(1) { left: 0; top: 0; font-size: .5em; }
-.pl-sparkles span:nth-child(2) { left: 52%; top: 34%; font-size: .32em; animation-delay: .8s; color: var(--brand-red); }
+.pl-sparkles span:nth-child(2) { left: 52%; top: 34%; font-size: .32em; animation-delay: .8s; color: var(--red-text); }
 .pl-sparkles span:nth-child(3) { left: 12%; top: 64%; font-size: .24em; animation-delay: 1.6s; }
 @keyframes pl-twinkle { 0%, 100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(.55) rotate(45deg); opacity: .6; } }
 @media (prefers-reduced-motion: reduce) {

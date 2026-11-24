@@ -181,7 +181,7 @@ export function IntakeForm() {
         </form>
       )}
       {(state.ok || state.error) && (
-        <p role="status" className="m-0 text-sm font-bold" style={{ color: state.error ? "var(--brand-red)" : "var(--success)" }}>
+        <p role="status" className="m-0 text-sm font-bold" style={{ color: state.error ? "var(--red-text)" : "var(--success)" }}>
           {state.error ?? state.ok}
         </p>
       )}

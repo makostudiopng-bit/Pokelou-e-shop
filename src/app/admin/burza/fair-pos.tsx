@@ -287,7 +287,7 @@ export function FairPos() {
                     </span>
                     <span className="flex flex-col items-end">
                       <strong className="whitespace-nowrap">{formatCzk(it.priceHal)}</strong>
-                      <span className="text-[12px]" style={{ color: n > 0 ? "var(--success)" : "var(--brand-red)" }}>
+                      <span className="text-[12px]" style={{ color: n > 0 ? "var(--success)" : "var(--red-text)" }}>
                         {n > 0 ? `${n} ks` : "není"}
                       </span>
                     </span>
@@ -339,7 +339,7 @@ export function FairPos() {
                 <label className="flex items-center justify-between gap-3 text-[14px]">
                   <span>Zákazník dal</span>
                   <input className="pl-pos__given" inputMode="decimal" placeholder="Kč" value={given} onChange={(e) => setGiven(e.target.value)} />
-                  <strong style={{ color: change != null && change < 0 ? "var(--brand-red)" : undefined }}>
+                  <strong style={{ color: change != null && change < 0 ? "var(--red-text)" : undefined }}>
                     {change == null ? "" : change < 0 ? `chybí ${formatCzk(-change)}` : `vrátit ${formatCzk(change)}`}
                   </strong>
                 </label>

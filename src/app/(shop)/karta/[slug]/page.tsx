@@ -104,7 +104,7 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
                     {v.finish && <span className="text-sm" style={{ color: "var(--ink-muted)" }}>{v.finish}</span>}
                     <span
                       className="basis-full text-[13px] font-semibold sm:ml-auto sm:basis-auto"
-                      style={{ color: v.stock > 0 ? "var(--ink-muted)" : "var(--brand-red)" }}
+                      style={{ color: v.stock > 0 ? "var(--ink-muted)" : "var(--red-text)" }}
                     >
                       {v.stock > 0 ? `Skladem ${v.stock} ks` : "Vyprodáno"}
                     </span>

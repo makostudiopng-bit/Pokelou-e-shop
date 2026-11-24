@@ -89,7 +89,7 @@ export default async function KosikPage() {
                       +
                     </button>
                   </form>
-                  <span className="text-xs" style={{ color: adjusted ? "var(--brand-red)" : "var(--ink-muted)" }}>
+                  <span className="text-xs" style={{ color: adjusted ? "var(--red-text)" : "var(--ink-muted)" }}>
                     {adjusted ? `Zbývá jen ${o.stock} ks` : `Skladem ${o.stock} ks`}
                   </span>
                 </div>

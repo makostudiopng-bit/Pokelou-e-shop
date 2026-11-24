@@ -160,7 +160,7 @@ function Fields({
     <div className="flex flex-wrap items-start gap-6">
       <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
         {e.form && (
-          <p role="alert" className="m-0 rounded-xl px-4 py-3 text-[15px] font-bold" style={{ background: "var(--surface-100)", border: "2px solid var(--brand-red)", color: "var(--brand-red)" }}>
+          <p role="alert" className="m-0 rounded-xl px-4 py-3 text-[15px] font-bold" style={{ background: "var(--surface-100)", border: "2px solid var(--brand-red)", color: "var(--red-text)" }}>
             {e.form}
           </p>
         )}

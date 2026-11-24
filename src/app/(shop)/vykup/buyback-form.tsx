@@ -179,7 +179,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
                 {est.noPrice ? "posoudíme" : est.rejected ? "nevykupujeme" : est.bulkOnly ? "bulk" : formatCzk(est.totalHal)}
               </strong>
               {est.acceptedQty > 0 && est.acceptedQty < l.quantity && (
-                <span className="text-xs" style={{ color: "var(--brand-red)" }}>
+                <span className="text-xs" style={{ color: "var(--red-text)" }}>
                   max. {est.acceptedQty} ks
                 </span>
               )}
@@ -208,7 +208,7 @@ export function BuybackForm({ initial, minHal, cashPct, creditPct }: { initial: 
           Souhrn
         </h2>
         {e.form && (
-          <p role="alert" className="m-0 text-sm font-bold" style={{ color: "var(--brand-red)" }}>
+          <p role="alert" className="m-0 text-sm font-bold" style={{ color: "var(--red-text)" }}>
             {e.form}
           </p>
         )}

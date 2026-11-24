@@ -49,7 +49,7 @@ body { background: var(--surface-000); color: var(--ink); font-family: var(--fon
 .pl-tile__row { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-2); margin-top: auto; }
 .pl-tile__price { font-size: 20px; line-height: 24px; font-weight: 800; }
 .pl-tile__was { display: block; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted); text-decoration: line-through; }
-.pl-tile__drop { color: var(--brand-red); }
+.pl-tile__drop { color: var(--red-text); }
 .pl-tile__stock { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--success); }
 .pl-tile__stock--out { color: var(--ink-muted); }
 .pl-tile--out .pl-tile__img, .pl-tile--out .pl-tile__ph { opacity: .5; }
@@ -70,8 +70,8 @@ body { background: var(--surface-000); color: var(--ink); font-family: var(--fon
 .pl-field__wrap .pl-field__input { flex: 1; }
 .pl-field__suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 600; color: var(--ink-muted); pointer-events: none; }
 .pl-field__hint { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
-.pl-field--error .pl-field__input { border-color: var(--brand-red); }
-.pl-field__error { font-size: 13px; line-height: 18px; font-weight: 600; color: var(--brand-red); }
+.pl-field--error .pl-field__input { border-color: var(--red-text); }
+.pl-field__error { font-size: 13px; line-height: 18px; font-weight: 600; color: var(--red-text); }
 
 /* Motion: keyframes */
 @keyframes pl-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }

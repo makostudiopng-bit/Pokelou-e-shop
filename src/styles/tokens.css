@@ -30,6 +30,7 @@
   --board-back: #141414;
   --section-dots: none;
   --section-bg: #f1ebe1;
+  --red-text: #c42a14;
 }
 [data-theme="dark"] {
   color-scheme: dark;
@@ -45,13 +46,13 @@
   --brand-yellow: #f2a400;
   --brand-yellow-hover: #ffb82e;
   --on-yellow: #141414;
-  --brand-red: #ff6a4d;
-  --on-red: #141414;
+  --brand-red: #c42a14;
+  --on-red: #ffffff;
   --success: #4cc38a;
   --focus: #f2a400;
   --cond-mint: #4cc38a;
   --cond-good: #f2a400;
-  --cond-played: #ff6a4d;
+  --cond-played: #c42a14;
   --shadow-sticker: 3px 3px 0 #f2a400;
   /* noc jako logo a stories: černá #141414, žlutá linka, žluté tečky,
      tmavé prvky mají žlutý tvrdý stín, barevné (žluté) prvky krémový */
@@ -64,6 +65,8 @@
   --board-back: #f4eee6;
   --section-dots: radial-gradient(rgba(242,164,0,.16) 2px, transparent 2.6px);
   --section-bg: #141414;
+  /* stejná červená, jen o tón světlejší pro drobný text na černé (čitelnost 5:1) */
+  --red-text: #f0533a;
 }
 /* Noční verze podle nastavení zařízení, dokud si zákazník nevybere sám */
 @media (prefers-color-scheme: dark) {
@@ -81,13 +84,13 @@
     --brand-yellow: #f2a400;
     --brand-yellow-hover: #ffb82e;
     --on-yellow: #141414;
-    --brand-red: #ff6a4d;
-    --on-red: #141414;
+    --brand-red: #c42a14;
+    --on-red: #ffffff;
     --success: #4cc38a;
     --focus: #f2a400;
     --cond-mint: #4cc38a;
     --cond-good: #f2a400;
-    --cond-played: #ff6a4d;
+    --cond-played: #c42a14;
     --shadow-sticker: 3px 3px 0 #f2a400;
     /* noc jako logo a stories: černá #141414, žlutá linka, žluté tečky,
        tmavé prvky mají žlutý tvrdý stín, barevné (žluté) prvky krémový */
@@ -100,6 +103,7 @@
     --board-back: #f4eee6;
     --section-dots: radial-gradient(rgba(242,164,0,.16) 2px, transparent 2.6px);
     --section-bg: #141414;
+    --red-text: #f0533a;
   }
 }
 
