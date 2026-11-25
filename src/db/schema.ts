@@ -151,6 +151,8 @@ export const buybackRequests = pgTable("buyback_requests", {
   estimateValidTo: timestamp("estimate_valid_to", { withTimezone: true }).notNull(),
   isAdultConfirmed: boolean("is_adult_confirmed").notNull().default(false),
   bulkCount: integer("bulk_count").notNull().default(0),
+  /** jazyk webu při odeslání: v něm chodí e-maily (cs / en) */
+  locale: text("locale").notNull().default("cs"),
   createdAt: createdAt(),
   receivedAt: timestamp("received_at", { withTimezone: true }),
   decidedAt: timestamp("decided_at", { withTimezone: true }),
@@ -231,7 +233,10 @@ export const cartItems = pgTable(
   (t) => [primaryKey({ columns: [t.cartId, t.stockItemId] })],
 );
 
-/** Hlídání dostupnosti nebo ceny karty */
+/**
+ * Hlídání karty: bez maxPriceHal upozorní, až bude skladem; s ní, až nejlevnější kus
+ * stojí nejvýš tolik. Platí až po potvrzení odkazem z e-mailu (confirmedAt).
+ */
 export const watches = pgTable(
   "watches",
   {
@@ -243,6 +248,13 @@ export const watches = pgTable(
       .notNull()
       .references(() => cards.id),
     maxPriceHal: integer("max_price_hal"),
+    locale: text("locale").notNull().default("cs"),
+    /** tajný kód do odkazů na potvrzení a odhlášení */
+    token: text("token").notNull().unique().default(sql`gen_random_uuid()::text`),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+    /** poslední upozornění a cena v něm; když karta zmizí ze skladu, cena se vynuluje */
+    notifiedAt: timestamp("notified_at", { withTimezone: true }),
+    notifiedHal: integer("notified_hal"),
     createdAt: createdAt(),
   },
   (t) => [uniqueIndex("watch_customer_card_idx").on(t.customerId, t.cardId)],
@@ -274,6 +286,8 @@ export const orders = pgTable("orders", {
   totalHal: integer("total_hal").notNull(),
   paymentRef: text("payment_ref"),
   trackingNumber: text("tracking_number"),
+  /** jazyk webu při objednávce: v něm chodí e-maily (cs / en) */
+  locale: text("locale").notNull().default("cs"),
   createdAt: createdAt(),
   paidAt: timestamp("paid_at", { withTimezone: true }),
   shippedAt: timestamp("shipped_at", { withTimezone: true }),
@@ -424,4 +438,27 @@ export const fairSales = pgTable(
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),
   },
   (t) => [index("fair_sales_sold_idx").on(t.soldAt), index("fair_sales_receipt_idx").on(t.receiptId)],
+);
+
+// ---------- E-maily ----------
+
+export const emailStatusEnum = pgEnum("email_status", ["sent", "failed", "skipped"]);
+
+/** Záznam každého e-mailu: co, komu, jestli odešel. Kvůli kontrole v administraci a proti dvojitému odeslání. */
+export const emailLog = pgTable(
+  "email_log",
+  {
+    id: id(),
+    /** druh e-mailu, např. order_created, order_shipped, watch_alert */
+    kind: text("kind").notNull(),
+    to: text("to").notNull(),
+    subject: text("subject").notNull(),
+    /** jednoznačný klíč odeslání (druh + ID záznamu); stejný klíč se nepošle dvakrát */
+    dedupeKey: text("dedupe_key").unique(),
+    status: emailStatusEnum("status").notNull(),
+    providerId: text("provider_id"),
+    error: text("error"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("email_log_to_idx").on(t.to, t.createdAt)],
 );

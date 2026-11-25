@@ -12,6 +12,7 @@ export function AdminNav({ orders, buybacks, fair }: { orders: number; buybacks:
     ["/admin/naskladnit", "Naskladnit"],
     ["/admin/burzy", "Burzy", fair],
     ["/admin/slevy", "Slevové kódy"],
+    ["/admin/emaily", "E-maily"],
     ["/admin/edice", "Edice z TCGdex"],
   ];
   return (

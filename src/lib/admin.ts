@@ -141,7 +141,7 @@ async function offerTotal(db: Db, id: string) {
   return items.reduce((a, i) => a + (i.finalHal ?? i.estimateHal), 0);
 }
 
-async function findOrCreateCustomer(db: Db, email: string, name: string | null) {
+export async function findOrCreateCustomer(db: Db, email: string, name: string | null) {
   const [existing] = await db.select().from(s.customers).where(eq(s.customers.email, email));
   if (existing) return existing;
   const [created] = await db.insert(s.customers).values({ email, name }).onConflictDoNothing().returning();

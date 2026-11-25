@@ -7,19 +7,13 @@ import { Steps } from "@/components/steps";
 import { PAYMENT, SHIPPING, SHOP } from "@/config/shop";
 import { getDb, hasDb } from "@/db";
 import { getOrder } from "@/lib/orders";
-import { czAccountToIban, formatIban, isValidIban, spayd } from "@/lib/spayd";
+import { formatIban, shopIban, spayd } from "@/lib/spayd";
 import { tk } from "@/i18n/core";
 import { getT } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t("Objednávka přijata"), robots: { index: false } };
-}
-
-function shopIban() {
-  if (SHOP.bankIban && isValidIban(SHOP.bankIban)) return SHOP.bankIban.replace(/\s/g, "");
-  if (SHOP.bankAccount) return czAccountToIban(SHOP.bankAccount);
-  return null;
 }
 
 const NEXT_STEPS: Record<string, [string, string][]> = {

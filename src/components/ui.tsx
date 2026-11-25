@@ -115,9 +115,9 @@ export async function CardTile(p: CardTileProps) {
         </div>
         {p.cta ??
           (out ? (
-            <Button variant="secondary" size="sm">
+            <Link href={`${p.href}${p.href.includes("?") ? "&" : "?"}hlidat=1#hlidat`} className="pl-btn pl-btn--secondary pl-btn--sm no-underline">
               {t("Hlídat")}
-            </Button>
+            </Link>
           ) : (
             <Button variant="primary" size="sm">
               {t("Do košíku")}

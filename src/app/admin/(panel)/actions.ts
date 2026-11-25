@@ -2,6 +2,10 @@
 // Všechny akce administrace. Každá na začátku ověří přihlášení – Server Actions jdou
 // zavolat i přímým POSTem, proxy na ně spoléhat nejde.
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { notifyBuybackStatus, notifyOrderStatus, sendLogged, shopInbox } from "@/lib/email/notify";
+import { isPreviewKey, renderPreview } from "@/lib/email/previews";
+import { siteUrl } from "@/lib/site-url";
 import { CONDITIONS, FINISHES, type Condition, type Finish } from "@/db/schema";
 import { getDb } from "@/db";
 import {
@@ -43,17 +47,23 @@ async function run(fn: () => Promise<string | void>): Promise<ActionState> {
 
 export async function orderStatusAction(_p: ActionState, f: FormData) {
   const id = str(f, "id");
+  const to = str(f, "to") as OrderStatus;
   const r = await run(async () => {
-    await setOrderStatus(await getDb(), id, str(f, "to") as OrderStatus, { tracking: str(f, "tracking") });
+    await setOrderStatus(await getDb(), id, to, { tracking: str(f, "tracking") });
   });
+  // e-mail zákazníkovi (jen u kroků, které ho zajímají: zaplaceno, připraveno, odesláno, zrušeno)
+  if (r.ok) after(() => notifyOrderStatus(id, to));
   revalidatePath("/admin", "layout");
   return r;
 }
 
 export async function buybackStatusAction(_p: ActionState, f: FormData) {
+  const id = str(f, "id");
+  const to = str(f, "to") as BuybackStatus;
   const r = await run(async () => {
-    await setBuybackStatus(await getDb(), str(f, "id"), str(f, "to") as BuybackStatus);
+    await setBuybackStatus(await getDb(), id, to);
   });
+  if (r.ok) after(() => notifyBuybackStatus(id, to));
   revalidatePath("/admin", "layout");
   return r;
 }
@@ -210,4 +220,17 @@ export async function fairCloseAction(_p: ActionState, f: FormData) {
 }
 export async function fairCancelAction(_p: ActionState, f: FormData) {
   return fairRun(async () => cancelSale(await getDb(), str(f, "id")), "Stornováno, kus je zpátky ve skladu");
+}
+
+/** Zkušební e-mail do schránky obchodu: ověří, že Resend a odesílatel fungují. */
+export async function testEmailAction(_p: ActionState, f: FormData) {
+  return run(async () => {
+    const key = str(f, "nahled");
+    const r = await renderPreview(isPreviewKey(key) ? key : "order_created", str(f, "jazyk") === "en" ? "en" : "cs", siteUrl());
+    const to = shopInbox();
+    const res = await sendLogged(await getDb(), "test", null, to, { ...r, subject: `[Zkouška] ${r.subject}` });
+    if (res.status === "skipped") throw new AdminError("E-mail se neodeslal: na Vercelu chybí RESEND_API_KEY.");
+    if (res.status === "failed") throw new AdminError(`Resend e-mail odmítl: ${res.error}`);
+    return `Zkušební e-mail odešel na ${to}.`;
+  });
 }

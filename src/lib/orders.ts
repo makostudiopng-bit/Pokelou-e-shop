@@ -51,7 +51,8 @@ export async function giveBack(db: Db, lines: Pick<OrderLine, "stockItemId" | "q
 }
 
 /** discountCodeId: ID uplatněného slevového kódu; výši slevy server spočítá sám. */
-export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInput, discountCodeId?: string) {
+/** locale: jazyk webu při objednávce, v něm pak chodí e-maily. */
+export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInput, discountCodeId?: string, locale = "cs") {
   if (lines.length === 0) throw new Error("Prázdný košík");
   const { taken, missing } = await takeStock(db, lines);
   if (missing.length > 0) {
@@ -99,6 +100,7 @@ export async function createOrder(db: Db, lines: OrderLine[], input: CheckoutInp
             note: input.note?.trim() || null,
             totalHal: t.totalHal,
             paymentRef: vs,
+            locale,
           })
           .returning();
         await db.insert(s.orderItems).values(

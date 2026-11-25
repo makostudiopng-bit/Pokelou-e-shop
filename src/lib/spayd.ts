@@ -1,4 +1,5 @@
 // QR platba (formát SPAYD, „QR Platba“ České bankovní asociace) a převod čísla účtu na IBAN.
+import { SHOP } from "@/config/shop";
 
 /** "19-2000145399/0800" → "CZ6508000000192000145399"; null, když číslo účtu nedává smysl. */
 export function czAccountToIban(account: string): string | null {
@@ -47,3 +48,10 @@ export function spayd({ iban, amountHal, vs, message }: { iban: string; amountHa
 
 /** IBAN po čtveřicích pro zobrazení. */
 export const formatIban = (iban: string) => iban.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
+
+/** IBAN obchodu z nastavení (BANK_IBAN, nebo převedený z BANK_ACCOUNT); null, když účet není nastavený. */
+export function shopIban(cfg: { bankIban: string | null; bankAccount: string | null } = SHOP) {
+  if (cfg.bankIban && isValidIban(cfg.bankIban)) return cfg.bankIban.replace(/\s/g, "");
+  if (cfg.bankAccount) return czAccountToIban(cfg.bankAccount);
+  return null;
+}

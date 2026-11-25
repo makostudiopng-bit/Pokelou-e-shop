@@ -135,6 +135,8 @@ export function searchDemoCards(q: string): BuybackCard[] {
 }
 
 export type BuybackSubmit = {
+  /** jazyk webu při odeslání (cs / en), v něm chodí e-maily */
+  locale?: string;
   email: string;
   name?: string;
   payout: "cash" | "credit";
@@ -172,6 +174,7 @@ export async function createBuyback(db: Db, input: BuybackSubmit, now = new Date
           estimateValidTo: validTo,
           isAdultConfirmed: true,
           bulkCount,
+          locale: input.locale ?? "cs",
         })
         .returning();
       await db.insert(s.buybackItems).values(

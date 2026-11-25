@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/add-to-cart";
+import { WatchForm } from "@/components/watch-form";
 import { CardZoom } from "@/components/card-zoom";
 import { OfferTile } from "@/components/offer-tile";
-import { Button, ConditionBadge } from "@/components/ui";
+import { ConditionBadge } from "@/components/ui";
 import { getCard } from "@/lib/catalog";
 import { buybackCardFor } from "@/lib/buyback";
 import { estimateItem } from "@/lib/buyback-shared";
@@ -120,17 +121,13 @@ export default async function KartaPage({ params, searchParams }: PageProps<"/ka
 
           <div className="flex flex-wrap items-end gap-3">
             {out ? (
-              <>
-                <Button variant="primary" className="flex-[1_1_220px]" block>
-                  {t("Hlídat, až bude skladem")}
-                </Button>
-              </>
+              <WatchForm cardId={selected.cardSlug} mode="stock" defaultOpen={sp.hlidat === "1"} primary />
             ) : (
               <>
                 <div className="min-w-0 flex-[1_1_320px]">
                   <AddToCart offerId={selected.id} quantity max={selected.stock} block label={`${t("Do košíku")} · ${t.price(selected.priceHal)}`} />
                 </div>
-                <Button variant="secondary">{t("Hlídat cenu")}</Button>
+                <WatchForm cardId={selected.cardSlug} mode="price" currentHal={Math.min(...variants.filter((v) => v.stock > 0).map((v) => v.priceHal))} defaultOpen={sp.hlidat === "1"} />
               </>
             )}
           </div>

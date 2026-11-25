@@ -10,6 +10,8 @@ import { formToInput, validateCheckout, type FieldErrors } from "@/lib/checkout"
 import { createOrder, StockConflictError } from "@/lib/orders";
 import { translateMessage } from "@/i18n/core";
 import { getLocale } from "@/i18n/server";
+import { after } from "next/server";
+import { notifyOrderCreated } from "@/lib/email/notify";
 
 export type CheckoutState = {
   attempt: number;
@@ -54,6 +56,7 @@ export async function placeOrderAction(prev: CheckoutState, form: FormData): Pro
       })),
       v.data,
       discount.status === "ok" ? discount.id : undefined,
+      locale,
     );
     orderId = order.id;
   } catch (e) {
@@ -74,5 +77,7 @@ export async function placeOrderAction(prev: CheckoutState, form: FormData): Pro
 
   await writeCart([]);
   await writeCodeCookie("");
+  // potvrzení zákazníkovi a upozornění obchodu až po odeslání odpovědi, ať zákazník nečeká
+  after(() => notifyOrderCreated(orderId));
   redirect(`/objednavka/${orderId}`);
 }
